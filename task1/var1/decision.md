@@ -33,3 +33,7 @@ v_i = 10 a - 2 + \varepsilon_i + 2,
 1. несмещённая;
 2. состоятельная;
 3. асимптотически нормальная.
+
+# Оценка задачи
+
+Все вычисления приведены в [Google Colab](https://colab.research.google.com/drive/1jqwmFrulyknBkOmE0atUhk8W8emgIsyK?usp=sharing).
