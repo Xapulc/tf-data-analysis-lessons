@@ -6,16 +6,16 @@ import numpy as np
 def score(test_stat: dict) -> int:
     total_score = 0
 
-    if test_stat[10000]["mean_error"] < 0.05 / np.sqrt(10000):
+    if test_stat[1000]["mean_error"] < 0.01:
         total_score += 1
 
-    if test_stat[1000]["mean_error"] < 0.02 / np.sqrt(1000):
+    if test_stat[1000]["mean_error"] < 0.001:
         total_score += 1
 
-    if test_stat[100]["mean_error"] < 0.015 / 100:
+    if test_stat[100]["mean_error"] < 0.00015:
         total_score += 1
 
-    if test_stat[10]["mean_error"] < 0.011 / 10:
+    if test_stat[10]["mean_error"] < 0.0011:
         total_score += 1
 
     return total_score
