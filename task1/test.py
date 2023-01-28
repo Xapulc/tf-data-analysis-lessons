@@ -4,8 +4,8 @@ import numpy as np
 
 from var1.test import test as var1_test
 
-from .student_work.task1 import variant
-from .student_work.task1 import decision
+from student_work.task1 import variant
+from student_work.task1 import decision
 
 
 def write_task_res(status, task_score):
