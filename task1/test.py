@@ -14,8 +14,7 @@ def write_task_res(status, task_score):
 
         
 try:
-    from student_work.task1 import variant
-    from student_work.task1 import decision
+    from student_work.task1 import variant, decision
 except Exception as e:
     write_task_res(f"Exception in imports. Type: {type(e)}, messange: {str(e)}", 0)
     quit()
