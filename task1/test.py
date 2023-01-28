@@ -16,7 +16,7 @@ try:
     from student_work.task1 import decision
 except Exception:
     write_task_res(f"Exception in imports. Type: {type(e)}, messange: {str(e)}", 0)
-    return
+    quit()
 
 
 test = None
@@ -24,7 +24,7 @@ if variant == 1:
     test = var1_test
 else:
     write_task_res(f"Variant {variant} not found", 0)
-    return
+    quit()
 
 try:
     task_score = test(decision)
