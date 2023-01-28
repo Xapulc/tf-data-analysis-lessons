@@ -8,7 +8,7 @@ from var1.test import test as var1_test
 def write_task_res(status, task_score):
     env_file = os.getenv("GITHUB_ENV")
     max_task_score = 4
-    answer = f"status={status}\n\max_task_score={max_task_score}\ntask_score={task_score}\n"
+    answer = f"status={status}\nmax_task_score={max_task_score}\ntask_score={task_score}\n"
     print(answer)
     with open(env_file, "a") as myfile:
         myfile.write(answer)
