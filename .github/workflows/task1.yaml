@@ -33,17 +33,17 @@ jobs:
         python -m pip install -r requirements.txt
         echo "Dependency successfully installied"
         
-    - name: Task12013
-      if: env.task_id == '12013'
+    - name: Task1
+      if: env.task_id == '12277'
       run: |
-        python task1_test.py 
-        echo "Success $task_id max_score=$env.max_score, task_score=$env.task_score, status=$env.status"
+        python task1/test.py 
+        echo "Success $task_id task_score=$env.task_score, status=$env.status"
         
-    - name: Task12014
+    - name: Task2
       if: env.task_id == '12014'
       run: |
-        python task2_test.py 
-        echo "Success $task_id max_score=$env.max_score, task_score=$env.task_score, status=$env.status"
+        python task2/test.py 
+        echo "Success $task_id task_score=$env.task_score, status=$env.status"
       
     - name: Hello edu, i'm coming for you
       if: ${{ always() }}
