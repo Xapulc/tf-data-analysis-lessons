@@ -36,7 +36,7 @@ def test(decision) -> int:
         v = data_sample.iloc[i].dropna().to_numpy()
         sample_size = len(v)
 
-        a_est = desicion(v)
+        a_est = decision(v)
         error = (a - a_est)**2
 
         if sample_size in test_stat.keys():
