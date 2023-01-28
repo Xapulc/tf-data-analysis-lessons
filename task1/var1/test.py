@@ -9,7 +9,7 @@ def score(test_stat: dict) -> int:
     if test_stat[1000]["mean_error"] < 0.01:
         total_score += 1
 
-    if test_stat[1000]["mean_error"] < 0.001:
+    if test_stat[1000]["mean_error"] < 0.0002:
         total_score += 1
 
     if test_stat[100]["mean_error"] < 0.00015:
