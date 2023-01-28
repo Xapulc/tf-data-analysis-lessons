@@ -3,17 +3,52 @@ import pandas as pd
 import numpy as np
 
 
-from student_work.task1 import sum as student_sum
+def score(test_stat: dict) -> int:
+    total_score = 0
 
+    if test_stat[10000]["mean_error"] < 0.05 / np.sqrt(10000):
+        total_score += 1
 
+    if test_stat[1000]["mean_error"] < 0.02 / np.sqrt(1000):
+        total_score += 1
 
-def write_task_res(status, max_score, task_score):
-  env_file = os.getenv('GITHUB_ENV')
-  with open(env_file, "a") as myfile:
-    myfile.write(f"status={status}\nmax_score={max_score}\ntask_score={task_score}\n")
+    if test_stat[100]["mean_error"] < 0.015 / 100:
+        total_score += 1
 
-data = pd.read_csv('test1_data.csv')
-data["student_res"] = data.apply(lambda row: student_sum(row["a"], row["b"]), axis=1)
-suc_cnt = np.where(data["student_res"] == data["res"], 1, 0).sum()
+    if test_stat[10]["mean_error"] < 0.011 / 10:
+        total_score += 1
 
-write_task_res("Done", 10, int(10 * suc_cnt / data.shape[0]))
+    return total_score
+  
+  
+def test(decision: function) -> int:
+    data = pd.read_csv("task1/var1/sample.csv")
+    a_sample = data["a"]
+    data_sample = data.drop(columns="a")
+
+    test_stat = {}
+    sample_size_error = {}
+    sample_size_number = {}
+    sample_size_result = {}
+
+    for i in range(len(a_sample)):
+        a = a_sample[i]
+        v = data_sample.iloc[i].dropna().to_numpy()
+        sample_size = len(v)
+
+        a_est = desicion(v)
+        error = (a - a_est)**2
+
+        if sample_size in test_stat.keys():
+            test_stat[sample_size]["total_error"] += error
+            test_stat[sample_size]["number"] += 1
+        else:
+            test_stat[sample_size] = {}
+            test_stat[sample_size]["total_error"] = error
+            test_stat[sample_size]["number"] = 1
+
+    for sample_size in test_stat.keys():
+        test_stat[sample_size]["mean_error"] = test_stat[sample_size]["total_error"] \
+                                               / test_stat[sample_size]["number"]
+    
+    return score(test_stat)
