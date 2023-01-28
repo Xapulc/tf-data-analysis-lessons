@@ -19,14 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.10.9
-    
-    - name: Clone student repository
-      run: |
-        tree
-        sudo git clone ${{env.pull_req_url}} student_work
-        sudo chmod -R 777 ./student_work
-        tree     
+        python-version: 3.10.9  
         
     - name: Install dependences
       run: |
@@ -36,12 +29,20 @@ jobs:
     - name: Task1
       if: env.task_id == '12277'
       run: |
+        tree
+        sudo git clone ${{env.pull_req_url}} task1/student_work
+        sudo chmod -R 777 ./student_work
+        tree
         python task1/test.py 
         echo "Success $task_id task_score=$env.task_score, status=$env.status"
         
     - name: Task2
       if: env.task_id == '12014'
       run: |
+        tree
+        sudo git clone ${{env.pull_req_url}} task2/student_work
+        sudo chmod -R 777 ./student_work
+        tree
         python task2/test.py 
         echo "Success $task_id task_score=$env.task_score, status=$env.status"
       
