@@ -2,8 +2,9 @@ import os
 import pandas as pd 
 import numpy as np
 
+from test1.var1.
 
-from student_work.task1 import sum as student_sum
+from student_work.task1 import decision
 
 
 
