@@ -15,7 +15,7 @@ def write_task_res(status, task_score):
 
         
 try:
-    from student_work.task1.decision import variant, decision
+    from student_work.task1.solution import variant, solution
 except Exception as e:
     write_task_res(f"Exception in imports. Type: {type(e)}, messange: {str(e)}", 0)
     quit()
@@ -29,7 +29,7 @@ else:
     quit()
 
 try:
-    task_score = test(decision)
+    task_score = test(solution)
 except Exception as e:
     write_task_res(f"Exception in decision function. Type: {type(e)}, messange: {str(e)}", 0)
 else:
