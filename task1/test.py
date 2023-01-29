@@ -4,6 +4,7 @@ import numpy as np
 
 from var0.test import test as var0_test
 from var1.test import test as var1_test
+from var2.test import test as var2_test
 
 
 def write_task_res(status, task_score):
@@ -27,6 +28,8 @@ if variant == 0:
     test = var0_test
 elif variant == 1:
     test = var1_test
+elif variant == 2:
+    test = var2_test
 else:
     write_task_res(f"Variant {variant} not found", 0)
     quit()
