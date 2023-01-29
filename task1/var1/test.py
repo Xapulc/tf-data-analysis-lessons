@@ -21,7 +21,7 @@ def score(test_stat: dict) -> int:
     return total_score
   
   
-def test(decision) -> int:
+def test(solution) -> int:
     data = pd.read_csv("task1/var1/sample.csv")
     a_sample = data["a"]
     data_sample = data.drop(columns="a")
@@ -36,7 +36,7 @@ def test(decision) -> int:
         v = data_sample.iloc[i].dropna().to_numpy()
         sample_size = len(v)
 
-        a_est = decision(v)
+        a_est = solution(v)
         error = (a - a_est)**2
 
         if sample_size in test_stat.keys():
