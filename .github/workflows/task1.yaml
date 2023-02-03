@@ -37,7 +37,7 @@ jobs:
         echo "Success $task_id task_score=$env.task_score, status=$env.status"
         
     - name: Task2
-      if: env.task_id == '12014'
+      if: env.task_id == '12559'
       run: |
         tree
         sudo git clone ${{env.pull_req_url}} task2/student_work
