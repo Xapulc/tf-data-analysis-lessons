@@ -35,18 +35,18 @@ x(t) = \frac{a t^2}{2},
 \leq \sqrt{n} \frac{\overline{X} - 50 a + 1/2}{S_X} 
 \leq z_{1 - \alpha / 2}\right)
 = \mathsf{P}\left(\overline{X} / 50 + 1 / 100
-- z_{1 - \alpha / 2} \frac{S_X}{\sqrt{50 n}}
+- z_{1 - \alpha / 2} \frac{S_X}{50 \sqrt{n}}
 \leq a
 \leq \overline{X} / 50 + 1 / 100
-- z_{\alpha / 2} \frac{S_X}{\sqrt{50 n}}\right).
+- z_{\alpha / 2} \frac{S_X}{50 \sqrt{n}}\right).
 ```
 Таким образом,
 доверительный интервал
 ```math
 \left(\overline{X} / 50 + 1 / 100
-- z_{1 - \alpha / 2} \frac{S_X}{\sqrt{50 n}},
+- z_{1 - \alpha / 2} \frac{S_X}{50 \sqrt{n}},
 \overline{X} / 50 + 1 / 100
-- z_{\alpha / 2} \frac{S_X}{\sqrt{50 n}}\right).
+- z_{\alpha / 2} \frac{S_X}{50 \sqrt{n}}\right).
 ```
 
 ## ЦПТ, известная дисперсия
@@ -65,18 +65,18 @@ x(t) = \frac{a t^2}{2},
 \leq \sqrt{n} (\overline{X} - 50 a + 1/2) 
 \leq z_{1 - \alpha / 2}\right)
 = \mathsf{P}\left(\overline{X} / 50 + 1 / 100
-- z_{1 - \alpha / 2} \frac{1}{\sqrt{50 n}}
+- z_{1 - \alpha / 2} \frac{1}{50 \sqrt{n}}
 \leq a
 \leq \overline{X} / 50 + 1 / 100
-- z_{\alpha / 2} \frac{1}{\sqrt{50 n}}\right).
+- z_{\alpha / 2} \frac{1}{50 \sqrt{n}}\right).
 ```
 Таким образом,
 доверительный интервал
 ```math
 \left(\overline{X} / 50 + 1 / 100
-- z_{1 - \alpha / 2} \frac{1}{\sqrt{50 n}},
+- z_{1 - \alpha / 2} \frac{1}{50 \sqrt{n}},
 \overline{X} / 50 + 1 / 100
-- z_{\alpha / 2} \frac{1}{\sqrt{50 n}}\right).
+- z_{\alpha / 2} \frac{1}{50 \sqrt{n}}\right).
 ```
 
 ## Точный доверительный интервал
