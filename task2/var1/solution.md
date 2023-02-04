@@ -102,8 +102,8 @@ x_i = 50 a + \varepsilon_i,
 Таким образом,
 доверительный интервал
 ```math
-\left(n \overline{X} + \gamma_{\alpha / 2,n} - n / 2}{50 n},
-n \overline{X} + \gamma_{1 - \alpha / 2,n} - n / 2}{50 n}\right).
+\left(\frac{n \overline{X} + \gamma_{\alpha / 2,n} - n / 2}{50 n},
+\frac{n \overline{X} + \gamma_{1 - \alpha / 2,n} - n / 2}{50 n}\right).
 ```
 
 # Оценка задачи
