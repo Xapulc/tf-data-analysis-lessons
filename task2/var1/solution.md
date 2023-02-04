@@ -43,17 +43,17 @@ x(t) = \frac{a t^2}{2},
 Таким образом,
 доверительный интервал
 ```math
-\left(\overline{X}
-- z_{1 - \alpha / 2} \frac{S_X}{\sqrt{n}},
-\overline{X}
-- z_{\alpha / 2} \frac{S_X}{\sqrt{n}}\right).
+\left(\overline{X} / 50 + 1 / 100
+- z_{1 - \alpha / 2} \frac{S_X}{\sqrt{50 n}},
+\overline{X} / 50 + 1 / 100
+- z_{\alpha / 2} \frac{S_X}{\sqrt{50 n}}\right).
 ```
 
 ## ЦПТ, известная дисперсия
 
 В силу ЦПТ
 ```math
-\sqrt{n} \frac{\overline{X} - a}{10} 
+\sqrt{n} (\overline{X} - 50 a + 1/2)
 \to \mathcal{N}(0, 1).
 ```
 Пусть $z_{\gamma}$ - $\gamma$-квантиль 
@@ -62,21 +62,21 @@ x(t) = \frac{a t^2}{2},
 ```math
 1 - \alpha 
 \approx \mathsf{P}\left(z_{\alpha / 2} 
-\leq \sqrt{n} \frac{\overline{X} - a}{10} 
+\leq \sqrt{n} (\overline{X} - 50 a + 1/2) 
 \leq z_{1 - \alpha / 2}\right)
-= \mathsf{P}\left(\overline{X}
-- z_{1 - \alpha / 2} \frac{10}{\sqrt{n}}
+= \mathsf{P}\left(\overline{X} / 50 + 1 / 100
+- z_{1 - \alpha / 2} \frac{1}{\sqrt{50 n}}
 \leq a
-\leq \overline{X}
-- z_{\alpha / 2} \frac{10}{\sqrt{n}}\right).
+\leq \overline{X} / 50 + 1 / 100
+- z_{\alpha / 2} \frac{1}{\sqrt{50 n}}\right).
 ```
 Таким образом,
 доверительный интервал
 ```math
-\left(\overline{X}
-- z_{1 - \alpha / 2} \frac{10}{\sqrt{n}},
-\overline{X}
-- z_{\alpha / 2} \frac{10}{\sqrt{n}}\right).
+\left(\overline{X} / 50 + 1 / 100
+- z_{1 - \alpha / 2} \frac{1}{\sqrt{50 n}},
+\overline{X} / 50 + 1 / 100
+- z_{\alpha / 2} \frac{1}{\sqrt{50 n}}\right).
 ```
 
 ## Точный доверительный интервал
@@ -98,6 +98,12 @@ x_i = 50 a + \varepsilon_i,
 = \mathsf{P}\left(\frac{n \overline{X} + \gamma_{\alpha / 2,n} - n / 2}{50 n}
 \leq a
 \leq \frac{n \overline{X} + \gamma_{1 - \alpha / 2,n} - n / 2}{50 n}\right).
+```
+Таким образом,
+доверительный интервал
+```math
+\left(n \overline{X} + \gamma_{\alpha / 2,n} - n / 2}{50 n},
+n \overline{X} + \gamma_{1 - \alpha / 2,n} - n / 2}{50 n}\right).
 ```
 
 # Оценка задачи
