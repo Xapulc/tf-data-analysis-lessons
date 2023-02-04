@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 
 from var0.test import test as var0_test
+from var1.test import test as var1_test
 
 
 def write_task_res(status, task_score):
@@ -24,6 +25,8 @@ except Exception as e:
 test = None
 if variant == 0:
     test = var0_test
+elif variant == 1:
+    test = var1_test
 else:
     write_task_res(f"Variant {variant} not found", 0)
     quit()
