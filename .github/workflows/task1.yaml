@@ -41,7 +41,7 @@ jobs:
       run: |
         tree
         sudo git clone ${{env.pull_req_url}} task2/student_work
-        sudo chmod -R 777 task1/student_work
+        sudo chmod -R 777 task2/student_work
         tree
         python task2/test.py 
         echo "Success $task_id task_score=$env.task_score, status=$env.status"
