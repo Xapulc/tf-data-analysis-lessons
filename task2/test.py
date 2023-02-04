@@ -31,6 +31,6 @@ else:
 try:
     task_score = test(solution)
 except Exception as e:
-    write_task_res(f"Exception in decision function. Type: {type(e)}, messange: {str(e)}", 0)
+    write_task_res(f"Exception in solution function. Type: {type(e)}, messange: {str(e)}", 0)
 else:
     write_task_res("Done", task_score)
