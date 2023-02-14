@@ -8,7 +8,7 @@ from var0.test import test as var0_test
 from var1.test import test as var1_test
 from var2.test import test as var2_test
 from var3.test import test as var3_test
-from ..utils import send_result
+from .utils import send_result
 
 
 def write_task_res(status, task_score, to_email):
