@@ -10,7 +10,7 @@ env:
   task_id: ${{github.event.client_payload.task_id}} 
   adapter_url: ${{github.event.client_payload.adapter_url}}
   EMAIL: ${{secrets.EMAIL}}
-  PASSWROD: ${{secrets.PASSWORD}}
+  PASSWORD: ${{secrets.PASSWORD}}
 
 jobs:
   build:
