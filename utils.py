@@ -5,8 +5,9 @@ import smtplib
 
 def send_result_to_email(to_email, message_subject, message_body):
     from_email = os.getenv("EMAIL")
-    print(from_email)
     from_email_password = os.getenv("PASSWORD")
+    print(len(from_email))
+    print(len(from_email_password))
     
     msg = email.message_from_string(message_body)
     msg["From"] = from_email
