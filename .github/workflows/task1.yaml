@@ -28,24 +28,13 @@ jobs:
         python -m pip install -r requirements.txt
         echo "Dependency successfully installied"
         
-    - name: Task1
-      if: env.task_id == '12277'
+    - name: Task
       run: |
         tree
-        sudo git clone ${{env.pull_req_url}} task1/student_work
-        sudo chmod -R 777 task1/student_work
+        sudo git clone ${{env.pull_req_url}} student_work
+        sudo chmod -R 777 student_work
         tree
-        python task1/test.py 
-        echo "Success $task_id task_score=$env.task_score, status=$env.status"
-        
-    - name: Task2
-      if: env.task_id == '12559'
-      run: |
-        tree
-        sudo git clone ${{env.pull_req_url}} task2/student_work
-        sudo chmod -R 777 task2/student_work
-        tree
-        python task2/test.py 
+        python app.py 
         echo "Success $task_id task_score=$env.task_score, status=$env.status"
       
     - name: Hello edu, i'm coming for you
