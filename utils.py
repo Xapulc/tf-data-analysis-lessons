@@ -22,6 +22,7 @@ def send_result_to_email(to_email, message_subject, message_body):
     s.sendmail(from_email, to_email, msg.as_string())
     s.quit()
 
+    
 def send_result_to_edu(comment, task_score, max_score):
     env_file = os.getenv("GITHUB_ENV")
     answer = f"status={comment}\nmax_score={max_score}\ntask_score={task_score}\n"
