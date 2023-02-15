@@ -19,14 +19,20 @@ subject = 'Экзамен "Математическая статистика", '
 
 
 try:
-    from student_work.solution import email as to_email
+    if task_name == "Задание 1":
+        from student_work.task1.solution import email as to_email
+    elif task_name == "Задание 2":
+        from student_work.task2.solution import email as to_email
 except Exception as e:
     print("Почта не указана")
     send_result_to_edu("Error", 0, max_score)
     quit()
     
 try:
-    from student_work.solution import variant, solution
+    if task_name == "Задание 1":
+        from student_work.task1.solution import variant, solution
+    elif task_name == "Задание 2":
+        from student_work.task2.solution import variant, solution
 except Exception as e:
     comment = f"Ошибка при импортах. Тип ошибки: {type(e)}, сообщение: {str(e)}"
     print(comment)
