@@ -2,6 +2,7 @@ import os
 
 from utils import send_result_to_telegram, send_result_to_edu
 
+
 task_id = os.getenv("task_id")
 
 if task_id == "12277":
