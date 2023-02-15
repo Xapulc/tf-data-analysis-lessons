@@ -30,9 +30,3 @@ def send_result_to_edu(comment, task_score, max_score):
     
     with open(env_file, "a") as myfile:
         myfile.write(answer)
-        
-    
-def send_result(comment, task_score, max_score, 
-                to_email, message_subject, message_body):
-    send_result_to_email(to_email, message_subject, message_body)
-    send_result_to_edu(comment, task_score, max_score)
