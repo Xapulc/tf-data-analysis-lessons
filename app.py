@@ -12,6 +12,8 @@ elif task_id == "12559":
     task_name = "Задание 2"
 else:
     print(f"Некорректный номер задания: {task_id}")
+    send_result_to_edu("Error", 0, 1)
+    quit()
     
 subject = 'Экзамен "Математическая статистика", ' + task_name
 
@@ -20,6 +22,7 @@ try:
     from student_work.solution import email as to_email
 except Exception as e:
     send_result_to_edu("Error", 0, max_score)
+    quit()
     
 try:
     from student_work.solution import variant, solution
@@ -28,6 +31,7 @@ except Exception as e:
                          subject,
                          f"Ошибка при импортах. Тип ошибки: {type(e)}, сообщение: {str(e)}")
     send_result_to_edu("Error", 0, max_score)
+    quit()
     
     
 task_score, comment, status = check_solution(variant, solution)
