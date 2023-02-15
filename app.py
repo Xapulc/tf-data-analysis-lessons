@@ -1,6 +1,6 @@
 import os
 
-from utils import send_result_to_email, send_result_to_edu
+from utils import send_result_to_telegram, send_result_to_edu
 
 task_id = os.getenv("task_id")
 
@@ -14,17 +14,15 @@ else:
     print(f"Некорректный номер задания: {task_id}")
     send_result_to_edu("Error", 0, 1)
     quit()
-    
-subject = 'Экзамен "Математическая статистика", ' + task_name
 
 
 try:
     if task_name == "Задание 1":
-        from student_work.task1.solution import email as to_email
+        from student_work.task1.solution import chat_id
     elif task_name == "Задание 2":
-        from student_work.task2.solution import email as to_email
+        from student_work.task2.solution import chat_id
 except Exception as e:
-    print("Почта не указана")
+    print("Chat ID не указана")
     send_result_to_edu("Error", 0, max_score)
     quit()
     
@@ -36,7 +34,7 @@ try:
 except Exception as e:
     comment = f"Ошибка при импортах. Тип ошибки: {type(e)}, сообщение: {str(e)}"
     print(comment)
-    send_result_to_email(to_email, subject, comment)
+    send_result_to_telegram(chat_id, comment)
     send_result_to_edu("Error", 0, max_score)
     quit()
     
@@ -44,5 +42,5 @@ except Exception as e:
 task_score, comment, status = check_solution(variant, solution)
 
 print(comment)
-send_result_to_email(to_email, subject, comment)
+send_result_to_telegram(chat_id, comment)
 send_result_to_edu(status, task_score, max_score)
