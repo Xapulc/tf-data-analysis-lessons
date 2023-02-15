@@ -19,7 +19,3 @@ def check_solution(variant, solution):
         return 0, f"Ошибка в решающей функции. Тип ошибки: {type(e)}, сообщение ошибки: {str(e)}", "Error"
    
     return task_score, f"Количество набранных баллов = {task_score}", "Done"
-except Exception as e:
-    write_task_res(f"Exception in solution function. Type: {type(e)}, messange: {str(e)}", 0)
-else:
-    write_task_res("Done", task_score)
