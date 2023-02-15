@@ -1,13 +1,12 @@
 import os
 import email
 import smtplib
+import requests
 
 
 def send_result_to_email(to_email, message_subject, message_body):
     from_email = os.getenv("EMAIL")
     from_email_password = os.getenv("PASSWORD")
-    print(len(from_email))
-    print(len(from_email_password))
     
     msg = email.message_from_string(message_body)
     msg["From"] = from_email
@@ -22,6 +21,17 @@ def send_result_to_email(to_email, message_subject, message_body):
     
     s.sendmail(from_email, to_email, msg.as_string().encode("utf-8"))
     s.quit()
+        
+        
+def send_result_to_telegram(chat_id, message):
+    token = os.getenv("TELEGRAM_TOKEN")
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+
+    try:
+        response = requests.post(url, json={"chat_id": chat_id, "text": message})
+        print(response.text)
+    except Exception as e:
+        print(e)
 
     
 def send_result_to_edu(comment, task_score, max_score):
