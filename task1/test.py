@@ -1,7 +1,7 @@
-from var0.test import test as var0_test
-from var1.test import test as var1_test
-from var2.test import test as var2_test
-from var3.test import test as var3_test
+from .var0.test import test as var0_test
+from .var1.test import test as var1_test
+from .var2.test import test as var2_test
+from .var3.test import test as var3_test
 
 
 max_score = 4
