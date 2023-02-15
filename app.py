@@ -30,7 +30,7 @@ except Exception as e:
     send_result_to_edu("Error", 0, max_score)
     
     
-task_score, max_score, comment, status = check_solution(variant, solution)
+task_score, comment, status = check_solution(variant, solution)
 
 send_result_to_email(to_email, subject, comment)
 send_result_to_edu(status, task_score, max_score)
