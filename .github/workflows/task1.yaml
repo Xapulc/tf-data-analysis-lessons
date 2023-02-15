@@ -11,6 +11,7 @@ env:
   adapter_url: ${{github.event.client_payload.adapter_url}}
   EMAIL: ${{secrets.EMAIL}}
   PASSWORD: ${{secrets.PASSWORD}}
+  TELEGRAM_TOKEN: ${{secrets.TELEGRAM_TOKEN}}
 
 jobs:
   build:
