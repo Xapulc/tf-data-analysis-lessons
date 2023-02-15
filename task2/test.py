@@ -1,5 +1,5 @@
-from var0.test import test as var0_test
-from var1.test import test as var1_test
+from .var0.test import test as var0_test
+from .var1.test import test as var1_test
 
 
 max_score = 6
