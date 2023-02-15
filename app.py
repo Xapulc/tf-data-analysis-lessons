@@ -21,20 +21,22 @@ subject = 'Экзамен "Математическая статистика", '
 try:
     from student_work.solution import email as to_email
 except Exception as e:
+    print("Почта не указана")
     send_result_to_edu("Error", 0, max_score)
     quit()
     
 try:
     from student_work.solution import variant, solution
 except Exception as e:
-    send_result_to_email(to_email, 
-                         subject,
-                         f"Ошибка при импортах. Тип ошибки: {type(e)}, сообщение: {str(e)}")
+    comment = f"Ошибка при импортах. Тип ошибки: {type(e)}, сообщение: {str(e)}"
+    print(comment)
+    send_result_to_email(to_email, subject, comment)
     send_result_to_edu("Error", 0, max_score)
     quit()
     
     
 task_score, comment, status = check_solution(variant, solution)
 
+print(comment)
 send_result_to_email(to_email, subject, comment)
 send_result_to_edu(status, task_score, max_score)
