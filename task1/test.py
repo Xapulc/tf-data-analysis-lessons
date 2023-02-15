@@ -23,5 +23,9 @@ def check_solution(variant, solution):
         task_score = test(solution)
     except Exception as e:
         return 0, f"Ошибка в решающей функции. Тип ошибки: {type(e)}, сообщение ошибки: {str(e)}", "Error"
+    
+    return_message = f"""В задании 1 ваш *вариант {variant}*, результат *{task_score} из {max_score}*.
+    На выборках размера `1000` ваша средняя абсолютная ошибка = `0.13`, что больше `0.1`, поэтому вы не получили балл за этот пункт.
+    """
    
-    return task_score, f"Количество набранных баллов = {task_score}", "Done"
+    return task_score, return_message, "Done"
