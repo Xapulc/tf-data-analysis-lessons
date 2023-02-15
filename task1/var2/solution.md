@@ -40,4 +40,4 @@ x_i = 8 a + \varepsilon_i,
 * $+1$ балл, если на выборках размера $100$ MSE оценки < $0.0005$.
 * $+1$ балл, если на выборках размера $10$ MSE оценки < $0.0032$.
 
-Все вычисления приведены в [Google Colab](https://colab.research.google.com/drive/1jqwmFrulyknBkOmE0atUhk8W8emgIsyK?usp=sharing).
+Все вычисления приведены в [Google Colab](https://colab.research.google.com/drive/1b2MH0BjyasG4mBMIQ-kKH8F_2IHDDBe4?usp=sharing).
