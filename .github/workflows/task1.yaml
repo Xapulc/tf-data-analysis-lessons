@@ -46,8 +46,8 @@ jobs:
         curl \
         -X PUT \
         -H "Accept: application/vnd.github.v3+json" \
-        ${{ env.adapter_url }} \
-        -d '{"token_csrf":"${{ env.token}}", 
+        ${{env.adapter_url}} \
+        -d '{"token_csrf":"${{env.token}}", 
         "ci_score":${{env.task_score}}, 
         "ci_max_score":${{env.max_score}}, 
-        "ci_status":"${{env.status}}" }'
+        "ci_status":"${{env.status}}"}'
