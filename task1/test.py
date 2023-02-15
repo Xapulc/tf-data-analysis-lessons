@@ -28,10 +28,14 @@ def check_solution(variant, solution):
     task_score = 0
     
     for score_element in score_list:
-        score = 1 if score_element["test_error"] < score_element["max_error"] else 0
+        score = 1 if score_element["test_error"] <= score_element["max_error"] else 0
         task_score += score
+
+        test_error_format = "{:." + str(int(-np.log10(score_element["max_error"])) + 3) + "f}"
+        test_error_str = test_error_format.format(score_element["test_error"])
+        
         message += f"На выборках размера `{score_element['sample_size']}` " \
-                   + f"ваша средняя ошибка равна `{score_element['test_error']}` " \
+                   + f"ваша средняя ошибка равна `{test_error_str}` " \
                    + f"при пороге `{score_element['max_error']}`. " \
                    + f"За этот пункт вы получаете количество баллов = {score}.\n"
         
