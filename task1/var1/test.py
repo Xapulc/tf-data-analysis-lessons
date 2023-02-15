@@ -1,32 +1,29 @@
 import os
 import pandas as pd 
 import numpy as np
-
-
-def score(test_stat: dict) -> int:
-    total_score = 0
-
-    if test_stat[1000]["mean_error"] < 0.001:
-        total_score += 1
-
-    if test_stat[1000]["mean_error"] < 0.0001:
-        total_score += 1
-
-    if test_stat[100]["mean_error"] < 0.00015:
-        total_score += 1
-
-    if test_stat[10]["mean_error"] < 0.0011:
-        total_score += 1
-
-    return total_score
   
   
 def test(solution) -> int:
     data = pd.read_csv("task1/var1/sample.csv")
     a_sample = data["a"]
     data_sample = data.drop(columns="a")
+    
+    score_list = [{
+        "sample_size": 1000,
+        "max_error": 0.001
+    }, {
+        "sample_size": 1000,
+        "max_error": 0.0001
+    }, {
+        "sample_size": 100,
+        "max_error": 0.00015
+    }, {
+        "sample_size": 10,
+        "max_error": 0.0011
+    }]
 
     test_stat = {}
+    
     sample_size_error = {}
     sample_size_number = {}
     sample_size_result = {}
@@ -50,5 +47,8 @@ def test(solution) -> int:
     for sample_size in test_stat.keys():
         test_stat[sample_size]["mean_error"] = test_stat[sample_size]["total_error"] \
                                                / test_stat[sample_size]["number"]
+        
+    for score_element in score_list:
+        score_element["test_error"] = test_stat[score_element["sample_size"]]["mean_error"]
     
-    return score(test_stat)
+    return score_list
