@@ -20,7 +20,7 @@ def send_result_to_email(to_email, message_subject, message_body):
     s.ehlo()
     s.login(from_email, from_email_password)
     
-    s.sendmail(from_email, to_email, msg.as_string())
+    s.sendmail(from_email, to_email, msg.as_string().encode("utf-8"))
     s.quit()
 
     
