@@ -28,7 +28,7 @@ def send_result_to_telegram(chat_id, message):
     url = f"https://api.telegram.org/bot{token}/sendMessage"
 
     try:
-        response = requests.post(url, json={"chat_id": chat_id, "text": message})
+        response = requests.post(url, json={"chat_id": chat_id, "text": message, "parse_mode": "markdown"})
         print(response.text)
     except Exception as e:
         print(e)
