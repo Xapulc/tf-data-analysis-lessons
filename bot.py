@@ -45,7 +45,7 @@ def get_variant_by_task(task_name):
                                   stat_task2_min_variant,
                                   stat_task2_max_variant)
         await context.bot.send_message(chat_id=update.effective_chat.id,
-                                       text=variant_message(variant))
+                                       text=variant)
     return helper
 
 
