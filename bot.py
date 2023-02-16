@@ -6,10 +6,10 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 
 from utils import get_variant
 from stat_task1.test import salt as stat_task1_salt, \
-			    min_variant as stat_task1_min_variant, \
+                min_variant as stat_task1_min_variant, \
                             max_variant as stat_task1_max_variant
 from stat_task2.test import salt as stat_task2_salt, \
-			    min_variant as stat_task2_min_variant, \
+                min_variant as stat_task2_min_variant, \
                             max_variant as stat_task2_max_variant
 
 
@@ -21,31 +21,31 @@ logging.basicConfig(
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, 
-				   text='Я бот для поддержки курса "Анализ данных в индустрии". '
-				  	+ 'Для выполнения ДЗ вам потребуется `chat_id`. '
-				        + f'Ваш `chat_id` равен {update.effective_chat.id}.',
-				   parse_mode="markdown")
+                   text='Я бот для поддержки курса "Анализ данных в индустрии". '
+                    + 'Для выполнения ДЗ вам потребуется `chat_id`. '
+                        + f'Ваш `chat_id` равен {update.effective_chat.id}.',
+                   parse_mode="markdown")
 
 
 async def get_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, 
-				   text=update.effective_chat.id)
+                   text=update.effective_chat.id)
 
 
 def get_variant(task_name):
     async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if task_name == stat_task1_salt:
             variant = get_variant(update.effective_chat.id, 
-			     	              stat_task1_salt, 
-				                  stat_task1_min_variant, 
-				                  stat_task1_max_variant)
-	elif task_name == stat_task2_salt:
-            variant = get_variant(update.effective_chat.id, 
-				                  stat_task2_salt, 
-				                  stat_task2_min_variant, 
-				                  stat_task2_max_variant)
-	    await context.bot.send_message(chat_id=update.effective_chat.id, 
-				                       text=variant_message(variant))
+                                  stat_task1_salt,
+                                  stat_task1_min_variant,
+                                  stat_task1_max_variant)
+        elif task_name == stat_task2_salt:
+            variant = get_variant(update.effective_chat.id,
+                                  stat_task2_salt,
+                                  stat_task2_min_variant,
+                                  stat_task2_max_variant)
+        await context.bot.send_message(chat_id=update.effective_chat.id,
+                                       text=variant_message(variant))
     return helper
 
 
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("get_chat", get_chat))
 
     for task_name in [stat_task1_salt, 
-		              stat_task2_salt]:
+                      stat_task2_salt]:
         application.add_handler(CommandHandler(f"get_variant_{task_name}", get_variant(task_name)))
     
     application.run_polling()
