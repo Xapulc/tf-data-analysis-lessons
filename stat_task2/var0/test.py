@@ -28,7 +28,7 @@ def score(test_stat: dict) -> int:
   
   
 def test(solution) -> int:
-    data = pd.read_csv("task2/var0/sample.csv")
+    data = pd.read_csv("stat_task2/var0/sample.csv")
     a_sample = data["a"]
     data_sample = data.drop(columns="a")
     test_stat = {
