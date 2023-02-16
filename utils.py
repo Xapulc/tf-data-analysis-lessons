@@ -44,4 +44,5 @@ def send_result_to_edu(comment, task_score, max_score):
         
         
 def get_variant(chat_id, salt, min_variant, max_variant):
+    os.environ["PYTHONHASHSEED"] = "42"
     return (hash(str(chat_id) + salt) % (max_variant - min_variant + 1)) + min_variant
