@@ -39,7 +39,7 @@ def get_variant(task_name):
 			     	              stat_task1_salt, 
 				                  stat_task1_min_variant, 
 				                  stat_task1_max_variant)
-	    elif task_name == stat_task2_salt:
+	elif task_name == stat_task2_salt:
             variant = get_variant(update.effective_chat.id, 
 				                  stat_task2_salt, 
 				                  stat_task2_min_variant, 
