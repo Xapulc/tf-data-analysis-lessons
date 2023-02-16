@@ -36,7 +36,7 @@ def check_solution(variant, solution):
         test_error_format = "{:." + str(int(-np.log10(score_element["max_error"])) + 3) + "f}"
         test_error_str = test_error_format.format(score_element["test_error"])
         
-        message += f"На выборках размера `{score_element['sample_size']}` " \
+        message += f"* На выборках размера `{score_element['sample_size']}` " \
                    + f"ваша средняя ошибка равна `{test_error_str}` " \
                    + f"при пороге `{score_element['max_error']}`. " \
                    + f"За этот пункт вы получаете количество баллов = {score}.\n"
