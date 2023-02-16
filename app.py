@@ -1,15 +1,15 @@
 import os
 
-from utils import send_result_to_telegram, send_result_to_edu
+from utils import send_result_to_telegram, send_result_to_edu, get_variant
 
 
 task_id = os.getenv("task_id")
 
 if task_id == "12277":
-    from task1.test import max_score, check_solution
+    from stat_task1.test import max_score, salt, min_variant, max_variant, check_solution
     task_name = "Задание 1"
 elif task_id == "12559":
-    from task2.test import max_score, check_solution
+    from stat_task2.test import max_score, salt, min_variant, max_variant, check_solution
     task_name = "Задание 2"
 else:
     print(f"Некорректный номер задания: {task_id}")
@@ -29,9 +29,9 @@ except Exception as e:
     
 try:
     if task_name == "Задание 1":
-        from student_work.task1.solution import variant, solution
+        from student_work.task1.solution import solution
     elif task_name == "Задание 2":
-        from student_work.task2.solution import variant, solution
+        from student_work.task2.solution import solution
 except Exception as e:
     comment = f"Ошибка при импортах. Тип ошибки: {type(e)}, сообщение: {str(e)}"
     print(comment)
@@ -39,7 +39,7 @@ except Exception as e:
     send_result_to_edu("Error", 0, max_score)
     quit()
     
-    
+variant = get_variant(chat_id, salt, min_variant, max_variant)
 task_score, comment, status = check_solution(variant, solution)
 
 print(comment)
