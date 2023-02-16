@@ -41,3 +41,7 @@ def send_result_to_edu(comment, task_score, max_score):
     
     with open(env_file, "a") as myfile:
         myfile.write(answer)
+        
+        
+def get_variant(chat_id, salt, min_variant, max_variant):
+    return (hash(str(chat_id) + salt) % (max_variant - min_variant + 1)) + min_variant
