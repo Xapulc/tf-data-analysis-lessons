@@ -4,7 +4,7 @@ import numpy as np
   
   
 def test(solution) -> int:
-    data = pd.read_csv("task1/var2/sample.csv")
+    data = pd.read_csv("stat_task1/var2/sample.csv")
     a_sample = data["a"]
     data_sample = data.drop(columns="a")
     
