@@ -4,11 +4,20 @@ import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 
+from utils import get_variant
+from stat_task1.test import salt as stat_task1_salt, \
+			    min_variant as stat_task1_min_variant, \
+                            max_variant as stat_task1_max_variant
+from stat_task2.test import salt as stat_task2_salt, \
+			    min_variant as stat_task2_min_variant, \
+                            max_variant as stat_task2_max_variant
+
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO
 )
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, 
@@ -17,13 +26,31 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 				        + f'Ваш `chat_id` равен {update.effective_chat.id}.',
 				   parse_mode="markdown")
 
+
 async def get_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, 
 				   text=update.effective_chat.id)
 
-async def get_variant_stat(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+def variant_message(variant):
+    return f"Ваш вариант: {variant}."
+
+
+async def get_variant_stat_task1(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    variant = get_variant(update.effective_chat.id, 
+			  stat_task1_salt, 
+			  stat_task1_min_variant, 
+			  stat_task1_max_variant)
     await context.bot.send_message(chat_id=update.effective_chat.id, 
-				   text=update.effective_chat.id)
+				   text=variant_message(variant))
+
+async def get_variant_stat_task2(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    variant = get_variant(update.effective_chat.id, 
+			  stat_task2_salt, 
+			  stat_task2_min_variant, 
+			  stat_task2_max_variant)
+    await context.bot.send_message(chat_id=update.effective_chat.id, 
+				   text=variant_message(variant))
 
 if __name__ == "__main__":
     token = os.getenv("TELEGRAM_TOKEN")
