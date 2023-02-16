@@ -3,6 +3,9 @@ from .var1.test import test as var1_test
 
 
 max_score = 6
+salt = "stat_task2"
+min_variant = 0
+max_variant = 1
 
 def check_solution(variant, solution):
     test = None
