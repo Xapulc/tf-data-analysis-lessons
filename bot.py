@@ -34,12 +34,12 @@ async def get_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 def get_variant(task_name):
     async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
-	if task_name == "stat_task1":
+	if task_name == stat_task1_salt:
 	    variant = get_variant(update.effective_chat.id, 
 				  stat_task1_salt, 
 				  stat_task1_min_variant, 
 				  stat_task1_max_variant)
-	elif task_name == "stat_task2":
+	elif task_name == stat_task2_salt:
 	    variant = get_variant(update.effective_chat.id, 
 				  stat_task2_salt, 
 				  stat_task2_min_variant, 
@@ -56,7 +56,8 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("get_chat", get_chat))
 
-    for task_name in ["stas_task1", "stas_task2"]:
+    for task_name in [stat_task1_salt, 
+		      stat_task2_salt]:
         application.add_handler(CommandHandler(f"get_variant_{task_name}", get_variant(task_name)))
     
     application.run_polling()
