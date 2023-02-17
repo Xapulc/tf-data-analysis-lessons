@@ -17,8 +17,25 @@ def check_solution(variant, solution):
         return 0, f"Вариант {variant} не найден", "Error"
     
     try:
-        task_score = test(solution)
+        score_list = test(solution)
     except Exception as e:
         return 0, f"Ошибка в решающей функции. Тип ошибки: {type(e)}, сообщение ошибки: {str(e)}", "Error"
    
-    return task_score, f"Количество набранных баллов = {task_score}", "Done"
+    message = f"В задании 2 у вас *{variant}-й вариант*.\n"
+    task_score = 0
+    
+    for score_element in score_list:
+        score = 1 if score_element["test_error"] <= score_element["max_error"] else 0
+        task_score += score
+
+        test_error_format = "{:." + str(int(-np.log10(score_element["max_error"])) + 3) + "f}"
+        test_error_str = test_error_format.format(score_element["test_error"])
+        
+        message += f"• На выборках размера `{score_element['sample_size']}` " \
+                   + f"ваша средняя ошибка равна `{test_error_str}` " \
+                   + f"при пороге `{score_element['max_error']}`. " \
+                   + f"За этот пункт вы получаете количество баллов = {score}.\n"
+        
+    message += f"Ваш общий результат: *{task_score} из {max_score}*."
+   
+    return task_score, message, "Done"
