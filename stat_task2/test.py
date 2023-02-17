@@ -1,4 +1,6 @@
 import numpy as np
+import pandas as pd
+import plotly.graph_objects as go
 
 from .var0.test import test as var0_test
 from .var1.test import test as var1_test
@@ -51,5 +53,22 @@ def check_solution(variant, solution):
         message += f"За этот пункт вы получаете количество баллов = {score}.\n"
         
     message += f"Ваш общий результат: *{task_score} из {max_score}*."
+    
+    data = pd.DataFrame([{
+        "Результат": 5,
+        "Балл": 1
+    }, {
+        "Результат": 10,
+        "Балл": 0
+    }])
+    color_function = lambda score: "rgba(114, 220, 140, 0.5)" if score == 1 else "rgba(240, 113, 111, 0.5)"
+
+    fig = go.Figure(go.Table(header={"values": list(data.columns)},
+                             cells={
+                                 "values": data.values.transpose(),
+                                 "fill_color": [data["Балл"].apply(color_function)]
+                             }))
+    picture_path = salt + ".png"
+    fig.write_image(picture_path, scale=6)
    
-    return task_score, message, "Done"
+    return task_score, message, "Done", [picture_path]
