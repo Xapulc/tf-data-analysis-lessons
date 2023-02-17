@@ -95,6 +95,6 @@ def check_solution(variant, solution):
     task_score = score_data["Балл"].sum()
     message = f"В задании 2 у вас *{variant}-й вариант*.\n" \
               + f"Ваш общий результат: *{task_score} из {max_score}*.\n" \
-              + "Итоги проверки результатов подведены в таблице."
+              + "Итоги проверки подведены в таблице."
    
     return task_score, message, "Done", [picture_path]
