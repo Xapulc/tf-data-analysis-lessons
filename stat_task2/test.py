@@ -54,21 +54,61 @@ def check_solution(variant, solution):
         
     message += f"Ваш общий результат: *{task_score} из {max_score}*."
     
-    data = pd.DataFrame([{
-        "Результат": 5,
-        "Балл": 1
+    score_data = pd.DataFrame(score_list)
+    score_data["score"] = score_data.apply(lambda row : 1 if (row["mean_error"] <= row["max_error"]
+                                                              and row["mean_interval_length"] <= row["max_interval_length"])
+                                                        else 0,
+                                           axis=1)
+    score_data["mean_error_format"] = score_data.apply(lambda row: "{:." + str(int(-np.log10(row["max_error"])) + 3) + "f}",
+                                                       axis=1)
+    score_data["mean_error_str"] = score_data.apply(lambda row: row["mean_error_format"].format(row["mean_error"]), 
+                                                    axis=1)
+    score_data["mean_interval_length_format"] = score_data.apply(lambda row: "{:." + str(int(-np.log10(row["max_interval_length"])) + 3) + "f}",
+                                                                 axis=1)
+    score_data["mean_interval_length_str"] = score_data.apply(lambda row: row["mean_interval_length_format"].format(row["mean_interval_length"]), 
+                                                              axis=1)
+    column_description = [{
+        "column": "sample_size",
+        "description": "Размер выборки"
     }, {
-        "Результат": 10,
-        "Балл": 0
-    }])
+        "column": "confidence",
+        "description": "Уровень доверия"
+    }, {
+        "column": "mean_error_str",
+        "description": "Частота непопадания в доверительный интервал"
+    }, {
+        "column": "max_error",
+        "description": "Порог для частоты непопадания в доверительный интервал"
+    }, {
+        "column": "mean_interval_length_str",
+        "description": "Средняя длина доверительного интервала"
+    }, {
+        "column": "max_interval_length",
+        "description": "Порог длины доверительного интервала"
+    }, {
+        "column": "score",
+        "description": "Балл"
+    }]
+    
+    score_data = score_data[[el["column"] for el in column_description]] \
+                           .rename(columns={el["column"]: el["description"] for el in column_description})
+    
     color_function = lambda score: "rgba(114, 220, 140, 0.5)" if score == 1 else "rgba(240, 113, 111, 0.5)"
-
-    fig = go.Figure(go.Table(header={"values": list(data.columns)},
+    fig = go.Figure(go.Table(header={"values": list(score_data.columns)},
                              cells={
-                                 "values": data.values.transpose(),
-                                 "fill_color": [data["Балл"].apply(color_function)]
+                                 "values": score_data.values.transpose(),
+                                 "fill_color": [score_data["Балл"].apply(color_function)]
                              }))
+    fig.update_layout(
+        autosize=False,
+        margin={
+            "l": 0,
+            "r": 0,
+            "t": 0,
+            "b": 0
+        }
+    )
     picture_path = "./" + salt + ".png"
-    fig.write_image(picture_path, scale=6)
+    fig.write_image(picture_path)
    
     return task_score, message, "Done", [picture_path]
