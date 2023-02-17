@@ -38,7 +38,7 @@ def send_result_to_telegram(chat_id, message, attachment_list):
         send_photo_url = f"https://api.telegram.org/bot{token}/sendPhoto"
         for file_path in attachment_list:
             try:
-                response = requests.post(send_photo_url, json={"chat_id": chat_id}, files={"photo": open(file_path, "rb")})
+                response = requests.post(send_photo_url, {"chat_id": chat_id}, files={"photo": open(file_path, "rb")})
                 print(response.text)
             except Exception as e:
                 print(e)
