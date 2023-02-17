@@ -24,35 +24,6 @@ def check_solution(variant, solution):
         score_list = test(solution)
     except Exception as e:
         return 0, f"Ошибка в решающей функции. Тип ошибки: {type(e)}, сообщение ошибки: {str(e)}", "Error"
-   
-    message = f"В задании 2 у вас *{variant}-й вариант*.\n"
-    task_score = 0
-    
-    for score_element in score_list:
-        score = 0
-        if score_element["mean_error"] <= score_element["max_error"] \
-                and score_element["mean_interval_length"] <= score_element["max_interval_length"]:
-            score = 1
-            
-        task_score += score
-        
-        message += f"• На выборках размера `{score_element['sample_size']}` " \
-                   + f"и с уровнем доверия `{score_element['confidence']}` "
-
-        mean_error_format = "{:." + str(int(-np.log10(score_element["max_error"])) + 3) + "f}"
-        mean_error_str = mean_error_format.format(score_element["mean_error"])
-        
-        message += f"частота непопадания в доверительный интервал равна `{mean_error_str}` " \
-                   + f"при пороге `{score_element['max_error']}`, "
-
-        mean_interval_length_format = "{:." + str(int(-np.log10(score_element["max_interval_length"])) + 3) + "f}"
-        mean_interval_length_str = mean_interval_length_format.format(score_element["mean_interval_length"])
-        
-        message += f"средняя длина доверительного интервала равна `{mean_interval_length_str}` " \
-                   + f"при пороге `{score_element['max_interval_length']}`. "
-        message += f"За этот пункт вы получаете количество баллов = {score}.\n"
-        
-    message += f"Ваш общий результат: *{task_score} из {max_score}*."
     
     score_data = pd.DataFrame(score_list)
     score_data["score"] = score_data.apply(lambda row : 1 if (row["mean_error"] <= row["max_error"]
@@ -95,7 +66,7 @@ def check_solution(variant, solution):
     
     color_function = lambda score: "rgba(114, 220, 140, 0.5)" if score == 1 else "rgba(240, 113, 111, 0.5)"
     cell_height = 30
-    header_cell_height = 100
+    header_cell_height = 70
     
     fig = go.Figure(go.Table(header={
                                  "values": list(score_data.columns),
@@ -118,5 +89,10 @@ def check_solution(variant, solution):
     )
     picture_path = "./" + salt + ".png"
     fig.write_image(picture_path)
+
+    task_score = score_data["Балл"].sum()
+    message = f"В задании 2 у вас *{variant}-й вариант*.\n" \
+              + f"Ваш общий результат: *{task_score} из {max_score}*.\n" \
+              + "Итоги проверки результатов подведены в таблице."
    
     return task_score, message, "Done", [picture_path]
