@@ -68,7 +68,7 @@ def check_solution(variant, solution):
                                  "values": data.values.transpose(),
                                  "fill_color": [data["Балл"].apply(color_function)]
                              }))
-    picture_path = salt + ".png"
+    picture_path = "./" + salt + ".png"
     fig.write_image(picture_path, scale=6)
    
     return task_score, message, "Done", [picture_path]
