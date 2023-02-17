@@ -33,19 +33,21 @@ async def get_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 def get_variant_by_task(task_name):
+    get_variant_by_id = None
+    if task_name == stat_task1_salt:
+        get_variant_by_id = lambda id: get_variant(id, 
+                                                   stat_task1_salt,
+                                                   stat_task1_min_variant,
+                                                   stat_task1_max_variant)
+    elif task_name == stat_task2_salt:
+        get_variant_by_id = lambda id: get_variant(id, 
+                                                   stat_task2_salt,
+                                                   stat_task2_min_variant,
+                                                   stat_task2_max_variant)
+    
     async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        if task_name == stat_task1_salt:
-            variant = get_variant(update.effective_chat.id, 
-                                  stat_task1_salt,
-                                  stat_task1_min_variant,
-                                  stat_task1_max_variant)
-        elif task_name == stat_task2_salt:
-            variant = get_variant(update.effective_chat.id,
-                                  stat_task2_salt,
-                                  stat_task2_min_variant,
-                                  stat_task2_max_variant)
         await context.bot.send_message(chat_id=update.effective_chat.id,
-                                       text=variant)
+                                       text=get_variant_by_id(update.effective_chat.id))
     return helper
 
 
