@@ -26,9 +26,6 @@ except Exception as e:
     print("Chat ID не указана")
     send_result_to_edu("Error", 0, max_score)
     quit()
-
-if chat_id == 123456:
-    chat_id = 604918251
     
 try:
     if task_name == "Задание 1":
@@ -43,6 +40,11 @@ except Exception as e:
     quit()
     
 variant = get_variant(chat_id, salt, min_variant, max_variant)
+
+if chat_id == 123456:
+    chat_id = 604918251
+    variant = 0
+
 check_solution_answer = check_solution(variant, solution)
 
 task_score = check_solution_answer[0]
