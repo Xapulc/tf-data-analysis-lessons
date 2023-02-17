@@ -72,13 +72,14 @@ def check_solution(variant, solution):
                                  "height": cell_height
                              }))
     fig.update_layout(
+        title_text="Задание 1",
         margin={
             "l": 0,
             "r": 0,
-            "t": 0,
+            "t": 50,
             "b": 0
         },
-        width=700,
+        width=750,
         height=cell_height * score_data.shape[0] + header_cell_height
     )
     picture_path = "./" + salt + ".png"
