@@ -26,6 +26,9 @@ except Exception as e:
     print("Chat ID не указана")
     send_result_to_edu("Error", 0, max_score)
     quit()
+
+if chat_id == 123456:
+    chat_id = 604918251
     
 try:
     if task_name == "Задание 1":
