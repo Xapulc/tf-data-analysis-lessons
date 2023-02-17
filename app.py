@@ -40,8 +40,13 @@ except Exception as e:
     quit()
     
 variant = get_variant(chat_id, salt, min_variant, max_variant)
-task_score, comment, status = check_solution(variant, solution)
+check_solution_answer = check_solution(variant, solution)
+
+task_score = check_solution_answer[0]
+comment = check_solution_answer[1]
+status = check_solution_answer[2]
+attachment_list = check_solution_answer[3] if len(check_solution_answer) > 3 else None
 
 print(comment)
-send_result_to_telegram(chat_id, comment)
+send_result_to_telegram(chat_id, comment, attachment_list)
 send_result_to_edu(status, task_score, max_score)
