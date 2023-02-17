@@ -41,7 +41,7 @@ except Exception as e:
     
 variant = get_variant(chat_id, salt, min_variant, max_variant)
 
-if chat_id == 123456:
+if chat_id == 123456: # Временно, убрать после лекции
     chat_id = 604918251
     variant = 0
 
