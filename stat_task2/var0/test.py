@@ -31,22 +31,37 @@ def test(solution) -> int:
     data = pd.read_csv("stat_task2/var0/sample.csv")
     a_sample = data["a"]
     data_sample = data.drop(columns="a")
-    test_stat = {
-        0.7: {
-            100: {}
-        }, 
-        0.9: {
-            10: {},
-            100: {},
-            1000: {}
-        }, 
-        0.95: {
-            10: {}
-        },
-        0.99: {
-            1000: {}
-        }
-    }
+    score_list = [{
+        "sample_size": 1000,
+        "confidence": 0.99,
+        "max_error": 0.02,
+        "max_interval_length": 2
+    }, {
+        "sample_size": 1000,
+        "confidence": 0.9,
+        "max_error": 0.12,
+        "max_interval_length": 1.1
+    }, {
+        "sample_size": 100,
+        "confidence": 0.7,
+        "max_error": 0.32,
+        "max_interval_length": 2.2
+    }, {
+        "sample_size": 100,
+        "confidence": 0.9,
+        "max_error": 0.11,
+        "max_interval_length": 3.3
+    }, {
+        "sample_size": 10,
+        "confidence": 0.95,
+        "max_error": 0.1,
+        "max_interval_length": 13
+    }, {
+        "sample_size": 10,
+        "confidence": 0.9,
+        "max_error": 0.11,
+        "max_interval_length": 10.6
+    }]
 
     for p in test_stat.keys():
         for sample_size in test_stat[p].keys():
