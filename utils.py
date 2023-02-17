@@ -24,15 +24,24 @@ def send_result_to_email(to_email, message_subject, message_body):
     s.quit()
         
         
-def send_result_to_telegram(chat_id, message):
+def send_result_to_telegram(chat_id, message, attachment_list):
     token = os.getenv("TELEGRAM_TOKEN")
-    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    send_message_url = f"https://api.telegram.org/bot{token}/sendMessage"
 
     try:
-        response = requests.post(url, json={"chat_id": chat_id, "text": message, "parse_mode": "markdown"})
+        response = requests.post(send_message_url, json={"chat_id": chat_id, "text": message, "parse_mode": "markdown"})
         print(response.text)
     except Exception as e:
         print(e)
+    
+    if attachment_list is not None:
+        send_photo_url = f"https://api.telegram.org/bot{token}/sendPhoto"
+        for file_path in attachment_list:
+            try:
+                response = requests.post(send_photo_url, json={"chat_id": chat_id}, {"photo": open(file_path, "rb")})
+                print(response.text)
+            except Exception as e:
+                print(e)
 
     
 def send_result_to_edu(comment, task_score, max_score):
