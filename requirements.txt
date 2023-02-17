@@ -3,3 +3,4 @@ pandas
 scipy
 requests
 python-telegram-bot
+plotly
