@@ -42,9 +42,6 @@ def check_solution(variant, solution):
         "column": "sample_size",
         "description": "Размер выборки"
     }, {
-        "column": "confidence",
-        "description": "Уровень доверия"
-    }, {
         "column": "test_error_str",
         "description": "Среднеквадратичная ошибка решения"
     }, {
