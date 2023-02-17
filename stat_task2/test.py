@@ -94,19 +94,27 @@ def check_solution(variant, solution):
                            .rename(columns={el["column"]: el["description"] for el in column_description})
     
     color_function = lambda score: "rgba(114, 220, 140, 0.5)" if score == 1 else "rgba(240, 113, 111, 0.5)"
-    fig = go.Figure(go.Table(header={"values": list(score_data.columns)},
+    cell_height = 30
+    header_cell_height = 100
+    
+    fig = go.Figure(go.Table(header={
+                                 "values": list(score_data.columns),
+                                 "height": header_cell_height
+                             },
                              cells={
                                  "values": score_data.values.transpose(),
-                                 "fill_color": [score_data["Балл"].apply(color_function)]
+                                 "fill_color": [score_data["Балл"].apply(color_function)],
+                                 "height": cell_height
                              }))
     fig.update_layout(
-        autosize=False,
         margin={
             "l": 0,
             "r": 0,
             "t": 0,
             "b": 0
-        }
+        },
+        width=1000,
+        height=cell_height * score_data.shape[0] + header_cell_height
     )
     picture_path = "./" + salt + ".png"
     fig.write_image(picture_path)
