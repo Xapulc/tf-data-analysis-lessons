@@ -77,15 +77,17 @@ def check_solution(variant, solution):
                                  "fill_color": [score_data["Балл"].apply(color_function)],
                                  "height": cell_height
                              }))
+    title_margin = 50
     fig.update_layout(
+        title_text="Задание 2",
         margin={
             "l": 0,
             "r": 0,
-            "t": 0,
+            "t": title_margin,
             "b": 0
         },
         width=1000,
-        height=cell_height * score_data.shape[0] + header_cell_height
+        height=cell_height * score_data.shape[0] + header_cell_height + title_margin
     )
     picture_path = "./" + salt + ".png"
     fig.write_image(picture_path)
