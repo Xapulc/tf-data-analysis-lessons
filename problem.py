@@ -1,3 +1,6 @@
+import hashlib
+
+
 class Problem(object):
     def __init__(self, code, name, max_score, problem_variant_list):
         self.code = code
