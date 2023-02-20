@@ -1,13 +1,34 @@
-import abc
+from abc import ABC, abstractmethod
 import hashlib
 
 
-class Problem(metaclass=abc.ABCMeta):
-    def __init__(self, code, name, max_score, problem_variant_list):
-        self.code = code
-        self.name = name
-        self.max_score = max_score
-        self.problem_variant_list = problem_variant_list
+class Problem(ABC):
+    def __init__(self):
+        pass
+    
+    @property
+    @abstractmethod
+    def code(self):
+        pass
+    
+    @property
+    @abstractmethod
+    def name(self):
+        pass
+    
+    @property
+    @abstractmethod
+    def max_score(self):
+        pass
+    
+    @property
+    @abstractmethod
+    def problem_variant_list(self):
+        pass
+    
+    @abstractmethod
+    def make_notification(self, task_score, test_result):
+        pass
         
     def _get_random_user_number(self, user: str):
         hash_string = user + self.name
@@ -25,10 +46,6 @@ class Problem(metaclass=abc.ABCMeta):
         user = str(user)
         problem_variant = self._get_problem_variant(user)
         return problem_variant.get_description(self._get_random_user_number(user))
-    
-    @abc.abstractmethod
-    def make_notification(self, task_score, test_result):
-        pass
     
     def make_test(self, solution, user):
         user = str(user)
