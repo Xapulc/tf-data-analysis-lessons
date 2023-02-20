@@ -28,7 +28,7 @@ class Problem(ABC):
         pass
     
     @abstractmethod
-    def make_notification(self, task_score, test_result):
+    def make_notification(self, user, task_score, test_result):
         pass
         
     def _get_random_user_number(self, user: str):
@@ -52,5 +52,5 @@ class Problem(ABC):
         user = str(user)
         problem_variant = self._get_problem_variant(user)
         task_score, comment, test_result = problem_variant.make_test(solution, self._get_random_user_number(user))
-        self.make_notification(task_score, test_result)
+        self.make_notification(user, task_score, test_result)
         return task_score, comment
