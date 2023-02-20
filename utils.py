@@ -59,3 +59,7 @@ def get_variant(chat_id, salt, min_variant, max_variant):
     hash_int = int.from_bytes(hash_object.digest(), "big")
     variant = (hash_int % (max_variant - min_variant + 1)) + min_variant
     return variant
+
+
+def tex_file_from_str(tex)
+
