@@ -1,5 +1,6 @@
-from abc import ABC, abstractmethod, property
 import hashlib
+
+from abc import ABC, abstractmethod, property
 
 
 class Problem(ABC):
