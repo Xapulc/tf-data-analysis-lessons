@@ -63,8 +63,7 @@ class StatProblem1(Problem):
         picture_path = "./" + self.code + ".png"
         fig.write_image(picture_path)
 
-        message = f'В ДЗ "{self.name}" у вас *{variant}-й вариант*.\n' \
-                  + f"Ваш общий результат: *{task_score} из {self.max_score}*.\n" \
+        message = f'В ДЗ "{self.name}" ваш общий результат: *{task_score} из {self.max_score}*.\n" \
                   + "Итоги проверки подведены в таблице."
         
         send_result_to_telegram(user, message, [picture_path])
