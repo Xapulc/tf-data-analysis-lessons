@@ -1,7 +1,8 @@
+import abc
 import hashlib
 
 
-class Problem(object):
+class Problem(metaclass=abc.ABCMeta):
     def __init__(self, code, name, max_score, problem_variant_list):
         self.code = code
         self.name = name
@@ -25,10 +26,13 @@ class Problem(object):
         problem_variant = self._get_problem_variant(user)
         return problem_variant.get_description(self._get_random_user_number(user))
     
-    def make_test(self, solution, user, make_notification_from_test_result=None):
+    @abc.abstractmethod
+    def make_notification(self, task_score, test_result):
+        pass
+    
+    def make_test(self, solution, user):
         user = str(user)
         problem_variant = self._get_problem_variant(user)
         task_score, comment, test_result = problem_variant.make_test(solution, self._get_random_user_number(user))
-        if make_notification_from_test_result is not None:
-            make_notification_from_test_result(task_score, test_result)
+        self.make_notification(task_score, test_result)
         return task_score, comment
