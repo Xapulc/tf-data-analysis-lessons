@@ -31,13 +31,13 @@ class Problem(ABC):
     def make_notification(self, user, task_score, test_result):
         pass
         
-    def _get_random_user_number(self, user: str):
+    def _get_random_user_number(self, user: str): # убрал в RandomUser
         hash_string = user + self.name
         hash_object = hashlib.md5(hash_string.encode("utf8"))
         hash_int = int.from_bytes(hash_object.digest(), "big")
         return hash_int
         
-    def _get_problem_variant(self, user: str):
+    def _get_problem_variant(self, user: str): # убрал в RandomUser
         variant_cnt = len(self.problem_variant_list)
         hash_int = self._get_random_user_number(user)
         variant = hash_int % variant_cnt
