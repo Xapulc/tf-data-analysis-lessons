@@ -5,9 +5,10 @@ import requests
 class TelegramService(object):
     def __init__(self, token):
         self._token = token
+        self.telegram_url = "https://api.telegram.org"
     
     def _get_send_message_url(self):
-        return f"https://api.telegram.org/bot{self._token}/sendMessage"
+        return f"{self.telegram_url}/bot{self._token}/sendMessage"
     
     def _send_message(self, chat_id, message):
         try:
@@ -22,7 +23,7 @@ class TelegramService(object):
             print(e)
     
     def _get_send_photo_url(self):
-        return f"https://api.telegram.org/bot{self._token}/sendPhoto"
+        return f"{self.telegram_url}/bot{self._token}/sendPhoto"
     
     def _send_photo(self, chat_id, file_path):
         try:
