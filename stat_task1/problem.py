@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ..tools import Problem, send_result_to_telegram
+from ..tools import Problem
 
 
 class StatProblem1(Problem):
@@ -10,7 +10,13 @@ class StatProblem1(Problem):
     self.problem_variant_list = [
     ]
     
-    def make_notification(self, user, task_score, test_result):
+    def __init__(self, user):
+        self.user = user
+    
+    def get_description(self):
+        
+    
+    def get_result_notification(self, task_score, test_result):
         score_data = pd.DataFrame(test_result)
         score_data["score"] = score_data.apply(lambda row : 1 if row["test_error"] <= row["max_error"] else 0,
                                                axis=1)
@@ -66,4 +72,4 @@ class StatProblem1(Problem):
         message = f'В ДЗ "{self.name}" ваш общий результат: *{task_score} из {self.max_score}*.\n" \
                   + "Итоги проверки подведены в таблице."
         
-        send_result_to_telegram(user, message, [picture_path])
+        return message, [picture_path]
