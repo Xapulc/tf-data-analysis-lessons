@@ -2,29 +2,52 @@ import os
 import requests
 
 
-class NotificationService(object):
-    def send_to_telegram(self, chat_id, message, attachment_list):
-        token = os.getenv("TELEGRAM_TOKEN")
-        send_message_url = f"https://api.telegram.org/bot{token}/sendMessage"
-
+class TelegramService(object):
+    def __init__(self, token):
+        self._token = token
+    
+    def _get_send_message_url(self):
+        return f"https://api.telegram.org/bot{self._token}/sendMessage"
+    
+    def _send_message(self, chat_id, message):
         try:
-            response = requests.post(send_message_url, json={"chat_id": chat_id, "text": message, "parse_mode": "markdown"})
+            response = requests.post(self._get_send_message_url(), 
+                                     json={
+                                         "chat_id": chat_id, 
+                                         "text": message, 
+                                         "parse_mode": "markdown"
+                                     })
             print(response.text)
         except Exception as e:
             print(e)
+    
+    def _get_send_photo_url(self):
+        return f"https://api.telegram.org/bot{self._token}/sendPhoto"
+    
+    def _send_photo(self, chat_id, file_path):
+        try:
+            response = requests.post(self._get_send_photo_url(), 
+                                     {"chat_id": chat_id},
+                                     files={"photo": open(file_path, "rb")})
+            print(response.text)
+        except Exception as e:
+            print(e)
+    
+    def send(self, chat_id, message, attachment_list):
+        self._send_message(chat_id, message)
 
         if attachment_list is not None:
-            send_photo_url = f"https://api.telegram.org/bot{token}/sendPhoto"
             for file_path in attachment_list:
-                try:
-                    response = requests.post(send_photo_url, {"chat_id": chat_id}, files={"photo": open(file_path, "rb")})
-                    print(response.text)
-                except Exception as e:
-                    print(e)
+                self._send_photo(chat_id, file_path)
+
+
+class EduService(object):
+    def __init__(self, env_file):
+        self._env_file = env_file
+        
     def send_result_to_edu(self, comment, task_score, max_score):
-        env_file = os.getenv("GITHUB_ENV")
         answer = f"status={comment}\nmax_score={max_score}\ntask_score={task_score}\n"
         print(answer)
 
-        with open(env_file, "a") as myfile:
+        with open(self._env_file, "a") as myfile:
             myfile.write(answer)
