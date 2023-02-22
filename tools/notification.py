@@ -34,7 +34,7 @@ class TelegramService(object):
         except Exception as e:
             print(e)
     
-    def send(self, chat_id, message, attachment_list):
+    def send(self, chat_id, message, attachment_list=None):
         self._send_message(chat_id, message)
 
         if attachment_list is not None:
@@ -46,7 +46,7 @@ class EduService(object):
     def __init__(self, env_file):
         self._env_file = env_file
         
-    def send_result_to_edu(self, comment, task_score, max_score):
+    def send(self, comment, task_score, max_score):
         answer = f"status={comment}\nmax_score={max_score}\ntask_score={task_score}\n"
         print(answer)
 

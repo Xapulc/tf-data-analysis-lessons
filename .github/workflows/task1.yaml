@@ -9,8 +9,6 @@ env:
   github_token: ${{github.event.client_payload.github_token}}
   task_id: ${{github.event.client_payload.task_id}} 
   adapter_url: ${{github.event.client_payload.adapter_url}}
-  EMAIL: ${{secrets.EMAIL}}
-  PASSWORD: ${{secrets.PASSWORD}}
   TELEGRAM_TOKEN: ${{secrets.TELEGRAM_TOKEN}}
 
 jobs:
