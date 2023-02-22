@@ -59,4 +59,4 @@ if __name__ == "__main__":
 
     task_score, message, attachment_list = result_strategy.generate(test_result)
     edu_service.send("Done", task_score, problem.max_score)
-    telegram_service.send(chat_id, message)
+    telegram_service.send(chat_id, message, attachment_list)
