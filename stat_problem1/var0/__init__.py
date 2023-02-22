@@ -1,4 +1,4 @@
-from variant import *
+from .variant import *
 
 solution_tester_problem1_variant0 = SolutionTesterProblem1Variant0(problem1_variant0.code)
 description_generator_problem1_variant0 = DescriptionGeneratorProblem1Variant0(problem1_variant0.code)
