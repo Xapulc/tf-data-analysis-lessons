@@ -44,7 +44,7 @@ def get_problem_variant_by_code(code):
         chat_id = update.effective_chat.id
         problem_variant = user_variant_resolver.get_variant(chat_id, problem)
         random_state = user_variant_resolver.get_number(chat_id, problem)
-        description_generator = description_generator_strategies.description_generator_strategy_by_code(problem_variant.code)
+        description_generator = description_generator_strategies.get_description_generator_strategy_by_code(problem_variant.code)
         description = description_generator.get_description(random_state)
         image_path_list = converter.convert_tex_body_str_to_image_list(description)
 
