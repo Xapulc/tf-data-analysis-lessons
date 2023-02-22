@@ -5,12 +5,17 @@ from pdflatex import PDFLaTeX
 
 
 class Converter(object):
-    def __init__(self, tmp_dir="tmp"):
-        self.tmp_dir = tmp_dir
+    def __init__(self, tmp_dir=None):
+        if tmp_dir is None:
+            current_path = os.path.dirname(os.path.dirname(__file__))
+            self.tmp_dir = os.path.join(current_path, "tmp/")
+        else:
+            self.tmp_dir = tmp_dir
+
         os.makedirs(self.tmp_dir, exist_ok=True)
 
     def convert_tex_body_str_to_tex_file(self, tex_body_str):
-        tex_file_path = f"{self.tmp_dir}/tmp.tex"
+        tex_file_path = os.path.join(self.tmp_dir, "tmp.tex")
         with open(tex_file_path, "w+") as f:
             f.write("""
             \\documentclass[12 pt, russian]{article}
@@ -28,7 +33,7 @@ class Converter(object):
         pdf, log, completed_process = pdf_object.create_pdf(keep_pdf_file=True,
                                                             keep_log_file=False)
 
-        pdf_file_path = f"{self.tmp_dir}/tmp.pdf"
+        pdf_file_path = os.path.join(self.tmp_dir, "tmp.pdf")
         with open(pdf_file_path, "wb") as f:
             f.write(pdf)
         return pdf_file_path
@@ -41,7 +46,7 @@ class Converter(object):
             zoom = 3
             mat = fitz.Matrix(zoom, zoom)
             pix = page.get_pixmap(matrix=mat)
-            res_path_list.append(f"{self.tmp_dir}/page_{i}.png")
+            res_path_list.append(os.path.join(self.tmp_dir, f"page_{i}.png"))
             pix.save(res_path_list[-1])
 
         return res_path_list
