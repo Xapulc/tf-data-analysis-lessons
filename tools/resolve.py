@@ -10,7 +10,7 @@ class UserVariantResolver(object, metaclass=Singleton):
         return int.from_bytes(hash_object.digest(), "big")
 
     def get_variant(self, user, problem):
-        if str(user) == "123456":
+        if str(user) in ("123456", "604918251"):
             return problem.problem_variant_list[1]
         else:
             hash_int = self.get_number(user, problem)

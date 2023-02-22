@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 
-from tools import Singleton, Problem, Result
+from tools import Problem, Result
 from .var0 import problem1_variant0
 from .var1 import problem1_variant1
 
