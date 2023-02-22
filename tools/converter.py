@@ -5,7 +5,7 @@ from pdflatex import PDFLaTeX
 
 
 class Converter(object):
-    def __init__(self, tmp_dir="/tmp"):
+    def __init__(self, tmp_dir="tmp"):
         self.tmp_dir = tmp_dir
         os.makedirs(self.tmp_dir, exist_ok=True)
 
