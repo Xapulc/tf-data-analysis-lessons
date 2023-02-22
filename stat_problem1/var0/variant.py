@@ -1,4 +1,7 @@
-from tools import ProblemVariant, SolutionTester, DescriptionGenerator, Singleton
+import pandas as pd
+
+from tools import ProblemVariant, SolutionTester, DescriptionGenerator
+
 
 problem1_variant0 = ProblemVariant("stat_task1_var0")
 
@@ -51,10 +54,10 @@ class SolutionTesterProblem1Variant0(SolutionTester):
             test_stat[sample_size]["mean_error"] = test_stat[sample_size]["total_error"] \
                                                    / test_stat[sample_size]["number"]
 
-        for score_element in score_list:
+        for score_element in self.score_list:
             score_element["test_error"] = test_stat[score_element["sample_size"]]["mean_error"]
 
-        return score_list
+        return self.score_list
 
 
 class DescriptionGeneratorProblem1Variant0(DescriptionGenerator):
