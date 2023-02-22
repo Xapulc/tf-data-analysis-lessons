@@ -14,7 +14,7 @@ problem1 = Problem(task_id="12277",
                    ])
 
 
-class ResultProblem1(Result, metaclass=Singleton):
+class ResultProblem1(Result):
     def __init__(self, code, name, max_score):
         self.code = code
         self.name = name

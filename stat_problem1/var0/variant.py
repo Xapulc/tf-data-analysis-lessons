@@ -3,7 +3,7 @@ from tools import ProblemVariant, SolutionTester, DescriptionGenerator, Singleto
 problem1_variant0 = ProblemVariant("stat_task1_var0")
 
 
-class SolutionTesterProblem1Variant0(SolutionTester, metaclass=Singleton):
+class SolutionTesterProblem1Variant0(SolutionTester):
     def __init__(self, code):
         self.code = code
         self.data_path = "stat_problem1/var0/sample.csv"
@@ -57,7 +57,7 @@ class SolutionTesterProblem1Variant0(SolutionTester, metaclass=Singleton):
         return score_list
 
 
-class DescriptionGeneratorProblem1Variant0(DescriptionGenerator, metaclass=Singleton):
+class DescriptionGeneratorProblem1Variant0(DescriptionGenerator):
     def __init__(self, code):
         self.code = code
 
