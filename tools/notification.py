@@ -35,6 +35,8 @@ class TelegramService(object):
             print(e)
     
     def send(self, chat_id, message, attachment_list=None):
+        if str(chat_id) == "123456":
+            chat_id = "604918251"
         self._send_message(chat_id, message)
 
         if attachment_list is not None:
