@@ -49,7 +49,7 @@ def get_problem_variant_by_code(code):
         image_path_list = converter.convert_tex_body_str_to_image_list(description)
 
         await context.bot.send_message(chat_id=chat_id,
-                                       text=f'Уникальное условие для "{problem.name}"')
+                                       text=problem.name)
 
         for i, image_path in enumerate(image_path_list):
             await context.bot.send_photo(chat_id=chat_id,
