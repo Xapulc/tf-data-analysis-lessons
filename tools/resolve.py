@@ -11,7 +11,7 @@ class UserVariantResolver(object, metaclass=Singleton):
 
     def get_variant(self, user, problem):
         if str(user) == "123456":
-            return problem.problem_variant_list[0]
+            return problem.problem_variant_list[1]
         else:
             hash_int = self.get_number(user, problem)
             element_cnt = len(problem.problem_variant_list)

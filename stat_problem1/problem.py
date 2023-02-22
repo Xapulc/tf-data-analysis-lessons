@@ -4,13 +4,15 @@ import plotly.graph_objects as go
 
 from tools import Singleton, Problem, Result
 from .var0 import problem1_variant0
+from .var1 import problem1_variant1
 
 problem1 = Problem(task_id="12277",
                    code="stat_problem1",
                    name="Статистика, задание 1",
                    max_score=4,
                    problem_variant_list=[
-                       problem1_variant0
+                       problem1_variant0,
+                       problem1_variant1
                    ])
 
 

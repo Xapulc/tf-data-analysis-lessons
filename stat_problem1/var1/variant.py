@@ -6,32 +6,37 @@ from tools import ProblemVariant, SolutionTester, DescriptionGenerator
 problem1_variant1 = ProblemVariant("stat_task1_var1")
 
 
-class SolutionTesterProblem1Variant0(SolutionTester):
+class SolutionTesterProblem1Variant1(SolutionTester):
     def __init__(self, code):
         self.code = code
-        self.data_path = "stat_problem1/var0/sample.csv"
+        self.data_path = "stat_problem1/var1/sample.csv"
         self.score_list = [{
             "sample_size": 1000,
-            "max_error": 0.01
+            "max_error": 0.001
         }, {
             "sample_size": 1000,
-            "max_error": 0.005
+            "max_error": 0.0001
         }, {
             "sample_size": 100,
-            "max_error": 0.015
+            "max_error": 0.00015
         }, {
             "sample_size": 10,
-            "max_error": 0.09
+            "max_error": 0.0011
         }]
 
     def get_code(self):
         return self.code
 
     def check_solution(self, solution, random_state):
+        # Выборка была получена при eps(i) ~ -2+exp(1)
         data = pd.read_csv(self.data_path)
         a_sample = data["a"]
         data_sample = data.drop(columns="a")
 
+        min_exp_deviation = -1
+        max_exp_deviation = 50
+        exp_deviation = min_exp_deviation + (random_state % (max_exp_deviation - min_exp_deviation + 1))
+        print(2+exp_deviation)
         test_stat = {}
 
         for i in range(len(a_sample)):
@@ -39,7 +44,7 @@ class SolutionTesterProblem1Variant0(SolutionTester):
             data_row = data_sample.iloc[i].dropna().to_numpy()
             sample_size = len(data_row)
 
-            a_est = solution(data_row)
+            a_est = solution(data_row - exp_deviation)
             error = (a - a_est)**2
 
             if sample_size in test_stat.keys():
@@ -60,50 +65,49 @@ class SolutionTesterProblem1Variant0(SolutionTester):
         return self.score_list
 
 
-class DescriptionGeneratorProblem1Variant0(DescriptionGenerator):
+class DescriptionGeneratorProblem1Variant1(DescriptionGenerator):
     def __init__(self, code):
         self.code = code
 
         self.input_data_text = """
         \\section{Входные данные}
         Одномерный массив numpy.ndarray
-        длин прыжков (в сантиметрах) одного спортсмена.
+        измерений скорости (в м/c) машин одной модели.
         """
         self.output_data_text = """
         \\section{Возвращаемое значение}
-        Оценка матожидания длины прыжка.
+        Оценка коэффициента ускорения (в м/с^2).
         """
         self.estimation_text = """
         \\section{Оценка}
         Максимальный балл: $4$.
         \\begin{itemize}
-        \\item $+1$ балл, если на выборках размера $1000$ MSE оценки $\leq 0.01$.
-        \\item $+1$ балл, если на выборках размера $1000$ MSE оценки $\leq 0.005$.
-        \\item $+1$ балл, если на выборках размера $100$ MSE оценки $\leq 0.015$.
-        \\item $+1$ балл, если на выборках размера $10$ MSE оценки $\leq 0.09$.
+        \\item $+1$ балл, если на выборках размера $1000$ MSE оценки $\leq 0.001$.
+        \\item $+1$ балл, если на выборках размера $1000$ MSE оценки $\leq 0.0001$.
+        \\item $+1$ балл, если на выборках размера $100$ MSE оценки $\leq 0.00015$.
+        \\item $+1$ балл, если на выборках размера $10$ MSE оценки $\leq 0.0011$.
         \\end{itemize}
-        """
-        self.problem_text = """
-        \\section{Условие}
-        Школа $N$ имеет сильный состав
-        для соревнования в прыжках в длину.
-        В ней есть несколько сильных спортсменов,
-        но на соревнования нужно отправить одного.
-        Тренер Максим вычитал из книги, 
-        что длина прыжка имеет нормальное распределение,
-        поэтому тренер решил выбрать лучшего школьника
-        на основании оценки матожидания длины прыжка.
-        Предполагая, что длины прыжков одного спортсмена
-        независимы и имеют одинаковое для одного спортсмена распределение,
-        помогите Максиму составить оценку этой величины
-        для каждого студента.
         """
 
     def get_code(self):
         return self.code
 
     def get_description(self, random_state):
-        return self.problem_text \
+        min_exp_deviation = -1
+        max_exp_deviation = 50
+        exp_deviation = min_exp_deviation + (random_state % (max_exp_deviation - min_exp_deviation + 1))
+
+        problem_text = """
+        \\section{Условие}
+        На заводе проводится тестирование модели машины для проверки коэффициента ускорения. 
+        В рамках эксперимента выбирается $n$ машин этой модели 
+        и измеряется скорость машины через $10$ секунд.
+        Предполагается, что ошибки измерения скорости н.о.р.
+        """ + f"""
+        и имеют распределение ${-2-exp_deviation} + exp(1)$.
+        Постройте точечную оценку коэффициента ускорения.
+        """
+        return problem_text \
                + self.input_data_text \
                + self.output_data_text \
                + self.estimation_text
