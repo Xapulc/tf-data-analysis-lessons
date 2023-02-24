@@ -10,6 +10,7 @@ env:
   task_id: ${{github.event.client_payload.task_id}} 
   adapter_url: ${{github.event.client_payload.adapter_url}}
   TELEGRAM_TOKEN: ${{secrets.TELEGRAM_TOKEN}}
+  SOLVER_RANDOM_STATE: ${{secrets.SOLVER_RANDOM_STATE}}
 
 jobs:
   build:
