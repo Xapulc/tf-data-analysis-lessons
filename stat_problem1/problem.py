@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -149,7 +150,11 @@ class ResultProblem1(Result):
             width=700,
             height=cell_height * score_data.shape[0] + header_cell_height + title_margin
         )
-        picture_path = "tmp/" + self.code + ".png"
+
+        current_path = os.path.dirname(os.path.dirname(__file__))
+        tmp_dir = os.path.join(current_path, "tmp/")
+        os.makedirs(tmp_dir, exist_ok=True)
+        picture_path = os.path.join(tmp_dir, self.code + ".png")
         fig.write_image(picture_path)
 
         task_score = score_data["Балл"].sum()
