@@ -4,17 +4,29 @@ import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 from stat_problem1 import problem1, \
-                          description_generator_problem1_list
+                          description_generator_problem1, \
+                          transformer_variant_problem1_list
+from stat_problem2 import problem2, \
+                          description_generator_problem2, \
+                          transformer_variant_problem2_list
 from tools import ProblemStorage, \
                   DescriptionGeneratorStrategies, \
                   UserVariantResolver, \
-                  Converter
+                  Converter, \
+                  VariantTransformerStrategies
 
 
 problem_storage = ProblemStorage([
-    problem1
+    problem1,
+    problem2
 ])
-description_generator_strategies = DescriptionGeneratorStrategies(description_generator_problem1_list)
+description_generator_strategies = DescriptionGeneratorStrategies([
+    description_generator_problem1,
+    description_generator_problem2
+])
+transformer_variant_strategies = VariantTransformerStrategies(transformer_variant_problem1_list
+                                                              + transformer_variant_problem2_list)
+
 user_variant_resolver = UserVariantResolver()
 converter = Converter()
 
@@ -34,7 +46,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def get_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, 
-                   text=update.effective_chat.id)
+                                   text=update.effective_chat.id)
 
 
 def get_problem_variant_by_code(code):
@@ -42,10 +54,13 @@ def get_problem_variant_by_code(code):
     
     async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id = update.effective_chat.id
-        problem_variant = user_variant_resolver.get_variant(chat_id, problem)
         random_state = user_variant_resolver.get_number(chat_id, problem)
-        description_generator = description_generator_strategies.get_description_generator_strategy_by_code(problem_variant.code)
-        description = description_generator.get_description(random_state)
+        description_generator = description_generator_strategies.get_description_generator_strategy_by_code(problem.code)
+
+        problem_variant = user_variant_resolver.get_variant(chat_id, problem)
+        transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
+
+        description = description_generator.get_description(transformer_variant, random_state)
         image_path_list = converter.convert_tex_body_str_to_image_list(description)
 
         await context.bot.send_message(chat_id=chat_id,

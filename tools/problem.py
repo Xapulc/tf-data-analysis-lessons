@@ -11,8 +11,13 @@ class Problem(object):
         
         
 class ProblemVariant(object):
-    def __init__(self, code):
+    def __init__(self, code, data_path, default_score_list,
+                 input_data_text, output_data_text):
         self.code = code
+        self.data_path = data_path
+        self.default_score_list = default_score_list
+        self.input_data_text = input_data_text
+        self.output_data_text = output_data_text
 
 
 class ProblemStorage(object, metaclass=Singleton):

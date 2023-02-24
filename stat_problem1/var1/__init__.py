@@ -1,4 +1,8 @@
 from .variant import *
 
-solution_tester_problem1_variant1 = SolutionTesterProblem1Variant1(problem1_variant1.code)
-description_generator_problem1_variant1 = DescriptionGeneratorProblem1Variant1(problem1_variant1.code)
+
+transformer_problem1_variant1 = TransformerProblem1Variant1(problem1_variant1.code,
+                                                            problem1_variant1.data_path,
+                                                            problem1_variant1.default_score_list,
+                                                            problem1_variant1.input_data_text,
+                                                            problem1_variant1.output_data_text)

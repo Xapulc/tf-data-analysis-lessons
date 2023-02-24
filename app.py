@@ -2,27 +2,51 @@ import os
 
 from stat_problem1 import problem1, \
                           result_problem1, \
-                          solution_tester_problem1_list
+                          description_generator_problem1, \
+                          solution_tester_problem1, \
+                          transformer_variant_problem1_list
+from stat_problem2 import problem2, \
+                          result_problem2, \
+                          description_generator_problem2, \
+                          solution_tester_problem2, \
+                          transformer_variant_problem2_list
 from tools import ProblemStorage, \
+                  DescriptionGeneratorStrategies, \
                   SolutionTesterStrategies, \
                   ResultStrategies, \
                   EduService, \
                   TelegramService, \
-                  UserVariantResolver
+                  UserVariantResolver, \
+                  VariantTransformerStrategies
 
 
 problem_storage = ProblemStorage([
-    problem1
+    problem1,
+    problem2
 ])
-solution_tester_strategies = SolutionTesterStrategies(solution_tester_problem1_list)
+description_generator_strategies = DescriptionGeneratorStrategies([
+    description_generator_problem1,
+    description_generator_problem2
+])
+solution_tester_strategies = SolutionTesterStrategies([
+    solution_tester_problem1,
+    solution_tester_problem2
+])
 result_strategies = ResultStrategies([
-    result_problem1
+    result_problem1,
+    result_problem2
 ])
+transformer_variant_strategies = VariantTransformerStrategies(transformer_variant_problem1_list
+                                                              + transformer_variant_problem2_list)
+
 
 if __name__ == "__main__":
     task_id = os.getenv("task_id")
     problem = problem_storage.get_problem_by_task_id(task_id)
+
     result_strategy = result_strategies.get_result_strategy_by_code(problem.code)
+    description_generator = description_generator_strategies.get_description_generator_strategy_by_code(problem.code)
+    solution_tester = solution_tester_strategies.get_solution_tester_strategy_by_code(problem.code)
 
     edu_service = EduService(env_file=os.getenv("GITHUB_ENV"))
     telegram_service = TelegramService(token=os.getenv("TELEGRAM_TOKEN"))
@@ -37,7 +61,7 @@ if __name__ == "__main__":
 
     problem_variant = user_variant_resolver.get_variant(chat_id, problem)
     random_state = user_variant_resolver.get_number(chat_id, problem)
-    solution_tester = solution_tester_strategies.get_solution_tester_strategy_by_code(problem_variant.code)
+    transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
 
     try:
         from student_work.solution import solution
@@ -49,7 +73,7 @@ if __name__ == "__main__":
         quit()
 
     try:
-        test_result = solution_tester.check_solution(solution, random_state)
+        test_result = solution_tester.check_solution(solution, transformer_variant, random_state)
     except Exception as e:
         comment = f"Ошибка при проверке решающей функции. Тип ошибки: {type(e)}, сообщение: {str(e)}"
         print(comment)

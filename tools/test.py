@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 class SolutionTester(ABC):
     @abstractmethod
-    def check_solution(self, solution, random_state):
+    def check_solution(self, solution, transformer_variant, random_state):
         pass
 
     @abstractmethod
