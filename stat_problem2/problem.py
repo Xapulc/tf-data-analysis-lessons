@@ -41,7 +41,7 @@ problem2 = Problem(task_id="12559",
                        "confidence": 0.9,
                        "iter_size": 1000,
                        "error_factor_type": "exact",
-                       "error_factor": 1.2,
+                       "error_factor": 1.02,
                        "length_factor_type": "exact",
                        "length_factor": 1.2
                    }, {

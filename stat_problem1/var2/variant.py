@@ -24,27 +24,12 @@ class TransformerProblem1Variant2(VariantTransformer):
         max_t = 100
         return min_t + (random_state % (max_t - min_t + 1))
 
-    def _get_default_sample(self):
-        data = pd.read_csv(self.data_path)
-        a_column = "a"
+    def get_sample(self, iter_size, sample_size, random_state):
+        t = self._get_transformed_random_state(random_state)
 
-        a_sample = data[a_column]
-        data_sample = data.drop(columns=a_column)
-        return data_sample, a_sample
-
-    def _get_transformed_random_state(self, random_state):
-        min_factor = 1
-        max_factor = 50
-        return min_factor + (random_state % (max_factor - min_factor + 1))
-
-    def get_score_list(self, random_state):
-        return self.default_score_list
-
-    def get_sample(self, random_state):
-        data_sample, a_sample = self._get_default_sample()
-        exp_deviation = self._get_transformed_random_state(random_state)
-        data_sample_transformed = data_sample - exp_deviation
-        return data_sample_transformed, a_sample
+        a = expon(0.3).rvs(size=iter_size, random_state=exp_deviation)
+        eps = expon.rvs(size=[sample_size, iter_size], random_state=exp_deviation) - exp_deviation
+        return (eps + t * a).T, a
 
     def get_description(self, random_state):
         factor = self._get_transformed_random_state(random_state)
