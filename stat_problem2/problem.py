@@ -101,10 +101,10 @@ class SolutionTesterProblem2(SolutionTester):
 
     def generate_criteria(self, transformer_variant, random_state):
         generated_result_list = []
-        exact_result_list = self.check_solution(transformer_variant.exact_solution,
+        exact_result_list = self.check_solution(transformer_variant.get_exact_solution(random_state),
                                                 transformer_variant,
                                                 random_state)
-        clt_result_list = self.check_solution(transformer_variant.clt_solution,
+        clt_result_list = self.check_solution(transformer_variant.get_clt_solution(random_state),
                                               transformer_variant,
                                               random_state)
 

@@ -50,12 +50,22 @@ class TransformerProblem2Variant0(VariantTransformer):
             "output": self.output_data_text
         }
 
-    def exact_solution(self, p: float, x: np.array):
-        alpha = 1 - p
-        return x.mean() - 10 * norm.ppf(1 - alpha / 2) / np.sqrt(len(x)), \
-               x.mean() - 10 * norm.ppf(alpha / 2) / np.sqrt(len(x))
+    def get_exact_solution(self, random_state):
+        def solution(p, x):
+            alpha = 1 - p
+            loc = x.mean()
+            scale = 10 / np.sqrt(len(x))
+            return loc - scale * norm.ppf(1 - alpha / 2), \
+                   loc - scale * norm.ppf(alpha / 2)
 
-    def clt_solution(self, p: float, x: np.array):
-        alpha = 1 - p
-        return x.mean() - np.sqrt(np.var(x)) * norm.ppf(1 - alpha / 2) / np.sqrt(len(x)), \
-               x.mean() - np.sqrt(np.var(x)) * norm.ppf(alpha / 2) / np.sqrt(len(x))
+        return solution
+
+    def get_clt_solution(self, random_state):
+        def solution(p, x):
+            alpha = 1 - p
+            loc = x.mean()
+            scale = np.sqrt(np.var(x)) / np.sqrt(len(x))
+            return loc - scale * norm.ppf(1 - alpha / 2), \
+                   loc - scale * norm.ppf(alpha / 2)
+
+        return solution

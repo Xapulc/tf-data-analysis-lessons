@@ -55,12 +55,26 @@ class TransformerProblem2Variant1(VariantTransformer):
             "output": self.output_data_text
         }
 
-    def exact_solution(self, p: float, x: np.array):
-        alpha = 1 - p
-        return gamma.ppf(alpha / 2, len(x), loc=x.mean() / 50 - 1 / 100, scale=1 / (50 * len(x))), \
-               gamma.ppf(1 - alpha / 2, len(x), loc=x.mean() / 50 - 1 / 100, scale=1 / (50 * len(x)))
+    def get_exact_solution(self, random_state):
+        t = self._get_transformed_random_state(random_state)
 
-    def clt_solution(self, p: float, x: np.array):
-        alpha = 1 - p
-        return x.mean() / 50 + 1 / 100 - np.sqrt(np.var(x)) * norm.ppf(1 - alpha / 2) / (50 * np.sqrt(len(x))), \
-               x.mean() / 50 + 1 / 100 - np.sqrt(np.var(x)) * norm.ppf(alpha / 2) / (50 * np.sqrt(len(x)))
+        def solution(p, x):
+            alpha = 1 - p
+            loc = (2 * x.mean() - 1) / (t**2)
+            scale = 2 / ((t**2) * len(x))
+            return gamma.ppf(alpha / 2, len(x), loc=loc, scale=scale), \
+                   gamma.ppf(1 - alpha / 2, len(x), loc=loc, scale=scale)
+
+        return solution
+
+    def get_clt_solution(self, random_state):
+        t = self._get_transformed_random_state(random_state)
+
+        def solution(p, x):
+            alpha = 1 - p
+            loc = (2 * x.mean() + 1) / (t**2)
+            scale = 2 * np.sqrt(np.var(x)) / ((t**2) * np.sqrt(len(x)))
+            return loc - scale * norm.ppf(1 - alpha / 2), \
+                   loc - scale * norm.ppf(alpha / 2)
+
+        return solution
