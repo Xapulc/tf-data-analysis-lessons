@@ -17,14 +17,26 @@ class Converter(object):
     def convert_tex_body_str_to_tex_file(self, tex_body_str):
         tex_file_path = os.path.join(self.tmp_dir, "tmp.tex")
         with open(tex_file_path, "w+") as f:
-            f.write("""
-            \\documentclass[12 pt, russian]{article}
-            \\usepackage[english,main=russian]{babel}
-            \\begin{document}
+            f.write(r"""
+            \documentclass[12 pt, russian]{article}
+            \usepackage[english,main=russian]{babel}
+            
+            \usepackage[T1]{fontenc}
+            \usepackage[utf8]{luainputenc}
+            \usepackage{geometry}
+            \usepackage[pdftex]{graphicx}
+            \usepackage{amstext}
+            \usepackage{amssymb}
+            \usepackage{amsmath}
+            \usepackage{amsthm}
+            \usepackage{mathrsfs} 
+            \usepackage[T1,T2A]{fontenc}
+            \usepackage[utf8]{inputenc}
+            \begin{document}
             """)
             f.write(tex_body_str + "\n")
-            f.write("""
-            \\end{document}"
+            f.write(r"""
+            \end{document}
             """)
         return tex_file_path
 

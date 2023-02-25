@@ -7,6 +7,7 @@ from tools import Problem, Result, SolutionTester, DescriptionGenerator, \
 from .var0 import problem1_variant0
 from .var1 import problem1_variant1
 from .var2 import problem1_variant2
+from .var3 import problem1_variant3
 
 
 problem1 = Problem(task_id="12277",
@@ -33,7 +34,8 @@ problem1 = Problem(task_id="12277",
                    problem_variant_list=[
                        problem1_variant0,
                        problem1_variant1,
-                       problem1_variant2
+                       problem1_variant2,
+                       problem1_variant3
                    ])
 
 
