@@ -1,41 +1,10 @@
-import pandas as pd
+import numpy as np
 
+from scipy.stats import norm, expon
 from tools import ProblemVariant, VariantTransformer
 
 
 problem2_variant0 = ProblemVariant(code="stat_task2_var0",
-                                   data_path="stat_problem2/var0/sample.csv",
-                                   default_score_list=[{
-                                       "sample_size": 1000,
-                                       "confidence": 0.99,
-                                       "max_error": 0.02,
-                                       "max_interval_length": 2
-                                   }, {
-                                       "sample_size": 1000,
-                                       "confidence": 0.9,
-                                       "max_error": 0.12,
-                                       "max_interval_length": 1.1
-                                   }, {
-                                       "sample_size": 100,
-                                       "confidence": 0.7,
-                                       "max_error": 0.32,
-                                       "max_interval_length": 2.2
-                                   }, {
-                                       "sample_size": 100,
-                                       "confidence": 0.9,
-                                       "max_error": 0.11,
-                                       "max_interval_length": 3.3
-                                   }, {
-                                       "sample_size": 10,
-                                       "confidence": 0.95,
-                                       "max_error": 0.1,
-                                       "max_interval_length": 13
-                                   }, {
-                                       "sample_size": 10,
-                                       "confidence": 0.9,
-                                       "max_error": 0.11,
-                                       "max_interval_length": 10.6
-                                   }],
                                    input_data_text="""
                                    Два входных значения.
                                    Первое - уровень доверия, число от $0$ до $1$.
@@ -49,26 +18,16 @@ problem2_variant0 = ProblemVariant(code="stat_task2_var0",
 
 
 class TransformerProblem2Variant0(VariantTransformer):
-    def __init__(self, code, data_path, default_score_list, input_data_text, output_data_text):
+    def __init__(self, code, input_data_text, output_data_text):
         self.code = code
-        self.data_path = data_path
-        self.default_score_list = default_score_list
         self.input_data_text = input_data_text
         self.output_data_text = output_data_text
 
-    def _get_default_sample(self):
-        data = pd.read_csv(self.data_path)
-        a_column = "a"
-
-        a_sample = data[a_column]
-        data_sample = data.drop(columns=a_column)
-        return data_sample, a_sample
-
-    def get_score_list(self, random_state):
-        return self.default_score_list
-
-    def get_sample(self, random_state):
-        return self._get_default_sample()
+    def get_sample(self, iter_size, sample_size, random_state):
+        a = expon(0.005).rvs(size=iter_size, random_state=42)
+        sigma = 10
+        eps = norm.rvs(size=[sample_size, iter_size], random_state=42)
+        return (eps * sigma + a).T, a
 
     def get_description(self, random_state):
         problem_text = """
@@ -90,3 +49,13 @@ class TransformerProblem2Variant0(VariantTransformer):
             "input": self.input_data_text,
             "output": self.output_data_text
         }
+
+    def exact_solution(self, p: float, x: np.array):
+        alpha = 1 - p
+        return x.mean() - 10 * norm.ppf(1 - alpha / 2) / np.sqrt(len(x)), \
+               x.mean() - 10 * norm.ppf(alpha / 2) / np.sqrt(len(x))
+
+    def clt_solution(self, p: float, x: np.array):
+        alpha = 1 - p
+        return x.mean() - np.sqrt(np.var(x)) * norm.ppf(1 - alpha / 2) / np.sqrt(len(x)), \
+               x.mean() - np.sqrt(np.var(x)) * norm.ppf(alpha / 2) / np.sqrt(len(x))

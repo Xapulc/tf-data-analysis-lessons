@@ -4,15 +4,7 @@ from .metaclass import Singleton
 
 class VariantTransformer(ABC):
     @abstractmethod
-    def _get_default_sample(self):
-        pass
-
-    @abstractmethod
-    def get_sample(self, random_state):
-        pass
-
-    @abstractmethod
-    def get_score_list(self, random_state):
+    def get_sample(self, iter_size, sample_size, random_state):
         pass
 
     @abstractmethod

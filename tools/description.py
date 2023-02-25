@@ -4,11 +4,11 @@ from abc import ABC, abstractmethod
 
 class DescriptionGenerator(ABC):
     @abstractmethod
-    def get_description(self, transformer_variant, random_state):
+    def get_description(self, transformer_variant, generated_criteria_list, random_state):
         pass
 
     @abstractmethod
-    def _get_estimation_text(self, transformer_variant, random_state):
+    def _get_estimation_text(self, transformer_variant, generated_criteria_list, random_state):
         pass
 
     @abstractmethod

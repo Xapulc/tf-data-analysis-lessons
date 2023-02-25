@@ -8,6 +8,10 @@ class SolutionTester(ABC):
         pass
 
     @abstractmethod
+    def generate_criteria(self, transformer_variant, random_state):
+        pass
+
+    @abstractmethod
     def get_code(self):
         pass
 

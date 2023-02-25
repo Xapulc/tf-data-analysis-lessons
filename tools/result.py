@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 class Result(ABC):
     @abstractmethod
-    def generate(self, test_result):
+    def generate(self, test_result, generated_criteria_list):
         pass
 
     @abstractmethod

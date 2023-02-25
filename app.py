@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     edu_service = EduService(env_file=os.getenv("GITHUB_ENV"))
     telegram_service = TelegramService(token=os.getenv("TELEGRAM_TOKEN"))
-    user_variant_resolver = UserVariantResolver()
+    user_variant_resolver = UserVariantResolver(os.getenv("SOLVER_RANDOM_STATE"))
 
     try:
         from student_work.solution import chat_id

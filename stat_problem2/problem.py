@@ -3,7 +3,8 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 
-from tools import Problem, Result, SolutionTester, DescriptionGenerator
+from tools import Problem, Result, SolutionTester, DescriptionGenerator, \
+                  round_down_first_decimal, round_up_first_decimal
 from .var0 import problem2_variant0
 
 
@@ -11,9 +12,127 @@ problem2 = Problem(task_id="12559",
                    code="stat_problem2",
                    name="Статистика, задание 2",
                    max_score=6,
+                   criteria_list=[{
+                       "sample_size": 1000,
+                       "confidence": 0.99,
+                       "iter_size": 1000,
+                       "error_factor_type": "max",
+                       "error_factor": 10,
+                       "length_factor_type": "max",
+                       "length_factor": 20
+                   }, {
+                       "sample_size": 1000,
+                       "confidence": 0.9,
+                       "iter_size": 1000,
+                       "error_factor_type": "max",
+                       "error_factor": 5,
+                       "length_factor_type": "max",
+                       "length_factor": 10
+                   }, {
+                       "sample_size": 100,
+                       "confidence": 0.7,
+                       "iter_size": 1000,
+                       "error_factor_type": "max",
+                       "error_factor": 1.5,
+                       "length_factor_type": "max",
+                       "length_factor": 2
+                   }, {
+                       "sample_size": 100,
+                       "confidence": 0.9,
+                       "iter_size": 1000,
+                       "error_factor_type": "exact",
+                       "error_factor": 1.2,
+                       "length_factor_type": "exact",
+                       "length_factor": 1.2
+                   }, {
+                       "sample_size": 10,
+                       "confidence": 0.95,
+                       "iter_size": 1000,
+                       "error_factor_type": "max",
+                       "error_factor": 1.3,
+                       "length_factor_type": "max",
+                       "length_factor": 1.5
+                   }, {
+                       "sample_size": 10,
+                       "confidence": 0.9,
+                       "iter_size": 1000,
+                       "error_factor_type": "exact",
+                       "error_factor": 1.1,
+                       "length_factor_type": "exact",
+                       "length_factor": 1.1
+                   }],
                    problem_variant_list=[
                        problem2_variant0
                    ])
+
+
+class SolutionTesterProblem2(SolutionTester):
+    def __init__(self, code, criteria_list):
+        self.code = code
+        self.criteria_list = criteria_list
+
+    def get_code(self):
+        return self.code
+
+    def check_solution(self, solution, transformer_variant, random_state):
+        result_list = []
+
+        for criteria in self.criteria_list:
+            sample, a = transformer_variant.get_sample(criteria["iter_size"],
+                                                       criteria["sample_size"],
+                                                       random_state)
+            total_error = 0
+            total_interval_length = 0
+
+            for i in range(len(a)):
+                left_side, right_side = solution(criteria["confidence"], sample[i])
+                total_error += (1 if (a[i] < left_side or right_side < a[i]) else 0)
+                total_interval_length += np.abs(right_side - left_side)
+
+            result_list.append({
+                "sample_size": criteria["sample_size"],
+                "mean_error": total_error / criteria["iter_size"],
+                "mean_interval_length": total_interval_length / criteria["iter_size"]
+            })
+
+        return result_list
+
+    def generate_criteria(self, transformer_variant, random_state):
+        generated_result_list = []
+        exact_result_list = self.check_solution(transformer_variant.exact_solution,
+                                                transformer_variant,
+                                                random_state)
+        clt_result_list = self.check_solution(transformer_variant.clt_solution,
+                                              transformer_variant,
+                                              random_state)
+
+        for exact_result, clt_result, criteria in zip(exact_result_list,
+                                                      clt_result_list,
+                                                      self.criteria_list):
+            if criteria["error_factor_type"] == "max":
+                max_error = max(exact_result["mean_error"], clt_result["mean_error"])
+            elif criteria["error_factor_type"] == "exact":
+                max_error = exact_result["mean_error"]
+            else:
+                max_error = clt_result["mean_error"]
+            max_error *= criteria["error_factor"]
+
+            if criteria["length_factor_type"] == "max":
+                max_interval_length = max(exact_result["mean_interval_length"], clt_result["mean_interval_length"])
+            elif criteria["length_factor_type"] == "exact":
+                max_interval_length = exact_result["mean_interval_length"]
+            else:
+                max_interval_length = clt_result["mean_interval_length"]
+            max_interval_length *= criteria["length_factor"]
+
+            generated_result_list.append({
+                "sample_size": criteria["sample_size"],
+                "confidence": criteria["confidence"],
+                "max_error": round_up_first_decimal(max_error, 2),
+                "max_interval_length": round_up_first_decimal(max_interval_length, 2)
+            })
+
+        return generated_result_list
 
 
 class DescriptionGeneratorProblem2(DescriptionGenerator):
@@ -24,8 +143,7 @@ class DescriptionGeneratorProblem2(DescriptionGenerator):
     def get_code(self):
         return self.code
 
-    def _get_estimation_text(self, transformer_variant, random_state):
-        score_list = transformer_variant.get_score_list(random_state)
+    def _get_estimation_text(self, transformer_variant, generated_criteria_list, random_state):
         estimation_text = f"""
         Максимальный балл: ${self.max_score}$.
         \\begin{{center}}
@@ -35,9 +153,9 @@ class DescriptionGeneratorProblem2(DescriptionGenerator):
         \\hline
         \\hline"""
 
-        for score in score_list:
+        for criteria in generated_criteria_list:
             estimation_text += f"""
-            ${score["sample_size"]}$ & ${score["confidence"]}$ & ${score["max_error"]}$ & ${score["max_interval_length"]}$ \\\\
+            ${criteria["sample_size"]}$ & ${criteria["confidence"]}$ & ${criteria["max_error"]}$ & ${criteria["max_interval_length"]}$ \\\\
             \\hline"""
 
         estimation_text += """
@@ -53,49 +171,14 @@ class DescriptionGeneratorProblem2(DescriptionGenerator):
 
         return estimation_text
 
-    def get_description(self, transformer_variant, random_state):
+    def get_description(self, transformer_variant, generated_criteria_list, random_state):
         description = transformer_variant.get_description(random_state)
         return f"""
         \\section{{Условие}} {description["problem"]}
         \\section{{Входные данные}} {description["input"]}
         \\section{{Возвращаемое значение}} {description["output"]}
-        \\section{{Оценка}} {self._get_estimation_text(transformer_variant, random_state)}
+        \\section{{Оценка}} {self._get_estimation_text(transformer_variant, generated_criteria_list, random_state)}
         """
-
-
-class SolutionTesterProblem2(SolutionTester):
-    def __init__(self, code):
-        self.code = code
-
-    def get_code(self):
-        return self.code
-
-    def check_solution(self, solution, transformer_variant, random_state):
-        data_sample, a_sample = transformer_variant.get_sample(random_state)
-        score_list = transformer_variant.get_score_list(random_state)
-
-        for i in range(len(a_sample)):
-            a = a_sample[i]
-            x = data_sample.iloc[i].dropna().to_numpy()
-            sample_size = len(x)
-
-            for score_element in score_list:
-                if sample_size != score_element["sample_size"]:
-                    continue
-
-                left_side, right_side = solution(score_element["confidence"], x)
-                interval_length = np.abs(right_side - left_side)
-                error = 1 if (a < left_side or right_side < a) else 0
-
-                score_element["total_error"] = score_element.get("total_error", 0) + error
-                score_element["total_interval_length"] = score_element.get("total_interval_length", 0) + interval_length
-                score_element["number"] = score_element.get("number", 0) + 1
-
-        for score_element in score_list:
-            score_element["mean_error"] = score_element["total_error"] / score_element["number"]
-            score_element["mean_interval_length"] = score_element["total_interval_length"] / score_element["number"]
-
-        return score_list
 
 
 class ResultProblem2(Result):
@@ -107,20 +190,25 @@ class ResultProblem2(Result):
     def get_code(self):
         return self.code
 
-    def generate(self, test_result):
+    def generate(self, test_result, generated_criteria_list):
+        score_data = pd.DataFrame(data={
+            "sample_size": [el["sample_size"] for el in test_result],
+            "mean_error": [el["mean_error"] for el in test_result],
+            "mean_interval_length": [el["mean_interval_length"] for el in test_result],
+            "max_error": [el["max_error"] for el in generated_criteria_list],
+            "max_interval_length": [el["max_interval_length"] for el in generated_criteria_list]
+        })
+
+
         score_data = pd.DataFrame(test_result)
         score_data["score"] = score_data.apply(lambda row : 1 if (row["mean_error"] <= row["max_error"]
                                                                   and row["mean_interval_length"] <= row["max_interval_length"])
                                                             else 0,
                                                axis=1)
-        score_data["mean_error_format"] = score_data.apply(lambda row: "{:." + str(int(-np.log10(row["max_error"])) + 3) + "f}",
-                                                           axis=1)
-        score_data["mean_error_str"] = score_data.apply(lambda row: row["mean_error_format"].format(row["mean_error"]),
-                                                        axis=1)
-        score_data["mean_interval_length_format"] = score_data.apply(lambda row: "{:." + str(int(-np.log10(row["max_interval_length"])) + 3) + "f}",
-                                                                     axis=1)
-        score_data["mean_interval_length_str"] = score_data.apply(lambda row: row["mean_interval_length_format"].format(row["mean_interval_length"]),
-                                                                  axis=1)
+        score_data["mean_error_rounded"] = score_data.apply(lambda row: round_down_first_decimal(row["mean_error"], 3),
+                                                            axis=1)
+        score_data["mean_interval_length_rounded"] = score_data.apply(lambda row: round_down_first_decimal(row["mean_interval_length"], 3),
+                                                                      axis=1)
         column_description = [{
             "column": "sample_size",
             "description": "Размер выборки"
@@ -128,13 +216,13 @@ class ResultProblem2(Result):
             "column": "confidence",
             "description": "Уровень доверия"
         }, {
-            "column": "mean_error_str",
+            "column": "mean_error_rounded",
             "description": "Частота непопадания в доверительный интервал"
         }, {
             "column": "max_error",
             "description": "Порог для частоты непопадания в доверительный интервал"
         }, {
-            "column": "mean_interval_length_str",
+            "column": "mean_interval_length_rounded",
             "description": "Средняя длина доверительного интервала"
         }, {
             "column": "max_interval_length",

@@ -4,8 +4,11 @@ from .metaclass import Singleton
 
 
 class UserVariantResolver(object, metaclass=Singleton):
+    def __init__(self, random_state):
+        self.random_state = random_state
+
     def get_number(self, user, problem):
-        hash_string = str(user) + problem.code
+        hash_string = str(user) + problem.code + "|" + str(self.random_state)
         hash_object = hashlib.md5(hash_string.encode("utf8"))
         return int.from_bytes(hash_object.digest(), "big")
 
