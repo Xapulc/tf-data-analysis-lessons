@@ -14,12 +14,15 @@ problem1_variant2 = ProblemVariant(code="stat_task1_var2",
 
 
 class TransformerProblem1Variant2(VariantTransformer):
-    def __init__(self, code, data_path, default_score_list, input_data_text, output_data_text):
+    def __init__(self, code, input_data_text, output_data_text):
         self.code = code
-        self.data_path = data_path
-        self.default_score_list = default_score_list
         self.input_data_text = input_data_text
         self.output_data_text = output_data_text
+
+    def _get_transformed_random_state(self, random_state):
+        min_t = 2
+        max_t = 100
+        return min_t + (random_state % (max_t - min_t + 1))
 
     def _get_default_sample(self):
         data = pd.read_csv(self.data_path)

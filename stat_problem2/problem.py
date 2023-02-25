@@ -192,11 +192,12 @@ class ResultProblem2(Result):
 
     def generate(self, test_result, generated_criteria_list):
         score_data = pd.DataFrame(data={
-            "sample_size": [el["sample_size"] for el in test_result],
             "mean_error": [el["mean_error"] for el in test_result],
             "mean_interval_length": [el["mean_interval_length"] for el in test_result],
             "max_error": [el["max_error"] for el in generated_criteria_list],
-            "max_interval_length": [el["max_interval_length"] for el in generated_criteria_list]
+            "max_interval_length": [el["max_interval_length"] for el in generated_criteria_list],
+            "sample_size": [el["sample_size"] for el in generated_criteria_list],
+            "confidence": [el["confidence"] for el in generated_criteria_list]
         })
 
         score_data["score"] = score_data.apply(lambda row : 1 if (row["mean_error"] <= row["max_error"]
