@@ -199,8 +199,6 @@ class ResultProblem2(Result):
             "max_interval_length": [el["max_interval_length"] for el in generated_criteria_list]
         })
 
-
-        score_data = pd.DataFrame(test_result)
         score_data["score"] = score_data.apply(lambda row : 1 if (row["mean_error"] <= row["max_error"]
                                                                   and row["mean_interval_length"] <= row["max_interval_length"])
                                                             else 0,

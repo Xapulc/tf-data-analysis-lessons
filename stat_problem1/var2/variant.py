@@ -4,20 +4,6 @@ from tools import ProblemVariant, VariantTransformer
 
 
 problem1_variant2 = ProblemVariant(code="stat_task1_var2",
-                                   data_path="stat_problem1/var2/sample.csv",
-                                   default_score_list=[{
-                                       "sample_size": 1000,
-                                       "max_error": 0.0003
-                                   }, {
-                                       "sample_size": 1000,
-                                       "max_error": 0.0001
-                                   }, {
-                                       "sample_size": 100,
-                                       "max_error": 0.0005
-                                   }, {
-                                       "sample_size": 10,
-                                       "max_error": 0.0032
-                                   }],
                                    input_data_text="""
                                    Одномерный массив numpy.ndarray
                                    измерений пройденного пути (в м) машин одной модели.
