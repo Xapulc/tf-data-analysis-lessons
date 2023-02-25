@@ -81,6 +81,7 @@ if __name__ == "__main__":
         telegram_service.send(chat_id, comment)
         quit()
 
-    task_score, message, attachment_list = result_strategy.generate(test_result)
+    generated_criteria_list = solution_tester.generate_criteria(transformer_variant, random_state)
+    task_score, message, attachment_list = result_strategy.generate(test_result, generated_criteria_list)
     edu_service.send("Done", task_score, problem.max_score)
     telegram_service.send(chat_id, message, attachment_list)
