@@ -6,6 +6,7 @@ from tools import Problem, Result, SolutionTester, DescriptionGenerator, \
                   round_down_first_decimal, round_up_first_decimal
 from .var0 import problem1_variant0
 from .var1 import problem1_variant1
+from .var2 import problem1_variant2
 
 
 problem1 = Problem(task_id="12277",
@@ -31,7 +32,8 @@ problem1 = Problem(task_id="12277",
                    }],
                    problem_variant_list=[
                        problem1_variant0,
-                       problem1_variant1
+                       problem1_variant1,
+                       problem1_variant2
                    ])
 
 

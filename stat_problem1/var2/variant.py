@@ -47,3 +47,11 @@ class TransformerProblem1Variant2(VariantTransformer):
             "input": self.input_data_text,
             "output": self.output_data_text
         }
+
+    def get_solution(self, random_state):
+        t = self._get_transformed_random_state(random_state)
+
+        def solution(x):
+            return 2 * x.mean() / (t**2)
+
+        return solution
