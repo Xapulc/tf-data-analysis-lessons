@@ -1,5 +1,4 @@
-import pandas as pd
-
+from scipy.stats import expon, laplace
 from tools import ProblemVariant, VariantTransformer
 
 
@@ -27,17 +26,17 @@ class TransformerProblem1Variant2(VariantTransformer):
     def get_sample(self, iter_size, sample_size, random_state):
         t = self._get_transformed_random_state(random_state)
 
-        a = expon(0.3).rvs(size=iter_size, random_state=exp_deviation)
-        eps = expon.rvs(size=[sample_size, iter_size], random_state=exp_deviation) - exp_deviation
-        return (eps + t * a).T, a
+        a = expon(0.2).rvs(size=iter_size, random_state=t)
+        eps = laplace.rvs(size=[sample_size, iter_size], random_state=t)
+        return (eps + (t**2) * a / 2).T, a
 
     def get_description(self, random_state):
-        factor = self._get_transformed_random_state(random_state)
+        t = self._get_transformed_random_state(random_state)
 
         problem_text = f"""
         На заводе проводится тестирование модели машины для проверки коэффициента ускорения. 
         В рамках эксперимента выбирается $n$ машин этой модели 
-        и измеряется пройденный машиной путь через количество секунд, равное ${4 * factor}$.
+        и измеряется пройденный машиной путь через количество секунд, равное ${t}$.
         Предполагается, что ошибки измерения пути н.о.р.
         и имеют распределение Лапласа.
         Постройте точечную оценку коэффициента ускорения.
