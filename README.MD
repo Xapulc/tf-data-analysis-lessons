@@ -34,7 +34,7 @@
 Содержание `.yaml` файла подробно описано в [документации](https://edu.tinkoff.ru/assets/github-instruction.pdf).
 
 Ссылку на проект в виде `https://github.com/{your account}/{your repository}`
-укажите в задании.
+укажите в задании на edu.
 
 ### Токен для доступа к проектам
 
