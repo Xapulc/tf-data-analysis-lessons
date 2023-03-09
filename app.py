@@ -42,6 +42,7 @@ transformer_variant_strategies = VariantTransformerStrategies(transformer_varian
 
 if __name__ == "__main__":
     task_id = os.getenv("task_id")
+    pull_req_url = os.getenv("pull_req_url")
     problem = problem_storage.get_problem_by_task_id(task_id)
 
     result_strategy = result_strategies.get_result_strategy_by_code(problem.code)
@@ -55,7 +56,15 @@ if __name__ == "__main__":
     try:
         from student_work.solution import chat_id
     except ImportError as e:
-        print("Chat ID не указана")
+        comment = "Chat ID не указан"
+        print(comment)
+
+        for teacher_chat_id in problem.teacher_chat_id_list:
+            teacher_messange = f"`{problem.name}` проверено, " \
+                               + f"проект: `{pull_req_url}`.\n" \
+                               + f"В решении следующая проблема: `{comment}`."
+            telegram_service.send(teacher_chat_id, teacher_messange)
+
         edu_service.send("Error", 0, problem.max_score)
         quit()
 
@@ -68,6 +77,14 @@ if __name__ == "__main__":
     except Exception as e:
         comment = f"Ошибка при импортах. Тип ошибки: {type(e)}, сообщение: {str(e)}"
         print(comment)
+
+        for teacher_chat_id in problem.teacher_chat_id_list:
+            teacher_messange = f"`{problem.name}` проверено, " \
+                               + f"проект: `{pull_req_url}`, " \
+                               + f"Chat ID: `{chat_id}`.\n" \
+                               + f"В решении следующая проблема: `{comment}`."
+            telegram_service.send(teacher_chat_id, teacher_messange)
+
         edu_service.send("Error", 0, problem.max_score)
         telegram_service.send(chat_id, comment)
         quit()
@@ -77,11 +94,31 @@ if __name__ == "__main__":
     except Exception as e:
         comment = f"Ошибка при проверке решающей функции. Тип ошибки: {type(e)}, сообщение: {str(e)}"
         print(comment)
+
+        for teacher_chat_id in problem.teacher_chat_id_list:
+            teacher_messange = f"`{problem.name}` проверено, " \
+                               + f"проект: `{pull_req_url}`, " \
+                               + f"Chat ID: `{chat_id}`, " \
+                               + f"код варианта: `{problem_variant.code}`.\n" \
+                               + f"В решении следующая проблема: `{comment}`."
+            telegram_service.send(teacher_chat_id, teacher_messange)
+
         edu_service.send("Error", 0, problem.max_score)
         telegram_service.send(chat_id, comment)
         quit()
 
     generated_criteria_list = solution_tester.generate_criteria(transformer_variant, random_state)
     task_score, message, attachment_list = result_strategy.generate(test_result, generated_criteria_list)
+
     edu_service.send("Done", task_score, problem.max_score)
     telegram_service.send(chat_id, message, attachment_list)
+
+    for teacher_chat_id in problem.teacher_chat_id_list:
+        teacher_messange = f"`{problem.name}` проверено, " \
+                           + f"проект: `{pull_req_url}`, " \
+                           + f"Chat ID: `{chat_id}`, " \
+                           + f"код варианта: `{problem_variant.code}`.\n" \
+                           + f"Решение оценено на `{task_score}` из `{problem.max_score}`. " \
+                           + f"Письмо о решении студенту..."
+        telegram_service.send(teacher_chat_id, teacher_messange)
+        telegram_service.send(teacher_chat_id, message, attachment_list)

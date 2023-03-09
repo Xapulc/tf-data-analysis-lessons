@@ -2,15 +2,19 @@ from .metaclass import Singleton
 
 
 class Problem(object):
-    def __init__(self, task_id, code, name, max_score, criteria_list, problem_variant_list):
+    def __init__(self, task_id, code, name, max_score,
+                 criteria_list, problem_variant_list,
+                 teacher_chat_id_list=None):
         self.task_id = task_id
         self.code = code
         self.name = name
         self.max_score = max_score
         self.criteria_list = criteria_list
         self.problem_variant_list = problem_variant_list
-        
-        
+        self.teacher_chat_id_list = [] if teacher_chat_id_list is None \
+                                    else teacher_chat_id_list
+
+
 class ProblemVariant(object):
     def __init__(self, code, input_data_text, output_data_text):
         self.code = code
