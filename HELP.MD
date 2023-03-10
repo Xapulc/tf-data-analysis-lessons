@@ -52,9 +52,12 @@ pip install -r requirements.txt
 Для работы бота нужно установить latex.
 На ubuntu:
 ```
+sudo apt-get update
 sudo apt-get install texlive-latex-base
 sudo apt-get install texlive-latex-extra
 sudo apt-get install texlive-lang-cyrillic
+sudo apt-get install texlive-luatex
+sudo apt-get install texlive-fonts-recommended
 ```
 
 ### Общая структура проекта
