@@ -67,6 +67,9 @@ problem2 = Problem(task_id="12559",
                        problem2_variant0,
                        problem2_variant1,
                        problem2_variant2
+                   ],
+                   teacher_chat_id_list=[
+                       604918251
                    ])
 
 
