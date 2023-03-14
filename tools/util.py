@@ -20,10 +20,16 @@ def first_decimal(x):
 
 
 def round_up_first_decimal(x, decimals=0):
-    x_decimal = -first_decimal(x)
-    return round_up(x, x_decimal + decimals)
+    if x > 0:
+        x_decimal = -first_decimal(x)
+        return round_up(x, x_decimal + decimals)
+    else:
+        return 0
 
 
 def round_down_first_decimal(x, decimals=0):
-    x_decimal = -first_decimal(x)
-    return round_down(x, x_decimal + decimals)
+    if x > 0:
+        x_decimal = -first_decimal(x)
+        return round_down(x, x_decimal + decimals)
+    else:
+        return 0

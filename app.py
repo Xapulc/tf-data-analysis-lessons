@@ -10,6 +10,11 @@ from stat_problem2 import problem2, \
                           description_generator_problem2, \
                           solution_tester_problem2, \
                           transformer_variant_problem2_list
+from hypothesis_testing_problem1 import hyp_problem1, \
+                                        result_hyp_problem1, \
+                                        description_generator_hyp_problem1, \
+                                        solution_tester_hyp_problem1, \
+                                        transformer_variant_hyp_problem1_list
 from tools import ProblemStorage, \
                   DescriptionGeneratorStrategies, \
                   SolutionTesterStrategies, \
@@ -22,22 +27,27 @@ from tools import ProblemStorage, \
 
 problem_storage = ProblemStorage([
     problem1,
-    problem2
+    problem2,
+    hyp_problem1
 ])
 description_generator_strategies = DescriptionGeneratorStrategies([
     description_generator_problem1,
-    description_generator_problem2
+    description_generator_problem2,
+    description_generator_hyp_problem1
 ])
 solution_tester_strategies = SolutionTesterStrategies([
     solution_tester_problem1,
-    solution_tester_problem2
+    solution_tester_problem2,
+    solution_tester_hyp_problem1
 ])
 result_strategies = ResultStrategies([
     result_problem1,
-    result_problem2
+    result_problem2,
+    result_hyp_problem1
 ])
 transformer_variant_strategies = VariantTransformerStrategies(transformer_variant_problem1_list
-                                                              + transformer_variant_problem2_list)
+                                                              + transformer_variant_problem2_list
+                                                              + transformer_variant_hyp_problem1_list)
 
 
 if __name__ == "__main__":
