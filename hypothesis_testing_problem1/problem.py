@@ -7,6 +7,7 @@ from tools import Problem, Result, SolutionTester, DescriptionGenerator, \
                   round_down_first_decimal, round_up_first_decimal
 from .var0 import hyp_problem1_variant0
 from .var1 import hyp_problem1_variant1
+from .var2 import hyp_problem1_variant2
 
 
 hyp_problem1 = Problem(task_id="12755",
@@ -31,7 +32,8 @@ hyp_problem1 = Problem(task_id="12755",
                        }],
                        problem_variant_list=[
                            hyp_problem1_variant0,
-                           hyp_problem1_variant1
+                           hyp_problem1_variant1,
+                           hyp_problem1_variant2
                        ],
                        teacher_chat_id_list=[
                            604918251
