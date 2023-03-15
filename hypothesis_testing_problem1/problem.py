@@ -8,6 +8,9 @@ from tools import Problem, Result, SolutionTester, DescriptionGenerator, \
 from .var0 import hyp_problem1_variant0
 from .var1 import hyp_problem1_variant1
 from .var2 import hyp_problem1_variant2
+from .var3 import hyp_problem1_variant3
+from .var4 import hyp_problem1_variant4
+from .var5 import hyp_problem1_variant5
 
 
 hyp_problem1 = Problem(task_id="12755",
@@ -33,7 +36,10 @@ hyp_problem1 = Problem(task_id="12755",
                        problem_variant_list=[
                            hyp_problem1_variant0,
                            hyp_problem1_variant1,
-                           hyp_problem1_variant2
+                           hyp_problem1_variant2,
+                           hyp_problem1_variant3,
+                           hyp_problem1_variant4,
+                           hyp_problem1_variant5
                        ],
                        teacher_chat_id_list=[
                            604918251
