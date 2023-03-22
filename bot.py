@@ -1,7 +1,7 @@
 import os
 import logging
 
-from telegram import Update
+from telegram import Update, InputMediaPhoto
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 from stat_problem1 import problem1, \
                           description_generator_problem1, \
@@ -94,10 +94,13 @@ def get_problem_variant_by_code(code):
             description = [description]
         image_path_list = converter.convert_tex_body_str_to_image_list(description[0])
 
-        for i, image_path in enumerate(image_path_list):
-            await context.bot.send_photo(chat_id=chat_id,
-                                         caption=f"Страница условия {i}",
-                                         photo=image_path)
+        await context.bot.send_media_group(chat_id=chat_id,
+                                           media=[
+                                               InputMediaPhoto(open(image_path, "rb"),
+                                                               caption="Условие задачи" if i == 0 else "")
+                                               for i, image_path in enumerate(image_path_list)
+                                           ])
+
         if len(description) > 1:
             for i, file_path in enumerate(description[1]):
                 await context.bot.send_document(chat_id=chat_id,

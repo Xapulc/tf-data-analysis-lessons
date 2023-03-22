@@ -18,6 +18,7 @@ class UserVariantResolver(object, metaclass=Singleton):
         else:
             hash_int = self.get_number(user, problem)
             element_cnt = len(problem.problem_variant_list)
-            element_num = 1 + (hash_int % (element_cnt - 1))
+            # element_num = 1 + (hash_int % (element_cnt - 1))
+            element_num = hash_int % element_cnt
 
         return problem.problem_variant_list[element_num]
