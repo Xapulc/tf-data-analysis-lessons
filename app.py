@@ -15,6 +15,11 @@ from hypothesis_testing_problem1 import hyp_problem1, \
                                         description_generator_hyp_problem1, \
                                         solution_tester_hyp_problem1, \
                                         transformer_variant_hyp_problem1_list
+from hypothesis_testing_problem2 import hyp_problem2, \
+                                        result_hyp_problem2, \
+                                        description_generator_hyp_problem2, \
+                                        solution_tester_hyp_problem2, \
+                                        transformer_variant_hyp_problem2_list
 from tools import ProblemStorage, \
                   DescriptionGeneratorStrategies, \
                   SolutionTesterStrategies, \
@@ -28,26 +33,31 @@ from tools import ProblemStorage, \
 problem_storage = ProblemStorage([
     problem1,
     problem2,
-    hyp_problem1
+    hyp_problem1,
+    hyp_problem2
 ])
 description_generator_strategies = DescriptionGeneratorStrategies([
     description_generator_problem1,
     description_generator_problem2,
-    description_generator_hyp_problem1
+    description_generator_hyp_problem1,
+    description_generator_hyp_problem2
 ])
 solution_tester_strategies = SolutionTesterStrategies([
     solution_tester_problem1,
     solution_tester_problem2,
-    solution_tester_hyp_problem1
+    solution_tester_hyp_problem1,
+    solution_tester_hyp_problem2
 ])
 result_strategies = ResultStrategies([
     result_problem1,
     result_problem2,
-    result_hyp_problem1
+    result_hyp_problem1,
+    result_hyp_problem2
 ])
 transformer_variant_strategies = VariantTransformerStrategies(transformer_variant_problem1_list
                                                               + transformer_variant_problem2_list
-                                                              + transformer_variant_hyp_problem1_list)
+                                                              + transformer_variant_hyp_problem1_list
+                                                              + transformer_variant_hyp_problem2_list)
 
 
 if __name__ == "__main__":
@@ -118,10 +128,10 @@ if __name__ == "__main__":
         quit()
 
     generated_criteria_list = solution_tester.generate_criteria(transformer_variant, random_state)
-    task_score, message, attachment_list = result_strategy.generate(test_result, generated_criteria_list)
+    task_score, message, photo_list = result_strategy.generate(test_result, generated_criteria_list)
 
     edu_service.send("Done", task_score, problem.max_score)
-    telegram_service.send(chat_id, message, attachment_list)
+    telegram_service.send(chat_id, message, photo_list)
 
     for teacher_chat_id in problem.teacher_chat_id_list:
         teacher_messange = f"`{problem.name}` проверено, " \
@@ -131,4 +141,4 @@ if __name__ == "__main__":
                            + f"Решение оценено на `{task_score}` из `{problem.max_score}`. " \
                            + f"Письмо о решении студенту..."
         telegram_service.send(teacher_chat_id, teacher_messange)
-        telegram_service.send(teacher_chat_id, message, attachment_list)
+        telegram_service.send(teacher_chat_id, message, photo_list)

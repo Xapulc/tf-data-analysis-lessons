@@ -1,4 +1,4 @@
-from .var0 import *
+from .var6 import *
 from .var1 import *
 from .var2 import *
 from .var3 import *
@@ -15,10 +15,10 @@ solution_tester_hyp_problem1 = SolutionTesterHypProblem1(code=hyp_problem1.code,
                                                          criteria_list=hyp_problem1.criteria_list)
 
 transformer_variant_hyp_problem1_list = [
-    transformer_hyp_problem1_variant0,
     transformer_hyp_problem1_variant1,
     transformer_hyp_problem1_variant2,
     transformer_hyp_problem1_variant3,
     transformer_hyp_problem1_variant4,
-    transformer_hyp_problem1_variant5
+    transformer_hyp_problem1_variant5,
+    transformer_hyp_problem1_variant6
 ]

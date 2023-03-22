@@ -33,15 +33,31 @@ class TelegramService(object):
             print(response.text)
         except Exception as e:
             print(e)
+
+    def _get_send_file_url(self):
+        return f"{self.telegram_url}/bot{self._token}/sendDocument"
+
+    def _send_file(self, chat_id, file_path):
+        try:
+            response = requests.post(self._get_send_file_url(),
+                                     {"chat_id": chat_id},
+                                     files={"document": open(file_path, "rb")})
+            print(response.text)
+        except Exception as e:
+            print(e)
     
-    def send(self, chat_id, message, attachment_list=None):
+    def send(self, chat_id, message, photo_list=None, file_list=None):
         if str(chat_id) == "123456":
             chat_id = "604918251"
         self._send_message(chat_id, message)
 
-        if attachment_list is not None:
-            for file_path in attachment_list:
+        if photo_list is not None:
+            for file_path in photo_list:
                 self._send_photo(chat_id, file_path)
+
+        if file_list is not None:
+            for file_path in file_list:
+                self._send_file(chat_id, file_path)
 
 
 class EduService(object):

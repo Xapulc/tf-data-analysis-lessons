@@ -15,6 +15,10 @@ from hypothesis_testing_problem1 import hyp_problem1, \
                                         description_generator_hyp_problem1, \
                                         transformer_variant_hyp_problem1_list, \
                                         solution_tester_hyp_problem1
+from hypothesis_testing_problem2 import hyp_problem2, \
+                                        description_generator_hyp_problem2, \
+                                        transformer_variant_hyp_problem2_list, \
+                                        solution_tester_hyp_problem2
 from tools import ProblemStorage, \
                   DescriptionGeneratorStrategies, \
                   UserVariantResolver, \
@@ -26,21 +30,25 @@ from tools import ProblemStorage, \
 problem_storage = ProblemStorage([
     problem1,
     problem2,
-    hyp_problem1
+    hyp_problem1,
+    hyp_problem2
 ])
 description_generator_strategies = DescriptionGeneratorStrategies([
     description_generator_problem1,
     description_generator_problem2,
-    description_generator_hyp_problem1
+    description_generator_hyp_problem1,
+    description_generator_hyp_problem2
 ])
 solution_tester_strategies = SolutionTesterStrategies([
     solution_tester_problem1,
     solution_tester_problem2,
-    solution_tester_hyp_problem1
+    solution_tester_hyp_problem1,
+    solution_tester_hyp_problem2
 ])
 transformer_variant_strategies = VariantTransformerStrategies(transformer_variant_problem1_list
                                                               + transformer_variant_problem2_list
-                                                              + transformer_variant_hyp_problem1_list)
+                                                              + transformer_variant_hyp_problem1_list
+                                                              + transformer_variant_hyp_problem2_list)
 
 user_variant_resolver = UserVariantResolver(os.getenv("SOLVER_RANDOM_STATE"))
 converter = Converter()
@@ -82,12 +90,18 @@ def get_problem_variant_by_code(code):
 
         generated_criteria_list = solution_tester.generate_criteria(transformer_variant, random_state)
         description = description_generator.get_description(transformer_variant, generated_criteria_list, random_state)
-        image_path_list = converter.convert_tex_body_str_to_image_list(description)
+        if isinstance(description, str):
+            description = [description]
+        image_path_list = converter.convert_tex_body_str_to_image_list(description[0])
 
         for i, image_path in enumerate(image_path_list):
             await context.bot.send_photo(chat_id=chat_id,
                                          caption=f"Страница условия {i}",
                                          photo=image_path)
+        if len(description) > 1:
+            for i, file_path in enumerate(description[1]):
+                await context.bot.send_document(chat_id=chat_id,
+                                                document=file_path)
     return helper
 
 
