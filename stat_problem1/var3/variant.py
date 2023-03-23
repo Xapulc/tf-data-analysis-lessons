@@ -29,7 +29,7 @@ class TransformerProblem1Variant3(VariantTransformer):
 
         a = expon(0.005).rvs(size=iter_size, random_state=shift)
         sigma = expon(0.1).rvs(size=iter_size, random_state=shift)
-        eps = norm.rvs(size=[sample_size, iter_size])
+        eps = norm.rvs(size=[sample_size, iter_size], random_state=shift)
         return (shift + np.exp(eps * sigma + a)).T, a
 
     def get_description(self, random_state):
