@@ -145,7 +145,7 @@ class DescriptionGeneratorHypProblem2(DescriptionGenerator):
     def _get_example_sample(self, transformer_variant, iter_size, sample_size, random_state):
         file_name_list = []
 
-        for el in transformer_variant.get_example_sample(iter_size, sample_size, random_state):
+        for el in transformer_variant.get_example_sample(iter_size, sample_size, random_state-535131):
             sample = pd.DataFrame(data=el["data"],
                                   columns=[f"x{i}" for i in range(sample_size)])
             file_name = "tmp/historical_data.csv" if el["dist_num"] == 0 \
@@ -157,7 +157,7 @@ class DescriptionGeneratorHypProblem2(DescriptionGenerator):
 
     def get_description(self, transformer_variant, generated_criteria_list, random_state):
         description = transformer_variant.get_description(random_state)
-        file_name_list = self._get_example_sample(transformer_variant, 500, 500, random_state)
+        file_name_list = self._get_example_sample(transformer_variant, 200, 300, random_state)
 
         return f"""
         \\section{{Условие}} {description["problem"]}
