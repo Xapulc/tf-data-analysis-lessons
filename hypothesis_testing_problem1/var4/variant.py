@@ -54,7 +54,7 @@ class TransformerHypProblem1Variant4(VariantTransformer):
         control_sample = binom.rvs(n=sample_size, p=float(control_p), size=iter_size,
                                    random_state=transformed_random_state)
         test_sample = binom.rvs(n=sample_size, p=float(test_p), size=iter_size,
-                                random_state=transformed_random_state)
+                                random_state=transformed_random_state - 1)
 
         control_size = sample_size * np.ones(iter_size)
         test_size = sample_size * np.ones(iter_size)
