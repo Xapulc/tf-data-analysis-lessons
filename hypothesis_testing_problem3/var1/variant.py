@@ -1,11 +1,10 @@
 import numpy as np
 
 from decimal import Decimal
-from scipy.stats import rv_discrete, anderson_ksamp
+from scipy.stats import rv_discrete, ks_2samp
 from tools import ProblemVariant, VariantTransformer
 
-
-hyp_problem2_variant1 = ProblemVariant(code="hyp_task2_var1",
+hyp_problem3_variant1 = ProblemVariant(code="hyp_task3_var1",
                                        input_data_text="""
                                        Две выборки параметра $F$.
                                        """,
@@ -16,7 +15,7 @@ hyp_problem2_variant1 = ProblemVariant(code="hyp_task2_var1",
                                        """)
 
 
-class TransformerHypProblem2Variant1(VariantTransformer):
+class TransformerHypProblem3Variant1(VariantTransformer):
     def __init__(self, code, input_data_text, output_data_text):
         self.code = code
         self.input_data_text = input_data_text
@@ -81,7 +80,7 @@ class TransformerHypProblem2Variant1(VariantTransformer):
         else:
             y_dist = self.null_dist
 
-        x_sample_list = self.null_dist.rvs(size=[iter_size, sample_size], random_state=init_random_state+1)
+        x_sample_list = self.null_dist.rvs(size=[iter_size, sample_size], random_state=init_random_state + 1)
         y_sample_list = y_dist.rvs(size=[iter_size, sample_size], random_state=init_random_state - y_dist_num)
 
         return x_sample_list, y_sample_list
@@ -110,18 +109,20 @@ class TransformerHypProblem2Variant1(VariantTransformer):
         alpha = self._get_transformed_random_state(random_state)
 
         problem_text = r"""
+        
+        
         Перед проведением теста вы хотите убедиться в том,
         что рандомизатор будет работать корректно,
         а именно,
         что сегментатор разбивает выборку на тест и контроль таким образом,
         что распределения параметра $F$ на тесте и контроле совпадают.
-        
+
         К задаче приложены $4$ файла.
         В каждом файле каждая строка является выборкой,
         количество строк в каждом файле одинаково.
         В первом файле данные из исторического распределения,
         а в остальных файлах данные, изменённые разными способами.
-        
+
         Ваша задача выбрать {\bf один критерий},
         который позволял бы отличать выборку 
         из исторических данных 
@@ -140,7 +141,7 @@ class TransformerHypProblem2Variant1(VariantTransformer):
         alpha = self._get_transformed_random_state(random_state)
 
         def solution(x, y):
-            res = anderson_ksamp([x, y])
+            res = ks_2samp(x, y, alternative="two-sided")
             return res.pvalue < alpha
 
         return solution

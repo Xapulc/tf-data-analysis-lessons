@@ -5,35 +5,43 @@ import plotly.graph_objects as go
 from tools import Problem, Result, SolutionTester, DescriptionGenerator, \
                   round_down_first_decimal, round_up_first_decimal
 from .var1 import hyp_problem2_variant1
+from .var2 import hyp_problem2_variant2
+from .var3 import hyp_problem2_variant3
+from .var4 import hyp_problem2_variant4
+from .var5 import hyp_problem2_variant5
 
 
-hyp_problem2 = Problem(task_id="12756",
+hyp_problem2 = Problem(task_id="13782",
                        code="hyp_problem2",
                        name="Проверка гипотез, задание 2",
                        max_score=4,
                        criteria_list=[{
-                           "sample_size": 1000,
-                           "iter_size": 1000,
+                           "sample_size": 300,
+                           "iter_size": 500,
                            "y_dist_num": 0,
                            "error_factor": 1.1
                        }, {
-                           "sample_size": 3000,
-                           "iter_size": 1000,
+                           "sample_size": 300,
+                           "iter_size": 500,
                            "y_dist_num": 1,
                            "error_factor": 1.1
                        }, {
-                           "sample_size": 3000,
-                           "iter_size": 1000,
+                           "sample_size": 300,
+                           "iter_size": 500,
                            "y_dist_num": 2,
                            "error_factor": 1.1
                        }, {
-                           "sample_size": 500,
-                           "iter_size": 1000,
+                           "sample_size": 300,
+                           "iter_size": 500,
                            "y_dist_num": 3,
                            "error_factor": 1.1
                        }],
                        problem_variant_list=[
-                           hyp_problem2_variant1
+                           hyp_problem2_variant1,
+                           hyp_problem2_variant2,
+                           hyp_problem2_variant3,
+                           hyp_problem2_variant4,
+                           hyp_problem2_variant5
                        ],
                        teacher_chat_id_list=[
                            604918251

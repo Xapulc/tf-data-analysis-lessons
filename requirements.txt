@@ -8,3 +8,4 @@ kaleido
 pdflatex
 pymupdf
 statsmodels
+hyppo
