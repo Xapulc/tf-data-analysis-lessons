@@ -20,6 +20,11 @@ from hypothesis_testing_problem2 import hyp_problem2, \
                                         description_generator_hyp_problem2, \
                                         solution_tester_hyp_problem2, \
                                         transformer_variant_hyp_problem2_list
+from hypothesis_testing_problem3 import hyp_problem3, \
+                                        result_hyp_problem3, \
+                                        description_generator_hyp_problem3, \
+                                        solution_tester_hyp_problem3, \
+                                        transformer_variant_hyp_problem3_list
 from tools import ProblemStorage, \
                   DescriptionGeneratorStrategies, \
                   SolutionTesterStrategies, \
@@ -34,30 +39,35 @@ problem_storage = ProblemStorage([
     problem1,
     problem2,
     hyp_problem1,
-    hyp_problem2
+    hyp_problem2,
+    hyp_problem3
 ])
 description_generator_strategies = DescriptionGeneratorStrategies([
     description_generator_problem1,
     description_generator_problem2,
     description_generator_hyp_problem1,
-    description_generator_hyp_problem2
+    description_generator_hyp_problem2,
+    description_generator_hyp_problem3
 ])
 solution_tester_strategies = SolutionTesterStrategies([
     solution_tester_problem1,
     solution_tester_problem2,
     solution_tester_hyp_problem1,
-    solution_tester_hyp_problem2
+    solution_tester_hyp_problem2,
+    solution_tester_hyp_problem3
 ])
 result_strategies = ResultStrategies([
     result_problem1,
     result_problem2,
     result_hyp_problem1,
-    result_hyp_problem2
+    result_hyp_problem2,
+    result_hyp_problem3
 ])
 transformer_variant_strategies = VariantTransformerStrategies(transformer_variant_problem1_list
                                                               + transformer_variant_problem2_list
                                                               + transformer_variant_hyp_problem1_list
-                                                              + transformer_variant_hyp_problem2_list)
+                                                              + transformer_variant_hyp_problem2_list
+                                                              + transformer_variant_hyp_problem3_list)
 
 
 if __name__ == "__main__":
