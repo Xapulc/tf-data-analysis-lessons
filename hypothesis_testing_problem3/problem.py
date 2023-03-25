@@ -186,7 +186,8 @@ class ResultHypProblem3(Result):
             "mean_error": [el["mean_error"] for el in test_result],
             "max_error": [el["max_error"] for el in generated_criteria_list],
             "sample_size": [el["sample_size"] for el in generated_criteria_list],
-            "y_dist_num": [el["y_dist_num"] for el in generated_criteria_list]
+            "y_dist_num": [el["y_dist_num"] for el in generated_criteria_list],
+            "true_hypothesis": [el["true_hypothesis"] for el in generated_criteria_list]
         })
 
         score_data["score"] = score_data.apply(lambda row : 1 if row["mean_error"] <= row["max_error"] else 0,
