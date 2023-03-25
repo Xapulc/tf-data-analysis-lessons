@@ -8,6 +8,8 @@ from .var1 import hyp_problem3_variant1
 from .var2 import hyp_problem3_variant2
 from .var3 import hyp_problem3_variant3
 from .var4 import hyp_problem3_variant4
+from .var5 import hyp_problem3_variant5
+from .var6 import hyp_problem3_variant6
 
 
 hyp_problem3 = Problem(task_id="13842",
@@ -34,7 +36,9 @@ hyp_problem3 = Problem(task_id="13842",
                            hyp_problem3_variant1,
                            hyp_problem3_variant2,
                            hyp_problem3_variant3,
-                           hyp_problem3_variant4
+                           hyp_problem3_variant4,
+                           hyp_problem3_variant5,
+                           hyp_problem3_variant6
                        ],
                        teacher_chat_id_list=[
                            604918251
@@ -79,6 +83,7 @@ class SolutionTesterHypProblem3(SolutionTester):
             result_list.append({
                 "sample_size": criteria["sample_size"],
                 "y_dist_num": criteria["y_dist_num"],
+                "true_hypothesis": true_hypothesis,
                 "mean_error": total_error / criteria["iter_size"]
             })
 
@@ -96,6 +101,7 @@ class SolutionTesterHypProblem3(SolutionTester):
             generated_result_list.append({
                 "sample_size": result["sample_size"],
                 "y_dist_num": result["y_dist_num"],
+                "true_hypothesis": result["true_hypothesis"],
                 "max_error": round_up_first_decimal(max_error, 2)
             })
 
@@ -125,7 +131,7 @@ class DescriptionGeneratorHypProblem3(DescriptionGenerator):
             if criteria["y_dist_num"] == 0:
                 y_dist_desc = "Историческое"
             else:
-                y_dist_desc = f"Изменённое типа {criteria['y_dist_num']}"
+                y_dist_desc = f"Изменённое типа {criteria['y_dist_num']} из $H_{criteria['true_hypothesis']}$"
 
             estimation_text += f"""
             {x_dist_desc} & {y_dist_desc} & ${criteria["sample_size"]}$ & ${criteria["max_error"]}$ \\\\
@@ -187,9 +193,9 @@ class ResultHypProblem3(Result):
                                                axis=1)
         score_data["mean_error_rounded"] = score_data.apply(lambda row: round_down_first_decimal(row["mean_error"], 3),
                                                             axis=1)
-        score_data["dist_desc"] = score_data.apply(lambda row: "Историческое VS Историческое" if row["y_dist_num"] == 0
-                                                               else f"Историческое VS Изменённое типа {row['y_dist_num']}",
-                                                   axis=1)
+        dist_desc_func = lambda row: "H(0): Историческое VS Историческое" if row["y_dist_num"] == 0 \
+                                     else f"H({row['true_hypothesis']}): Историческое VS Изменённое типа {row['y_dist_num']}"
+        score_data["dist_desc"] = score_data.apply(lambda row: dist_desc_func, axis=1)
         column_description = [{
             "column": "sample_size",
             "description": "Размер выборки"
@@ -242,7 +248,7 @@ class ResultHypProblem3(Result):
         fig.write_image(picture_path)
 
         task_score = score_data["Балл"].sum()
-        message = f'В ДЗ "{self.name}" ваш общий результат: *{task_score} из {self.max_score}*.\n' \
+        message = f"В ДЗ ''{self.name}'' ваш общий результат: *{task_score} из {self.max_score}*.\n" \
                   + "Итоги проверки подведены в таблице."
 
         return task_score, message, [picture_path]

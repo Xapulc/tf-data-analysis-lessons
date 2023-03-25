@@ -3,10 +3,10 @@ from scipy.stats import gamma
 from statsmodels.stats.weightstats import ztest
 from tools import ProblemVariant, VariantTransformer
 
-hyp_problem3_variant2 = ProblemVariant(code="hyp_task3_var2",
+hyp_problem3_variant6 = ProblemVariant(code="hyp_task3_var6",
                                        input_data_text="""
                                        Одна выборка: исторические данные
-                                       по доходности аналогичного продукта.
+                                       по затратам на аналогичную подписку.
                                        """,
                                        output_data_text=r"""
                                        bool-значение, ответ на вопрос: 
@@ -15,18 +15,18 @@ hyp_problem3_variant2 = ProblemVariant(code="hyp_task3_var2",
                                        """)
 
 
-class TransformerHypProblem3Variant2(VariantTransformer):
+class TransformerHypProblem3Variant6(VariantTransformer):
     def __init__(self, code, input_data_text, output_data_text):
         self.code = code
         self.input_data_text = input_data_text
         self.output_data_text = output_data_text
 
-        self.min_pv = 500
-        null_gamma_scale = 10
-        self.null_dist = gamma(a=self.min_pv / null_gamma_scale, scale=null_gamma_scale)
-        self.first_dist = gamma(a=self.min_pv / null_gamma_scale, scale=1.017 * null_gamma_scale)
-        gamma_scale = 8
-        self.second_dist = gamma(a=self.min_pv / gamma_scale, scale=0.999 * gamma_scale)
+        self.max_cost = 300
+        null_gamma_scale = 8
+        self.null_dist = gamma(a=self.max_cost / null_gamma_scale, scale=null_gamma_scale)
+        self.first_dist = gamma(a=self.max_cost / null_gamma_scale, scale=0.98 * null_gamma_scale)
+        gamma_scale = 9
+        self.second_dist = gamma(a=self.max_cost / gamma_scale, scale=1.001 * gamma_scale)
 
     def _get_transformed_random_state(self, random_state):
         min_alpha_numerator = 1
@@ -50,7 +50,7 @@ class TransformerHypProblem3Variant2(VariantTransformer):
             x_dist = self.null_dist
 
         x_sample_list = x_dist.rvs(size=[iter_size, sample_size], random_state=init_random_state - y_dist_num)
-        true_hypothesis = 1 if self.min_pv < x_dist.mean() else 0
+        true_hypothesis = 1 if self.max_cost > x_dist.mean() else 0
 
         return true_hypothesis, x_sample_list
 
@@ -58,14 +58,15 @@ class TransformerHypProblem3Variant2(VariantTransformer):
         alpha = self._get_transformed_random_state(random_state)
 
         problem_text = f"""
-        Мы хотим запустить продажу нового продукта.
-        Этот продукт должен приносить минимум {self.min_pv} рублей с одной заявки.
+        Мы хотим запустить новую подписку для клиентов
+        с целью увеличения их лояльности.
+        Наша цель - не терять на подписке более {self.max_cost} рублей в месяц.
 
         Имея исторические данные
-        о доходности аналогичного продукта,
+        о затратах на аналогичную подписку,
         постройте критерий,
-        согласно которому можно будет определить
-        статзначимое превышение порога доходности продукта.
+        согласно которому можно будет определить,
+        что затраты на подписку статзначимо меньше установленного порога.
         Уровень значимости критерия = {alpha}.
         """
 
@@ -79,7 +80,7 @@ class TransformerHypProblem3Variant2(VariantTransformer):
         alpha = self._get_transformed_random_state(random_state)
 
         def solution(x):
-            res = ztest(x1=x, value=self.min_pv, alternative="larger")
+            res = ztest(x1=x, value=self.max_cost, alternative="less")
             return res[1] < alpha
 
         return solution

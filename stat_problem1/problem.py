@@ -190,7 +190,7 @@ class ResultProblem1(Result):
         fig.write_image(picture_path)
 
         task_score = score_data["Балл"].sum()
-        message = f'В ДЗ "{self.name}" ваш общий результат: *{task_score} из {self.max_score}*.\n' \
+        message = f"В ДЗ ''{self.name}'' ваш общий результат: *{task_score} из {self.max_score}*.\n" \
                   + "Итоги проверки подведены в таблице."
 
         return task_score, message, [picture_path]
