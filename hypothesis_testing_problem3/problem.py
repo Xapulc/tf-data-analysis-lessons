@@ -196,7 +196,7 @@ class ResultHypProblem3(Result):
                                                             axis=1)
         dist_desc_func = lambda row: "H(0): Историческое VS Историческое" if row["y_dist_num"] == 0 \
                                      else f"H({row['true_hypothesis']}): Историческое VS Изменённое типа {row['y_dist_num']}"
-        score_data["dist_desc"] = score_data.apply(lambda row: dist_desc_func, axis=1)
+        score_data["dist_desc"] = score_data.apply(dist_desc_func, axis=1)
         column_description = [{
             "column": "sample_size",
             "description": "Размер выборки"
