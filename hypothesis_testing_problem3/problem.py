@@ -6,6 +6,8 @@ from tools import Problem, Result, SolutionTester, DescriptionGenerator, \
                   round_down_first_decimal, round_up_first_decimal
 from .var1 import hyp_problem3_variant1
 from .var2 import hyp_problem3_variant2
+from .var3 import hyp_problem3_variant3
+from .var4 import hyp_problem3_variant4
 
 
 hyp_problem3 = Problem(task_id="13842",
@@ -16,21 +18,23 @@ hyp_problem3 = Problem(task_id="13842",
                            "sample_size": 500,
                            "iter_size": 500,
                            "y_dist_num": 0,
-                           "error_factor": 1.1
+                           "error_factor": 1.2
                        }, {
                            "sample_size": 500,
                            "iter_size": 500,
                            "y_dist_num": 1,
-                           "error_factor": 1.1
+                           "error_factor": 1.2
                        }, {
                            "sample_size": 500,
                            "iter_size": 500,
                            "y_dist_num": 2,
-                           "error_factor": 1.1
+                           "error_factor": 1.2
                        }],
                        problem_variant_list=[
                            hyp_problem3_variant1,
-                           hyp_problem3_variant2
+                           hyp_problem3_variant2,
+                           hyp_problem3_variant3,
+                           hyp_problem3_variant4
                        ],
                        teacher_chat_id_list=[
                            604918251

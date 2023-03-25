@@ -1,5 +1,7 @@
 from .var1 import *
 from .var2 import *
+from .var3 import *
+from .var4 import *
 from .problem import *
 
 result_hyp_problem3 = ResultHypProblem3(code=hyp_problem3.code,
@@ -12,5 +14,7 @@ solution_tester_hyp_problem3 = SolutionTesterHypProblem3(code=hyp_problem3.code,
 
 transformer_variant_hyp_problem3_list = [
     transformer_hyp_problem3_variant1,
-    transformer_hyp_problem3_variant2
+    transformer_hyp_problem3_variant2,
+    transformer_hyp_problem3_variant3,
+    transformer_hyp_problem3_variant4
 ]
