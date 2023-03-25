@@ -87,7 +87,7 @@ def get_problem_variant_by_code(code):
         chat_id = update.effective_chat.id
 
         await context.bot.send_message(chat_id=chat_id,
-                                       text=problem.name)
+                                       text=f"{problem.name}. Генерация условия...")
 
         random_state = user_variant_resolver.get_number(chat_id, problem)
         description_generator = description_generator_strategies.get_description_generator_strategy_by_code(problem.code)
