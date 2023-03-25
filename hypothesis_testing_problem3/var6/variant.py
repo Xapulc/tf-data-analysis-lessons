@@ -80,7 +80,7 @@ class TransformerHypProblem3Variant6(VariantTransformer):
         alpha = self._get_transformed_random_state(random_state)
 
         def solution(x):
-            res = ztest(x1=x, value=self.max_cost, alternative="less")
+            res = ztest(x1=x, value=self.max_cost, alternative="smaller")
             return res[1] < alpha
 
         return solution
