@@ -89,7 +89,8 @@ class TransformerHypProblem3Variant3(VariantTransformer):
                                    lambda x, y, axis: np.mean(x, axis=axis) - np.mean(y, axis=axis),
                                    vectorized=True,
                                    n_resamples=1000,
-                                   alternative="greater")
+                                   alternative="greater",
+                                   random_state=random_state)
             return res.pvalue < alpha
 
         return solution

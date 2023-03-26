@@ -20,17 +20,17 @@ hyp_problem3 = Problem(task_id="13842",
                            "sample_size": 500,
                            "iter_size": 500,
                            "y_dist_num": 0,
-                           "error_factor": 1.2
+                           "error_factor": 1.4
                        }, {
                            "sample_size": 500,
                            "iter_size": 500,
                            "y_dist_num": 1,
-                           "error_factor": 1.2
+                           "error_factor": 1.4
                        }, {
                            "sample_size": 500,
                            "iter_size": 500,
                            "y_dist_num": 2,
-                           "error_factor": 1.2
+                           "error_factor": 1.4
                        }],
                        problem_variant_list=[
                            hyp_problem3_variant1,
