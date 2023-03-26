@@ -82,7 +82,7 @@ class TransformerHypProblem3Variant5(VariantTransformer):
         alpha = self._get_transformed_random_state(random_state)
 
         def solution(x, y):
-            res = ttest_ind(x, y, equal_var=False, alternative="less")
+            res = ttest_ind(x, y, equal_var=False, alternative="two-sided")
             return res.pvalue < alpha
 
         return solution
