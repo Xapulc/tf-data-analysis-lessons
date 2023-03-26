@@ -90,7 +90,7 @@ class TransformerHypProblem3Variant3(VariantTransformer):
                                    vectorized=True,
                                    n_resamples=1000,
                                    alternative="greater",
-                                   random_state=random_state)
+                                   random_state=42)
             return res.pvalue < alpha
 
         return solution
