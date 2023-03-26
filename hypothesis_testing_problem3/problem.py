@@ -229,6 +229,7 @@ class ResultHypProblem3(Result):
             "fill_color": [score_data["Балл"].apply(color_function)],
             "height": cell_height
         }))
+
         title_margin = 50
         fig.update_layout(
             title_text=self.name,

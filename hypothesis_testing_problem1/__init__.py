@@ -1,9 +1,9 @@
-from .var6 import *
 from .var1 import *
 from .var2 import *
 from .var3 import *
 from .var4 import *
 from .var5 import *
+from .var6 import *
 from .problem import *
 
 result_hyp_problem1 = ResultHypProblem1(code=hyp_problem1.code,
