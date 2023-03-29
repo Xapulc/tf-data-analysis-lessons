@@ -19,7 +19,10 @@ class UserVariantResolver(object, metaclass=Singleton):
             element_num = i % element_cnt
         else:
             hash_int = self.get_number(user, problem)
-            element_num = 1 + (hash_int % (element_cnt - 1))
-            # element_num = hash_int % element_cnt
+
+            if problem.task_id in ("12277", "12559"):
+                element_num = 1 + (hash_int % (element_cnt - 1))
+            else:
+                element_num = hash_int % element_cnt
 
         return problem.problem_variant_list[element_num]
