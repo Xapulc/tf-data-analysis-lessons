@@ -141,7 +141,7 @@ if __name__ == "__main__":
         code = problem.code
         application.add_handler(CommandHandler(f"get_{code}",
                                                get_problem_variant_by_code(code,
-                                                                           silence_mode_flg=True,
+                                                                           silence_mode_flg=False,
                                                                            silence_mode_white_list=[
                                                                                604918251
                                                                            ])))

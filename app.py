@@ -98,6 +98,10 @@ if __name__ == "__main__":
         edu_service.send("Error", 0, problem.max_score)
         quit()
 
+    if str(chat_id) == "123456":
+        edu_service.send("Error", 0, problem.max_score)
+        quit()
+
     problem_variant = user_variant_resolver.get_variant(chat_id, problem)
     random_state = user_variant_resolver.get_number(chat_id, problem)
     transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
