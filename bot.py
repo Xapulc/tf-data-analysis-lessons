@@ -80,7 +80,7 @@ def get_chat(replace_chat_dict=None):
         replace_chat_dict = dict()
 
     async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        chat_id = update.effective_chat.id,
+        chat_id = update.effective_chat.id
         return_chat_id = replace_chat_dict.get(chat_id, chat_id)
         await context.bot.send_message(chat_id=chat_id,
                                        text=return_chat_id)
