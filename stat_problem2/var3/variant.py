@@ -37,7 +37,7 @@ class TransformerProblem2Variant3(VariantTransformer):
         min_alpha_random_state = int(1000 * min_alpha)
         float_min_alpha = float(min_alpha)
 
-        max_alpha = uniform.rvs(size=iter_size, random_state=min_alpha_random_state - 12)
+        max_alpha = uniform.rvs(size=iter_size, random_state=max(min_alpha_random_state - 12, 0))
         alpha = uniform.rvs(size=[sample_size, iter_size], random_state=min_alpha_random_state)
         return (float_min_alpha + alpha * (max_alpha - float_min_alpha)).T, max_alpha
 
