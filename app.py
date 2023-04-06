@@ -86,7 +86,7 @@ if __name__ == "__main__":
 
     try:
         from student_work.solution import chat_id
-    except ImportError as e:
+    except Exception as e:
         comment = "Chat ID не указан"
         print(comment)
 
