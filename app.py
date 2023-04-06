@@ -99,7 +99,7 @@ if __name__ == "__main__":
         edu_service.send("Error", 0, problem.max_score)
         quit()
 
-    if str(chat_id) == "123456":
+    if str(chat_id) == "123456" and os.getenv("task_id") != "14106":
         edu_service.send("Error", 0, problem.max_score)
         quit()
 
