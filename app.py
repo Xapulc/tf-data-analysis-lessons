@@ -72,6 +72,7 @@ transformer_variant_strategies = VariantTransformerStrategies(transformer_varian
 
 if __name__ == "__main__":
     task_id = os.getenv("task_id")
+    task_id = "12277" if task_id == "14106" else task_id
     pull_req_url = os.getenv("pull_req_url")
     problem = problem_storage.get_problem_by_task_id(task_id)
 
