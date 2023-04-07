@@ -34,11 +34,11 @@ class TransformerHypProblem3Variant4(VariantTransformer):
         return Decimal(alpha_numerator) / Decimal(alpha_denominator)
 
     def get_example_sample(self, sample_size, random_state):
-        init_random_state = (random_state - 754) % 52316 + 4124
-        return self.null_dist.rvs(size=sample_size, random_state=init_random_state)
+        init_random_state = (random_state - 754) % 52316
+        return self.null_dist.rvs(size=sample_size, random_state=init_random_state % 52316)
 
     def get_sample(self, iter_size, sample_size, random_state, y_dist_num=0):
-        init_random_state = (random_state - 856) % 52316 + 4124
+        init_random_state = (random_state - 856) % 52316
         x_dist = self.null_dist
         if y_dist_num == 1:
             y_dist = self.first_dist
@@ -47,8 +47,8 @@ class TransformerHypProblem3Variant4(VariantTransformer):
         else:
             y_dist = self.null_dist
 
-        x_sample_list = x_dist.rvs(size=[iter_size, sample_size], random_state=init_random_state + 1)
-        y_sample_list = y_dist.rvs(size=[iter_size, sample_size], random_state=init_random_state - y_dist_num)
+        x_sample_list = x_dist.rvs(size=[iter_size, sample_size], random_state=(init_random_state + 1) % 52316)
+        y_sample_list = y_dist.rvs(size=[iter_size, sample_size], random_state=(init_random_state - y_dist_num) % 52316)
         true_hypothesis = 1 if x_dist.median() < y_dist.median() else 0
 
         return true_hypothesis, x_sample_list, y_sample_list

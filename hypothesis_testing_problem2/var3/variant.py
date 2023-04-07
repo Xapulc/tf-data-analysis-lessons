@@ -37,10 +37,10 @@ class TransformerHypProblem2Variant3(VariantTransformer):
         return Decimal(alpha_numerator) / Decimal(alpha_denominator)
 
     def get_example_sample(self, iter_size, sample_size, random_state):
-        init_random_state = (random_state - 89) % 4235 + 412
+        init_random_state = (random_state - 89) % 4235
         sample_list = [
             {"dist_num": i,
-             "data": dist.rvs(size=[iter_size, sample_size], random_state=init_random_state - i)}
+             "data": dist.rvs(size=[iter_size, sample_size], random_state=(init_random_state - i) % 4235)}
             for i, dist in enumerate([self.null_dist,
                                       self.first_dist,
                                       self.second_dist,
@@ -50,7 +50,7 @@ class TransformerHypProblem2Variant3(VariantTransformer):
         return sample_list
 
     def get_sample(self, iter_size, sample_size, random_state, y_dist_num=0):
-        init_random_state = (random_state - 532) % 4235 + 412
+        init_random_state = (random_state - 532) % 4235
         if y_dist_num == 1:
             y_dist = self.first_dist
         elif y_dist_num == 2:
@@ -60,8 +60,8 @@ class TransformerHypProblem2Variant3(VariantTransformer):
         else:
             y_dist = self.null_dist
 
-        x_sample_list = self.null_dist.rvs(size=[iter_size, sample_size], random_state=init_random_state + 1)
-        y_sample_list = y_dist.rvs(size=[iter_size, sample_size], random_state=init_random_state - y_dist_num)
+        x_sample_list = self.null_dist.rvs(size=[iter_size, sample_size], random_state=(init_random_state + 1) % 4235)
+        y_sample_list = y_dist.rvs(size=[iter_size, sample_size], random_state=(init_random_state - y_dist_num) % 4235)
 
         return x_sample_list, y_sample_list
 

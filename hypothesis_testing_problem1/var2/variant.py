@@ -38,7 +38,7 @@ class TransformerHypProblem1Variant2(VariantTransformer):
         return Decimal(alpha_numerator) / Decimal(alpha_denominator)
 
     def get_sample(self, iter_size, sample_size, random_state, delta_factor=0):
-        transformed_random_state = (random_state - 423) % 4512 + 4124
+        transformed_random_state = (random_state - 423) % 4512
         control_p = self.initial_p
         if delta_factor > 0:
             delta = self.initial_p * self.positive_delta_p * delta_factor
@@ -51,9 +51,9 @@ class TransformerHypProblem1Variant2(VariantTransformer):
         true_hypothesis = 1 if test_p != control_p else 0
 
         control_sample = binom.rvs(n=sample_size, p=float(control_p), size=iter_size,
-                                   random_state=transformed_random_state)
+                                   random_state=transformed_random_state % 4512)
         test_sample = binom.rvs(n=sample_size, p=float(test_p), size=iter_size,
-                                random_state=transformed_random_state - 1)
+                                random_state=(transformed_random_state - 1) % 4512)
 
         control_size = sample_size * np.ones(iter_size)
         test_size = sample_size * np.ones(iter_size)
