@@ -52,6 +52,34 @@ class TransformerProblem1Variant4(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        t = self._get_transformed_random_state(random_state)
+
+        return r"""
+        Пусть $X_1, \ldots, X_n$ - количества поставок в компании-партнёры.
+        Тогда $X_i \sim \text{Poisson}(""" + f"{t}" + r""" \lambda)$.
+        
+        Используем метод из лекции,
+        связав матожидание количества поставок
+        с оцениваемым параметром.
+        Имеем
+        $$
+        \mathbb{E} X_1 = """ + f"{t}" + r""" \lambda.
+        $$
+        Таким образом, $\mathbb{E} X_1 = g(\lambda)$,
+        где
+        $$
+        g(\lambda) = """ + f"{t}" + r""" \lambda,
+        g^{-1}(x) = \frac{x}{""" + f"{t}" + r"""}.
+        $$
+        Отсюда в силу утверждения из лекции
+        $$
+        g^{-1}(\overline{X})
+        = \frac{\overline{X}}{""" + f"{t}" + r"""}.
+        \to a.
+        $$
+        """
+
     def get_solution(self, random_state):
         t = self._get_transformed_random_state(random_state)
 

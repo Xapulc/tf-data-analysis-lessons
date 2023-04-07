@@ -46,6 +46,25 @@ class TransformerProblem1Variant3(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        shift = self._get_transformed_random_state(random_state)
+
+        return r"""
+        Пусть $X_1, \ldots, X_n$ - измерения среднего чека клиентов.
+        С распределением из задачи работать неудобно,
+        поэтому мы рассмотрим
+        $$
+        Y_i := \log""" + f"(X_i - {shift})" + r""".
+        $$
+        В силу условия $Y_i$ н.о.р.
+        и $Y_i \sim \mathcal{N}(a, \sigma^2)$.
+        Так как матожидание $Y_i$ равно $a$,
+        оценкой этого параметра является
+        $$
+        \overline{Y} = \overline{\log""" + f"(X - {shift})" + r"""}.
+        $$
+        """
+
     def get_solution(self, random_state):
         shift = self._get_transformed_random_state(random_state)
 

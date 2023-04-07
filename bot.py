@@ -136,6 +136,54 @@ def get_problem_variant_by_code(code, silence_mode_flg=False, silence_mode_white
     return helper
 
 
+def get_problem_variant_solution_by_code(code, silence_mode_flg=False, silence_mode_white_list=None):
+    problem = problem_storage.get_problem_by_code(code)
+    if silence_mode_white_list is None:
+        silence_mode_white_list = []
+
+    async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        chat_id = update.effective_chat.id
+
+        if silence_mode_flg and (chat_id not in silence_mode_white_list):
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"{problem.name}. Генерация решения недоступна.")
+        else:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"{problem.name}. Генерация решения...")
+            try:
+                random_state = user_variant_resolver.get_number(chat_id, problem)
+                description_generator = description_generator_strategies.get_description_generator_strategy_by_code(problem.code)
+                solution_tester = solution_tester_strategies.get_solution_tester_strategy_by_code(problem.code)
+
+                problem_variant = user_variant_resolver.get_variant(chat_id, problem)
+                transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
+
+                generated_criteria_list = solution_tester.generate_criteria(transformer_variant, random_state)
+                description = description_generator.get_solution_description(transformer_variant, generated_criteria_list, random_state)
+                if isinstance(description, str):
+                    description = [description]
+                image_path_list = converter.convert_tex_body_str_to_image_list(description[0])
+
+                await context.bot.send_media_group(chat_id=chat_id,
+                                                   media=[
+                                                       InputMediaPhoto(open(image_path, "rb"),
+                                                                       caption="Решение задачи" if i == 0 else "")
+                                                       for i, image_path in enumerate(image_path_list)
+                                                   ])
+
+                if len(description) > 1:
+                    for i, file_path in enumerate(description[1]):
+                        await context.bot.send_document(chat_id=chat_id,
+                                                        document=file_path)
+            except Exception as e:
+                comment = "Ошибка при генерации решения. " \
+                          + f"Тип ошибки: {type(e)}, сообщение: {str(e)}, `chat_id = {str(chat_id)}`. " \
+                          + f"Перешлите это сообщение преподавателю."
+                await context.bot.send_message(chat_id=chat_id, text=comment)
+
+    return helper
+
+
 if __name__ == "__main__":
     token = os.getenv("TELEGRAM_TOKEN")
     application = ApplicationBuilder().token(token).build()
@@ -151,5 +199,11 @@ if __name__ == "__main__":
                                                                            silence_mode_white_list=[
                                                                                604918251
                                                                            ])))
+        application.add_handler(CommandHandler(f"get_solution_{code}",
+                                               get_problem_variant_solution_by_code(code,
+                                                                                    silence_mode_flg=True,
+                                                                                    silence_mode_white_list=[
+                                                                                        604918251
+                                                                                    ])))
     
     application.run_polling()

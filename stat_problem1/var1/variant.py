@@ -49,6 +49,40 @@ class TransformerProblem1Variant1(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        exp_deviation = self._get_transformed_random_state(random_state)
+
+        return r"""
+        Пусть $X_1, \ldots, X_n$ - измерения скорости,
+        $\varepsilon_1, \ldots, \varepsilon_n 
+        \sim """ + f"{-exp_deviation} + exp(1)" + r"""$ - ошибки измерений.
+        Тогда
+        $$
+        X_i = 10 a + \varepsilon_i,
+        $$
+        где $a$ -- коэффициент ускорения.
+        Используем метод из лекции,
+        связав матожидание измерения скорости 
+        с оцениваемым параметром.
+        Имеем
+        $$
+        \mathbb{E} X_1 = 10 a + \mathbb{E} \varepsilon_i
+        = 10 a + """ + f"({-exp_deviation + 1})." + r"""
+        $$
+        Таким образом, $\mathbb{E} X_1 = g(a)$,
+        где
+        $$
+        g(a) = 10 a + """ + f"({-exp_deviation + 1})" + r""",
+        g^{-1}(x) = \frac{x + """ + f"({exp_deviation - 1})" + r"""}{10}.
+        $$
+        Отсюда в силу утверждения из лекции
+        $$
+        g^{-1}(\overline{X})
+        = \frac{\overline{X} + """ + f"({exp_deviation - 1})" + r"""}{10}
+        \to a.
+        $$
+        """
+
     def get_solution(self, random_state):
         exp_deviation = self._get_transformed_random_state(random_state)
 

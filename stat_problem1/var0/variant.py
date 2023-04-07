@@ -45,6 +45,21 @@ class TransformerProblem1Variant0(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        return r"""
+        Лучшая оценка среднего нормального - среднее.
+        Отсюда получаем
+        $$
+        \widehat{a} := \overline{l}.
+        $$
+        Эта оценка
+        \begin{enumerate}
+        \item несмещённая;
+        \item состоятельная;
+        \item асимптотически нормальная.;
+        \end{enumerate}
+        """
+
     def get_solution(self, random_state):
         def solution(x):
             return x.mean()

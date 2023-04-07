@@ -48,6 +48,40 @@ class TransformerProblem1Variant2(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        t = self._get_transformed_random_state(random_state)
+
+        return r"""
+        Пусть $X_1, \ldots, X_n$ - измерения длины пройденного пути,
+        $\varepsilon_1, \ldots, \varepsilon_n 
+        \sim \text{Laplace}$ - ошибки измерений.
+        Тогда
+        $$
+        X_i = \frac{a """ + f"{t}" + r"""^2}{2} + \varepsilon_i,
+        $$
+        где $a$ -- коэффициент ускорения.
+        Используем метод из лекции,
+        связав матожидание измерения длины пройденного пути 
+        с оцениваемым параметром.
+        Имеем
+        $$
+        \mathbb{E} X_1 = """ + f"{(t**2) / 2} a" + r""" + \mathbb{E} \varepsilon_i
+        = """ + f"{(t**2) / 2} a." + r"""
+        $$
+        Таким образом, $\mathbb{E} X_1 = g(a)$,
+        где
+        $$
+        g(a) = """ + f"{(t**2) / 2} a" + r""",
+        g^{-1}(x) = \frac{x}{""" + f"{(t**2) / 2}" + r"""}.
+        $$
+        Отсюда в силу утверждения из лекции
+        $$
+        g^{-1}(\overline{X})
+        = \frac{\overline{X}}{""" + f"{(t**2) / 2}" + r"""}.
+        \to a.
+        $$
+        """
+
     def get_solution(self, random_state):
         t = self._get_transformed_random_state(random_state)
 
