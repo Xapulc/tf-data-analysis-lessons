@@ -27,7 +27,8 @@ class TransformerProblem1Variant3(VariantTransformer):
     def get_sample(self, iter_size, sample_size, random_state):
         shift = self._get_transformed_random_state(random_state)
 
-        a = expon(0.005).rvs(size=iter_size, random_state=shift)
+        a = expon(0.5).rvs(size=iter_size, random_state=shift)
+        a = np.where(a >= 6, 6, a)
         sigma = expon(0.1).rvs(size=iter_size, random_state=shift)
         eps = norm.rvs(size=[sample_size, iter_size], random_state=shift)
         return (shift + np.exp(eps * sigma + a)).T, a

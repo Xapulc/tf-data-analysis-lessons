@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
 
 from tools import Problem, Result, SolutionTester, DescriptionGenerator, \
@@ -60,7 +61,10 @@ class SolutionTesterProblem1(SolutionTester):
 
             for i in range(len(a)):
                 a_est = solution(sample[i])
-                total_error += (a[i] - a_est)**2
+                res = (a[i] - a_est)**2
+                if np.abs(res) >= 10000:
+                    res = 10000
+                total_error += res
 
             result_list.append({
                 "sample_size": criteria["sample_size"],
