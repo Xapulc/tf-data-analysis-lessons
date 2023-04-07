@@ -93,7 +93,10 @@ class SolutionTesterProblem2(SolutionTester):
             for i in range(len(a)):
                 left_side, right_side = solution(criteria["confidence"], sample[i])
                 total_error += (1 if (a[i] < left_side or right_side < a[i]) else 0)
-                total_interval_length += np.abs(right_side - left_side)
+                interval_length = np.abs(right_side - left_side)
+                if interval_length > 10000:
+                    interval_length = 10000
+                total_interval_length += interval_length
 
             result_list.append({
                 "sample_size": criteria["sample_size"],
