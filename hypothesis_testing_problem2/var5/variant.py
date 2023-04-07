@@ -34,7 +34,7 @@ class TransformerHypProblem2Variant5(VariantTransformer):
         return Decimal(alpha_numerator) / Decimal(alpha_denominator)
 
     def get_example_sample(self, iter_size, sample_size, random_state):
-        init_random_state = (random_state - 542) % 4235
+        init_random_state = (random_state - 542) % 4235 + 734
         sample_list = [
             {"dist_num": i,
              "data": dist.rvs(size=[iter_size, sample_size], random_state=init_random_state - i)}
@@ -47,7 +47,7 @@ class TransformerHypProblem2Variant5(VariantTransformer):
         return sample_list
 
     def get_sample(self, iter_size, sample_size, random_state, y_dist_num=0):
-        init_random_state = (random_state - 553) % 4235
+        init_random_state = (random_state - 553) % 4235 + 734
         if y_dist_num == 1:
             y_dist = self.first_dist
         elif y_dist_num == 2:

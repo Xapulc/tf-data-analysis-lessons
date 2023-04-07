@@ -38,7 +38,7 @@ class TransformerHypProblem1Variant5(VariantTransformer):
         return Decimal(alpha_numerator) / Decimal(alpha_denominator)
 
     def get_sample(self, iter_size, sample_size, random_state, delta_factor=0):
-        transformed_random_state = (random_state - 52) % 4512
+        transformed_random_state = (random_state - 52) % 4512 + 7078
 
         control_p = self.initial_p
         if delta_factor > 0:
