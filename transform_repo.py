@@ -6,4 +6,8 @@ if __name__ == "__main__":
     parser.add_argument("github_url")
 
     args = parser.parse_args()
-    print(args.github_url)
+    github_url = args.github_url
+    if "/blob/" not in github_url:
+        print(github_url)
+    else:
+        print(github_url[:github_url.rfind("/blob")])
