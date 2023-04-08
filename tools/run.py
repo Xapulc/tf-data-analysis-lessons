@@ -16,6 +16,7 @@ class ActionRunStorage(object, metaclass=Singleton):
                 "status": status,
                 "conclusion": conclusion,
                 "workflow_name": workflow_name,
+                "project": f"https://github.com/{workflow_name}",
                 "create_dttm": create_dttm,
                 "run": html_url
             }

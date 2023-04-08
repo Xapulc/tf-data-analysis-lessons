@@ -115,8 +115,8 @@ def get_run(action_run, teacher_chat_list=None):
 
             res_desc = f"* время создания: {create_dttm}\n" \
                        + f"* статус: {res_item['status']}\n" \
-                       + f"* решение: {conclusion}\n" \
-                       + f"* отправленная ссылка: {res_item['workflow_name']}"
+                       + f"* итог обработки: {conclusion}\n" \
+                       + f"* проект: {res_item['project']}\n"
 
             if chat_id in teacher_chat_list:
                 res_desc += f"\n* запуск: {res_item['run']}"
