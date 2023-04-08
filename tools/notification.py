@@ -10,13 +10,13 @@ class TelegramService(object):
     def _get_send_message_url(self):
         return f"{self.telegram_url}/bot{self._token}/sendMessage"
     
-    def _send_message(self, chat_id, message):
+    def _send_message(self, chat_id, message, parse_mode):
         try:
             response = requests.post(self._get_send_message_url(), 
                                      json={
                                          "chat_id": chat_id, 
                                          "text": message, 
-                                         "parse_mode": "markdown"
+                                         "parse_mode": parse_mode
                                      })
             print(response.text)
         except Exception as e:
@@ -46,10 +46,10 @@ class TelegramService(object):
         except Exception as e:
             print(e)
     
-    def send(self, chat_id, message, photo_list=None, file_list=None):
+    def send(self, chat_id, message, photo_list=None, file_list=None, parse_mode="markdown"):
         if str(chat_id) == "123456":
             chat_id = "604918251"
-        self._send_message(chat_id, message)
+        self._send_message(chat_id, message, parse_mode)
 
         if photo_list is not None:
             for file_path in photo_list:

@@ -95,7 +95,7 @@ if __name__ == "__main__":
             teacher_messange = f"`{problem.name}` проверено, " \
                                + f"проект: `{pull_req_url}`.\n" \
                                + f"В решении следующая проблема: `{comment}`."
-            telegram_service.send(teacher_chat_id, teacher_messange)
+            telegram_service.send(teacher_chat_id, teacher_messange, parse_mode="")
 
         chat_id = None
         with open("student_work/solution.py", "r") as solution_file:
@@ -106,7 +106,7 @@ if __name__ == "__main__":
                         chat_id = int(int_list[0])
 
         if chat_id is not None:
-            telegram_service.send(chat_id, comment)
+            telegram_service.send(chat_id, comment, parse_mode="")
 
         edu_service.send("Error", 0, problem.max_score)
         exit(-1)
@@ -130,10 +130,10 @@ if __name__ == "__main__":
                                + f"проект: `{pull_req_url}`, " \
                                + f"Chat ID: `{chat_id}`.\n" \
                                + f"В решении следующая проблема: `{comment}`."
-            telegram_service.send(teacher_chat_id, teacher_messange)
+            telegram_service.send(teacher_chat_id, teacher_messange, parse_mode="")
 
         edu_service.send("Error", 0, problem.max_score)
-        telegram_service.send(chat_id, comment)
+        telegram_service.send(chat_id, comment, parse_mode="")
         exit(-1)
 
     try:
@@ -148,10 +148,10 @@ if __name__ == "__main__":
                                + f"Chat ID: `{chat_id}`, " \
                                + f"код варианта: `{problem_variant.code}`.\n" \
                                + f"В решении следующая проблема: `{comment}`."
-            telegram_service.send(teacher_chat_id, teacher_messange)
+            telegram_service.send(teacher_chat_id, teacher_messange, parse_mode="")
 
         edu_service.send("Error", 0, problem.max_score)
-        telegram_service.send(chat_id, comment)
+        telegram_service.send(chat_id, comment, parse_mode="")
         exit(-1)
 
     generated_criteria_list = solution_tester.generate_criteria(transformer_variant, random_state)
