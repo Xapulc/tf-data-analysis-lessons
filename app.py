@@ -1,4 +1,5 @@
 import os
+import re
 
 from stat_problem1 import problem1, \
                           result_problem1, \
@@ -96,12 +97,23 @@ if __name__ == "__main__":
                                + f"В решении следующая проблема: `{comment}`."
             telegram_service.send(teacher_chat_id, teacher_messange)
 
+        chat_id = None
+        with open("student_work/solution.py", "r") as solution_file:
+            for line in solution_file.readlines():
+                if "chat_id" in line:
+                    int_list = re.findall(r"\d+", line)
+                    if len(int_list) > 0:
+                        chat_id = int(int_list[0])
+
+        if chat_id is not None:
+            telegram_service.send(chat_id, comment)
+
         edu_service.send("Error", 0, problem.max_score)
-        quit()
+        exit(-1)
 
     if str(chat_id) == "123456" and os.getenv("task_id") != "14106":
         edu_service.send("Error", 0, problem.max_score)
-        quit()
+        exit(-1)
 
     problem_variant = user_variant_resolver.get_variant(chat_id, problem)
     random_state = user_variant_resolver.get_number(chat_id, problem)
@@ -122,7 +134,7 @@ if __name__ == "__main__":
 
         edu_service.send("Error", 0, problem.max_score)
         telegram_service.send(chat_id, comment)
-        quit()
+        exit(-1)
 
     try:
         test_result = solution_tester.check_solution(solution, transformer_variant, random_state)
@@ -140,7 +152,7 @@ if __name__ == "__main__":
 
         edu_service.send("Error", 0, problem.max_score)
         telegram_service.send(chat_id, comment)
-        quit()
+        exit(-1)
 
     generated_criteria_list = solution_tester.generate_criteria(transformer_variant, random_state)
     task_score, message, photo_list = result_strategy.generate(test_result, generated_criteria_list)
