@@ -1,5 +1,6 @@
 import os
 import logging
+import pytz
 
 from telegram import Update, InputMediaPhoto
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
@@ -28,7 +29,8 @@ from tools import ProblemStorage, \
                   UserVariantResolver, \
                   Converter, \
                   VariantTransformerStrategies, \
-                  SolutionTesterStrategies
+                  SolutionTesterStrategies, \
+                  ActionRun
 
 
 problem_storage = ProblemStorage([
@@ -73,6 +75,56 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                          + "Для выполнения ДЗ вам потребуется `chat_id`. "
                                          + f"Ваш `chat_id` равен {update.effective_chat.id}.",
                                    parse_mode="markdown")
+
+
+def get_run(action_run, teacher_chat_list=None):
+    if teacher_chat_list is None:
+        teacher_chat_list = []
+
+    async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        chat_id = update.effective_chat.id
+        username = " ".join(context.args).strip(" ")
+
+        if len(username) == 0:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text="При вызове команды укажите свой username в GitHub. "
+                                                + "Пример: `/get_run username`.",
+                                           parse_mode="markdown")
+            return
+
+        res = action_run.get_run_dict(username)
+        if res is None:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"Не удалось найти запуски для `username = {username}`.",
+                                           parse_mode="markdown")
+            return
+
+        res_list = [
+            res_id
+            for res_id in res.values()
+        ]
+        res_list = sorted(res_list, key=lambda x: x["create_dttm"], reverse=True)
+
+        for res_item in res_list:
+            create_dttm = res_item["create_dttm"]
+            create_dttm = create_dttm.replace(tzinfo=pytz.utc) \
+                                     .astimezone(pytz.timezone("Europe/Moscow")) \
+                                     .strftime("%H:%M:%S %d.%m.%Y")
+            conclusion = res_item["conclusion"]
+            conclusion = "---" if conclusion is None else conclusion
+
+            res_desc = f"* время создания: {create_dttm}\n" \
+                       + f"* статус: {res_item['status']}\n" \
+                       + f"* решение: {conclusion}\n" \
+                       + f"* отправленная ссылка: {res_item['workflow_name']}"
+
+            if chat_id in teacher_chat_list:
+                res_desc += f"\n* запуск: {res_item['run']}"
+
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=res_desc)
+
+    return helper
 
 
 def get_chat(replace_chat_dict=None):
@@ -186,6 +238,8 @@ def get_problem_variant_solution_by_code(code, silence_mode_flg=False, silence_m
 
 if __name__ == "__main__":
     token = os.getenv("TELEGRAM_TOKEN")
+    action_run = ActionRun(os.getenv("GITHUB_TOKEN"))
+    action_run.start()
     application = ApplicationBuilder().token(token).build()
     
     application.add_handler(CommandHandler("start", start))
@@ -205,5 +259,8 @@ if __name__ == "__main__":
                                                                                     silence_mode_white_list=[
                                                                                         604918251
                                                                                     ])))
-    
+    application.add_handler(CommandHandler("get_run", get_run(action_run,
+                                                              teacher_chat_list=[
+                                                                  604918251
+                                                              ])))
     application.run_polling()

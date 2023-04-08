@@ -56,7 +56,7 @@ class TransformerProblem1Variant0(VariantTransformer):
         \begin{enumerate}
         \item несмещённая;
         \item состоятельная;
-        \item асимптотически нормальная.;
+        \item асимптотически нормальная.
         \end{enumerate}
         """
 
