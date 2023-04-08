@@ -87,7 +87,7 @@ if __name__ == "__main__":
     try:
         from student_work.solution import chat_id
     except Exception as e:
-        comment = "Chat ID не указан"
+        comment = f"Ошибка при импортах в `{problem.name}`. Тип ошибки: {type(e)}, сообщение: {str(e)}"
         print(comment)
 
         for teacher_chat_id in problem.teacher_chat_id_list:
