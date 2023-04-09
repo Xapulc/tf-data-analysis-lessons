@@ -50,6 +50,13 @@ class TransformerProblem2Variant0(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        return r"""
+        Можем применить ЦПТ, тогда получим асимптотическую оценку.
+        Если в ЦПТ укажем точное значение дисперсии,
+        получим точный доверительный интервал.
+        """
+
     def get_exact_solution(self, random_state):
         def solution(p, x):
             alpha = 1 - p

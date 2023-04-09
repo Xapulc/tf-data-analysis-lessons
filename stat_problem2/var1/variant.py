@@ -56,6 +56,53 @@ class TransformerProblem2Variant1(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        t = self._get_transformed_random_state(random_state)
+
+        return r"""
+        Пусть $p$ - уровень доверия, $\alpha := 1 - p$.
+        При равноускоренном движении
+        $$
+        X(t) = \frac{a t^2}{2}
+        = """ + f"{(t**2) / 2} a" + r""".
+        $$
+        Пусть $X_1, \ldots, X_n$ - измерения пути,
+        $\varepsilon_1, \ldots, \varepsilon_n
+        \sim 1/2 - exp(1)$ - ошибки измерения.
+        Тогда
+        $$
+        X_i = X(t) + \varepsilon_i
+        = """ + f"{(t**2) / 2} a" + r""" + \varepsilon_i.
+        $$
+        
+        \section{Асимптотически доверительный интервал}
+        
+        Отметим, что
+        $$
+        \mathbb{E} X_i = """ + f"{(t**2) / 2} a" + r""" + \mathbb{E} \varepsilon_i
+        = """ + f"{(t**2) / 2} a" + r""" - 1 / 2.
+        $$
+        В силу подхода с асимптотическим доверительным интервалом
+        $$
+        p \approx \mathbb{P}\left(z_{\alpha / 2} \leq 
+        \sqrt{n} \frac{\overline{X} - \left(""" + f"{(t**2) / 2} a" + r""" - 1 / 2\right)}{S_X} 
+        \leq z_{1 - \alpha / 2}\right)
+        = \mathbb{P}\left(\frac{z_{\alpha / 2} S_X}{\sqrt{n}}
+        \leq \overline{X} - \left(""" + f"{(t**2) / 2} a" + r""" - 1 / 2\right)
+        \leq \frac{z_{1 - \alpha / 2} S_X}{\sqrt{n}}\right)
+        $$
+        
+        Тогда в силу ЦПТ
+        $$
+        \sqrt{n} \frac{\overline{X} - \left(""" + f"{(t**2) / 2} a" + r""" - 1 / 2\right)}{S_X} 
+        \to \mathcal{N}(0, 1).
+        $$
+        Отсюда
+        $$
+        p = 
+        $$
+        """
+
     def get_exact_solution(self, random_state):
         t = self._get_transformed_random_state(random_state)
 

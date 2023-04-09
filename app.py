@@ -1,5 +1,6 @@
 import os
 import re
+import traceback
 
 from stat_problem1 import problem1, \
                           result_problem1, \
@@ -88,13 +89,13 @@ if __name__ == "__main__":
     try:
         from student_work.solution import chat_id
     except Exception as e:
-        comment = f"Ошибка при импортах в `{problem.name}`. Тип ошибки: {type(e)}, сообщение: {str(e)}"
+        comment = "".join(traceback.format_exception(e))
         print(comment)
 
         for teacher_chat_id in problem.teacher_chat_id_list:
             teacher_messange = f"`{problem.name}` проверено, " \
                                + f"проект: `{pull_req_url}`.\n" \
-                               + f"В решении следующая проблема: `{comment}`."
+                               + f"В решении следующая проблема: \n`{comment}`."
             telegram_service.send(teacher_chat_id, teacher_messange, parse_mode="")
 
         chat_id = None
@@ -122,14 +123,14 @@ if __name__ == "__main__":
     try:
         from student_work.solution import solution
     except Exception as e:
-        comment = f"Ошибка при импортах в `{problem.name}`. Тип ошибки: {type(e)}, сообщение: {str(e)}"
+        comment = "".join(traceback.format_exception(e))
         print(comment)
 
         for teacher_chat_id in problem.teacher_chat_id_list:
             teacher_messange = f"`{problem.name}` проверено, " \
                                + f"проект: `{pull_req_url}`, " \
                                + f"Chat ID: `{chat_id}`.\n" \
-                               + f"В решении следующая проблема: `{comment}`."
+                               + f"В решении следующая проблема: \n`{comment}`."
             telegram_service.send(teacher_chat_id, teacher_messange, parse_mode="")
 
         edu_service.send("Error", 0, problem.max_score)
@@ -139,7 +140,8 @@ if __name__ == "__main__":
     try:
         test_result = solution_tester.check_solution(solution, transformer_variant, random_state)
     except Exception as e:
-        comment = f"Ошибка при проверке решающей функции в `{problem.name}`. Тип ошибки: {type(e)}, сообщение: {str(e)}"
+        stack = "".join(traceback.format_exception(e))
+        comment = f"Ошибка при проверке решающей функции в `{problem.name}`. \n{stack}"
         print(comment)
 
         for teacher_chat_id in problem.teacher_chat_id_list:
@@ -147,7 +149,7 @@ if __name__ == "__main__":
                                + f"проект: `{pull_req_url}`, " \
                                + f"Chat ID: `{chat_id}`, " \
                                + f"код варианта: `{problem_variant.code}`.\n" \
-                               + f"В решении следующая проблема: `{comment}`."
+                               + f"В решении следующая проблема: \n`{comment}`."
             telegram_service.send(teacher_chat_id, teacher_messange, parse_mode="")
 
         edu_service.send("Error", 0, problem.max_score)
