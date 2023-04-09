@@ -60,6 +60,103 @@ class TransformerProblem2Variant2(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        factor = self._get_transformed_random_state(random_state)
+
+        return r"""
+        Пусть $p$ - уровень доверия, $\alpha := 1 - p$.
+        Расстояние от центра мишени $r$
+        связано с координатами $(x, y)$
+        формулой
+        $$
+        r = \sqrt{x^2 + y^2}.
+        $$
+        Пусть $R_1, \ldots, R_n$ - измерения расстрояния
+        от центра мишени,
+        $(X_1, Y_1), \ldots, (X_n, Y_n)$ - координаты попаданий.
+        Тогда
+        $$
+        R_i^2 = X_i^2 + Y_i^2.
+        $$
+        
+        \section{Асимптотически доверительный интервал}
+        
+        Отметим, что
+        $$
+        \mathbb{E} R_1^2 = \mathbb{E} X_1^2 + \mathbb{E} Y_1^2
+        = """ + f"{2 * factor}" + r""" \sigma^2.
+        $$
+        Пусть $S_{R^2}^2$ - выборочная дисперсия 
+        для $R_1^2, \ldots, R_n^2$.
+        В силу подхода с асимптотическим доверительным интервалом
+        \begin{multline}
+        p \approx \mathbb{P}\left(z_{\alpha / 2} \leq 
+        \sqrt{n} \frac{\overline{R^2} - """ + f"{2 * factor}" + r""" \sigma^2}{S_{R^2}} 
+        \leq z_{1 - \alpha / 2}\right)
+        = \mathbb{P}\left(\overline{R^2} - \frac{z_{1 - \alpha / 2} S_{R^2}}{\sqrt{n}}
+        \leq """ + f"{2 * factor}" + r""" \sigma^2
+        \leq \overline{R^2} - \frac{z_{\alpha / 2} S_{R^2}}{\sqrt{n}}\right) = \\
+        = \mathbb{P}\left(\sqrt{\frac{1}{""" + f"{2 * factor}" + r"""} 
+        \left(\overline{R^2} - \frac{z_{1 - \alpha / 2} S_{R^2}}{\sqrt{n}}\right)}
+        \leq \sigma
+        \leq \sqrt{\frac{1}{""" + f"{2 * factor}" + r"""} 
+        \left(\overline{R^2} - \frac{z_{\alpha / 2} S_{R^2}}{\sqrt{n}}\right)}\right).
+        \end{multline}
+        Таким образом,
+        асимптотический доверительный интервал
+        $$
+        I = \left(\sqrt{\frac{1}{""" + f"{2 * factor}" + r"""} 
+        \left(\overline{R^2} - \frac{z_{1 - \alpha / 2} S_{R^2}}{\sqrt{n}}\right)},
+        \sqrt{\frac{1}{""" + f"{2 * factor}" + r"""} 
+        \left(\overline{R^2} - \frac{z_{\alpha / 2} S_{R^2}}{\sqrt{n}}\right)}\right).
+        $$
+        
+        \section{Точный доверительный интервал}
+        
+        Как было сказано в условии,
+        каждая из величин
+        $$
+        \frac{X_i}{\sigma \sqrt{""" + f"{2 * factor}" + r"""}},
+        \quad \frac{Y_i}{\sigma \sqrt{""" + f"{2 * factor}" + r"""}},
+        $$
+        имеет хи-квадрат распределение
+        со степенью свободы $1$.
+        Отсюда величина
+        $$
+        \frac{R_1^2 + \ldots + R_n^2}{\sigma \sqrt{""" + f"{2 * factor}" + r"""}}
+        = \frac{X_1^2 + Y_1^2 + \ldots + X_n^2 + Y_n^2}{\sigma \sqrt{""" + f"{2 * factor}" + r"""}}
+        $$
+        имеет хи-квадрат распределение со степенью свободы $2 n$.
+        Положим
+        $$
+        g(\sigma; r) := - \frac{r_1^2 + \ldots + r_n^2}{\sigma \sqrt{""" + f"{2 * factor}" + r"""}}.
+        $$
+        Проверим свойства из лекции.
+        \begin{itemize}
+        \item $g(\sigma; R)$ имеет распределение $\chi^2(2 n)$,
+        не зависящее от параметра $\sigma$.
+        \item Квантиль $z_{\beta}$ распределения $g(\sigma; R)$
+        явялется противоположным числом
+        к $(1-\beta)$-квантилю распределения $\chi^2(2 n)$.
+        То есть $z_{\beta} = - \varkappa_{1 - \beta}$,
+        где $\varkappa_{1 - \beta}$ - $(1 - \beta)$-квантиль
+        распределения $\chi^2(2 n)$.
+        \item При любом фиксированном $r \in \mathbb{R}^n$
+        функция $g(\sigma; r)$ растёт по $\sigma$.
+        \end{itemize}
+        Пусть $g(\sigma; r) = s$.
+        Тогда
+        $$
+        \sigma = - \frac{r_1^2 + \ldots + r_n^2}{s \sqrt{""" + f"{2 * factor}" + r"""}}
+        = g^{-1}(s; r).
+        $$
+        Отсюда доверительный интервал
+        $$
+        I = \left(\frac{R_1^2 + \ldots + R_n^2}{\varkappa_{1 - \alpha / 2} \sqrt{""" + f"{2 * factor}" + r"""}},
+        \frac{R_1^2 + \ldots + R_n^2}{\varkappa_{\alpha / 2} \sqrt{""" + f"{2 * factor}" + r"""}}\right).
+        $$
+        """
+
     def get_exact_solution(self, random_state):
         factor = self._get_transformed_random_state(random_state)
 

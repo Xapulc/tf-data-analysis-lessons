@@ -60,6 +60,108 @@ class TransformerProblem2Variant3(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        min_alpha = self._get_transformed_random_state(random_state)
+
+        return r"""
+        Пусть $p$ - уровень доверия, $\alpha := 1 - p$.
+        Пусть $X_1, \ldots, X_n$ - измерения уровней значимости.
+        
+        \section{Асимптотически доверительный интервал}
+        
+        Отметим, что
+        $$
+        \mathbb{E} X_1 = \frac{""" + f"{min_alpha}" + r""" + b}{2}.
+        $$
+        В силу подхода с асимптотическим доверительным интервалом
+        \begin{multline}
+        p \approx \mathbb{P}\left(z_{\alpha / 2} \leq 
+        \sqrt{n} \frac{\overline{X} - (""" + f"{min_alpha}" + r""" + b) / 2}{S_X} 
+        \leq z_{1 - \alpha / 2}\right)
+        = \mathbb{P}\left(\overline{X} - \frac{z_{1 - \alpha / 2} S_X}{\sqrt{n}}
+        \leq \frac{""" + f"{min_alpha}" + r""" + b}{2}
+        \leq \overline{X} - \frac{z_{\alpha / 2} S_X}{\sqrt{n}}\right) = \\
+        = \mathbb{P}\left(2 \overline{X} - """ + f"{min_alpha}" + r""" 
+        - \frac{2 z_{1 - \alpha / 2} S_X}{\sqrt{n}}
+        \leq b
+        \leq 2 \overline{X} - """ + f"{min_alpha}" + r""" 
+        - \frac{2 z_{\alpha / 2} S_X}{\sqrt{n}}\right).
+        \end{multline}
+        Таким образом,
+        асимптотический доверительный интервал
+        $$
+        I = \left(2 \overline{X} - """ + f"{min_alpha}" + r""" 
+        - \frac{2 z_{1 - \alpha / 2} S_X}{\sqrt{n}},
+        2 \overline{X} - """ + f"{min_alpha}" + r""" 
+        - \frac{2 z_{\alpha / 2} S_X}{\sqrt{n}}\right).
+        $$
+        
+        \section{Точный доверительный интервал}
+        
+        Как было отмечено в бонусе к лекции,
+        параметры равномерного распределения
+        лучше оценивать с помощью максимума.
+        Попробуем использовать это соображение.
+        
+        Отметим, что
+        $$
+        X_i - """ + f"{min_alpha}" + r""" 
+        \sim R[0, b - """ + f"{min_alpha}" + r"""],
+        \quad \frac{X_i - """ + f"{min_alpha}" + r"""}{b - """ + f"{min_alpha}" + r"""}
+        \sim R[0, 1].
+        $$
+        Таким образом, случайная величина
+        $$
+        \max\left\{\frac{X_1 - """ + f"{min_alpha}" + r"""}{b - """ + f"{min_alpha}" + r"""},
+        \ldots, \frac{X_n - """ + f"{min_alpha}" + r"""}{b - """ + f"{min_alpha}" + r"""}\right\}
+        $$
+        как максимум независимых равномерных $[0, 1]$ величин
+        имеет распределение, не зависящее от $b$.
+        
+        Положим
+        $$
+        g(b; x) := - \frac{\max\{x_1, \ldots, x_n\} - """ + f"{min_alpha}" + r"""}{b - """ + f"{min_alpha}" + r"""}.
+        $$
+        Проверим свойства из лекции.
+        \begin{itemize}
+        \item $g(b; X)$ имеет распределение,
+        не зависящее от параметра $b$.
+        \item При любом фиксированном $x \in \mathbb{R}^n$
+        функция $g(b; x)$ растёт по $b$.
+        \end{itemize}
+        Найдём $\beta$-квантиль $g(b; X)$.
+        Пусть $t \in (-1, 0)$.
+        Тогда
+        \begin{multline}
+        1 - \mathbb{P}\left(g(b; X) \leq t\right)
+        = \mathbb{P}\left(g(b; X) > t\right) = \\
+        = \mathbb{P}\left(\max\left\{\frac{X_1 - """ + f"{min_alpha}" + r"""}{b - """ + f"{min_alpha}" + r"""},
+        \ldots, \frac{X_n - """ + f"{min_alpha}" + r"""}{b - """ + f"{min_alpha}" + r"""}\right\} < -t\right) = \\
+        = \prod_{i=1}^n \mathbb{P}\left(\frac{X_1 - """ + f"{min_alpha}" + r"""}{b - """ + f"{min_alpha}" + r"""} < -t\right)
+        = (-t)^n.
+        \end{multline}
+        Отсюда
+        $$
+        \beta = \mathbb{P}\left(g(b; X) \leq t\right) = 1 - (-t)^n,
+        \quad t = - \sqrt[n]{1 - \beta}.
+        $$
+        Так мы получили $\beta$-квантиль распределения $g(b; X)$.
+        
+        Найдём обратную функцию.
+        Пусть $g(b; x) = y$.
+        Тогда
+        $$
+        b = """ + f"{min_alpha}" + r""" - \frac{\max\{x_1, \ldots, x_n\} - """ + f"{min_alpha}" + r"""}{y}.
+        $$
+        Отсюда доверительный интервал
+        $$
+        I = \left(""" + f"{min_alpha}" + r"""
+        + \frac{\max\{X_1, \ldots, X_n\} - """ + f"{min_alpha}" + r"""}{\sqrt[n]{1 - \alpha / 2}},
+        """ + f"{min_alpha}" + r"""
+        + \frac{\max\{X_1, \ldots, X_n\} - """ + f"{min_alpha}" + r"""}{\sqrt[n]{\alpha / 2}}.
+        $$
+        """
+
     def get_exact_solution(self, random_state):
         min_alpha = self._get_transformed_random_state(random_state)
         float_min_alpha = float(min_alpha)

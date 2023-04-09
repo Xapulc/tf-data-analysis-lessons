@@ -83,24 +83,110 @@ class TransformerProblem2Variant1(VariantTransformer):
         = """ + f"{(t**2) / 2} a" + r""" - 1 / 2.
         $$
         В силу подхода с асимптотическим доверительным интервалом
-        $$
+        \begin{multline}
         p \approx \mathbb{P}\left(z_{\alpha / 2} \leq 
         \sqrt{n} \frac{\overline{X} - \left(""" + f"{(t**2) / 2} a" + r""" - 1 / 2\right)}{S_X} 
         \leq z_{1 - \alpha / 2}\right)
-        = \mathbb{P}\left(\frac{z_{\alpha / 2} S_X}{\sqrt{n}}
-        \leq \overline{X} - \left(""" + f"{(t**2) / 2} a" + r""" - 1 / 2\right)
-        \leq \frac{z_{1 - \alpha / 2} S_X}{\sqrt{n}}\right)
+        = \mathbb{P}\left(\overline{X} - \frac{z_{1 - \alpha / 2} S_X}{\sqrt{n}}
+        \leq """ + f"{(t**2) / 2} a" + r""" - 1 / 2
+        \leq \overline{X} - \frac{z_{\alpha / 2} S_X}{\sqrt{n}}\right) = \\
+        = \mathbb{P}\left(\frac{1}{""" + f"{(t**2) / 2}" + r"""} 
+        \left(1 / 2 + \overline{X} - \frac{z_{1 - \alpha / 2} S_X}{\sqrt{n}}\right)
+        \leq a
+        \leq \frac{1}{""" + f"{(t**2) / 2}" + r"""} 
+        \left(1 / 2 + \overline{X} - \frac{z_{\alpha / 2} S_X}{\sqrt{n}}\right)\right).
+        \end{multline}
+        Таким образом,
+        асимптотический доверительный интервал
+        $$
+        I = \left(\frac{1}{""" + f"{(t**2) / 2}" + r"""} 
+        \left(1 / 2 + \overline{X} - \frac{z_{1 - \alpha / 2} S_X}{\sqrt{n}}\right),
+        \frac{1}{""" + f"{(t**2) / 2}" + r"""} 
+        \left(1 / 2 + \overline{X} - \frac{z_{\alpha / 2} S_X}{\sqrt{n}}\right)\right).
         $$
         
-        Тогда в силу ЦПТ
+        \section{Точный доверительный интервал}
+        
+        Пусть $\delta_i = 1 / 2 - \varepsilon_i$.
+        Тогда $\delta_i \sim \exp(1)$.
+        
+        \subsection{Оценка на основе максимума}
+        
+        Отметим, что
         $$
-        \sqrt{n} \frac{\overline{X} - \left(""" + f"{(t**2) / 2} a" + r""" - 1 / 2\right)}{S_X} 
-        \to \mathcal{N}(0, 1).
+        \max\left\{X_1, \ldots, X_n\right\}
+        = """ + f"{(t**2) / 2} a" + r""" + 1 / 2 
+        - \min\left\{\delta_1, \ldots, \delta_n\right\},
         $$
-        Отсюда
+        где минимум имеет распределение $\exp(n)$,
+        не зависящее от параметра $a$.
+        Тогда положим
         $$
-        p = 
+        g(a; x) := """ + f"{(t**2) / 2} a" + r""" + 1 / 2 
+        - \max\left\{x_1, \ldots, x_n\right\}.
         $$
+        Проверим свойства из лекции.
+        \begin{itemize}
+        \item $g(a; X)$ имеет распределение $\exp(n)$,
+        не зависящее от параметра $a$.
+        \item Квантиль $z_{\beta}$ распределения $g(a; X)$
+        является $\beta$-квантилем распределения $\exp(n)$.
+        \item При любом фиксированном $x \in \mathbb{R}^n$
+        функция $g(a; x)$ растёт по $a$.
+        \end{itemize}
+        Пусть $g(a; x) = y$.
+        Тогда
+        $$
+        a = \frac{y + \max\left\{x_1, \ldots, x_n\right\} - 1 / 2}{""" + f"{(t**2) / 2}" + r"""}
+        = g^{-1}(y; x).
+        $$
+        Отсюда доверительный интервал
+        $$
+        I = \left(\frac{z_{\alpha / 2} + \max\left\{x_1, \ldots, x_n\right\} - 1 / 2}{""" + f"{(t**2) / 2}" + r"""},
+        \frac{z_{1 - \alpha / 2} + \max\left\{x_1, \ldots, x_n\right\} - 1 / 2}{""" + f"{(t**2) / 2}" + r"""}\right).
+        $$
+        На практике такой доверительный интервал оказывается достаточно неточным.
+        
+        \subsection{Оценка на основе суммы}
+        
+        Отметим, что
+        $$
+        X_1 + \ldots + X_n
+        = n \left(""" + f"{(t**2) / 2} a" + r""" + 1 / 2\right)
+        - \left(\delta_1 + \ldots + \delta_n\right),
+        $$
+        где последняя сумма имеет распределение $\Gamma(n, 1)$,
+        не зависящее от параметра $a$.
+        Тогда положим
+        $$
+        g(a; x) := n \left(""" + f"{(t**2) / 2} a" + r""" + 1 / 2\right)
+        - \left(x_1 + \ldots + x_n\right).
+        $$
+        Проверим свойства из лекции.
+        \begin{itemize}
+        \item $g(a; X)$ имеет распределение $\Gamma(n, 1)$,
+        не зависящее от параметра $a$.
+        \item Квантиль $z_{\beta}$ распределения $g(a; X)$
+        является $\beta$-квантилем распределения $\Gamma(n, 1)$.
+        \item При любом фиксированном $x \in \mathbb{R}^n$
+        функция $g(a; x)$ растёт по $a$.
+        \end{itemize}
+        Пусть $g(a; x) = y$.
+        Тогда
+        $$
+        a = \frac{1}{""" + f"{(t**2) / 2}" + r"""}
+        \left(\frac{y + x_1 + \ldots + x_n}{n} - \frac{1}{2}\right)
+        = g^{-1}(y; x).
+        $$
+        Отсюда доверительный интервал
+        $$
+        I = \left(\frac{1}{""" + f"{(t**2) / 2}" + r"""}
+        \left(\frac{z_{\alpha / 2} + x_1 + \ldots + x_n}{n} - \frac{1}{2}\right),
+        \frac{1}{""" + f"{(t**2) / 2}" + r"""}
+        \left(\frac{z_{1 - \alpha / 2} + x_1 + \ldots + x_n}{n} - \frac{1}{2}\right)\right).
+        $$
+        Это решение в среднем лучше других 
+        и является эталонным для данной задачи.
         """
 
     def get_exact_solution(self, random_state):
