@@ -2,8 +2,8 @@ from .metaclass import Singleton
 
 
 class Problem(object):
-    def __init__(self, task_id, code, name, max_score,
-                 criteria_list, problem_variant_list,
+    def __init__(self, task_id, code, name, max_score=None,
+                 criteria_list=None, problem_variant_list=None,
                  teacher_chat_id_list=None):
         self.task_id = task_id
         self.code = code
@@ -16,7 +16,7 @@ class Problem(object):
 
 
 class ProblemVariant(object):
-    def __init__(self, code, input_data_text, output_data_text):
+    def __init__(self, code, input_data_text=None, output_data_text=None):
         self.code = code
         self.input_data_text = input_data_text
         self.output_data_text = output_data_text

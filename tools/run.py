@@ -34,7 +34,7 @@ class ActionRun(object, metaclass=Singleton):
         self.cache_sec = cache_sec
         self.actuality_dttm = None
         self.action_run_storage = ActionRunStorage()
-        self.max_run_per_page = 50
+        self.max_run_per_page = 100
         self.max_page_retry_cnt = 3
 
     def _load_page(self, page_num):

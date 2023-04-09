@@ -1,7 +1,10 @@
 import os
 import logging
 import pytz
+import pandas as pd
+import numpy as np
 
+from scipy.stats import randint
 from telegram import Update, InputMediaPhoto
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 from stat_problem1 import problem1, \
@@ -24,6 +27,9 @@ from hypothesis_testing_problem3 import hyp_problem3, \
                                         description_generator_hyp_problem3, \
                                         transformer_variant_hyp_problem3_list, \
                                         solution_tester_hyp_problem3
+from telesales_project import telesales, \
+                              telesales_project, \
+                              transformer_telesales_project_list
 from tools import ProblemStorage, \
                   DescriptionGeneratorStrategies, \
                   UserVariantResolver, \
@@ -58,7 +64,8 @@ transformer_variant_strategies = VariantTransformerStrategies(transformer_varian
                                                               + transformer_variant_problem2_list
                                                               + transformer_variant_hyp_problem1_list
                                                               + transformer_variant_hyp_problem2_list
-                                                              + transformer_variant_hyp_problem3_list)
+                                                              + transformer_variant_hyp_problem3_list
+                                                              + transformer_telesales_project_list)
 
 user_variant_resolver = UserVariantResolver(os.getenv("SOLVER_RANDOM_STATE"))
 converter = Converter()
@@ -188,6 +195,175 @@ def get_problem_variant_by_code(code, silence_mode_flg=False, silence_mode_white
     return helper
 
 
+def get_telesales_project_description(silence_mode_flg=False, teacher_chat_list=None):
+    if teacher_chat_list is None:
+        teacher_chat_list = []
+
+    async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        chat_id = update.effective_chat.id
+
+        if silence_mode_flg and (chat_id not in teacher_chat_list):
+            await context.bot.send_message(chat_id=chat_id,
+                                           text="Генерация условия недоступна.")
+        else:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"Генерация условия...")
+            try:
+                if chat_id in teacher_chat_list:
+                    student_chat_id = int(" ".join(context.args).strip(" "))
+                else:
+                    student_chat_id = chat_id
+
+                random_state = user_variant_resolver.get_number(student_chat_id, telesales_project)
+                problem_variant = user_variant_resolver.get_variant(student_chat_id, telesales_project)
+
+                transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
+                description = transformer_variant.get_description(random_state)
+
+                await context.bot.send_message(chat_id=chat_id, text=description)
+
+                hist_data = telesales.generate_sample(sample_size=telesales.sample_size,
+                                                      random_state=telesales.random_state)
+                file_name = "tmp/hist_telesales.csv"
+                hist_data.to_csv(file_name, index=False)
+                await context.bot.send_document(chat_id=chat_id,
+                                                caption="Исторические данные",
+                                                document=file_name)
+            except Exception as e:
+                comment = "Ошибка при генерации условия. " \
+                          + f"Тип ошибки: {type(e)}, сообщение: {str(e)}, `chat_id = {str(chat_id)}`. " \
+                          + f"Перешлите это сообщение преподавателю."
+                await context.bot.send_message(chat_id=chat_id, text=comment)
+
+    return helper
+
+
+def get_telesales_project_sample(silence_mode_flg=False, teacher_chat_list=None):
+    if teacher_chat_list is None:
+        teacher_chat_list = []
+
+    async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        chat_id = update.effective_chat.id
+
+        if silence_mode_flg and (chat_id not in teacher_chat_list):
+            await context.bot.send_message(chat_id=chat_id,
+                                           text="Генерация выборки недоступна.")
+        else:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"Генерация выборки...")
+            sample_size = " ".join(context.args).strip(" ")
+            if len(sample_size) == 0:
+                await context.bot.send_message(chat_id=chat_id,
+                                               text=f"Заполните размер выборки в формате `/get_telesales_project_sample sample_size`",
+                                               parse_mode="markdown")
+                return
+
+            try:
+                sample_size = int(sample_size)
+                assert sample_size > 0, "Неположительный разер выборки"
+                assert sample_size <= 1000000, "Cлишком большая выборка"
+            except Exception as e:
+                comment = "Ошибка при распозновании размера выборки. " \
+                          + f"Тип ошибки: {type(e)}, сообщение: {str(e)}."
+                await context.bot.send_message(chat_id=chat_id, text=comment)
+                return
+
+            try:
+                random_state = user_variant_resolver.get_number(chat_id, telesales_project)
+                problem_variant = user_variant_resolver.get_variant(chat_id, telesales_project)
+
+                transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
+
+                sample_random_state = randint.rvs(124, 43251)
+                control_data, test_data = telesales.generate_test_sample(sample_size,
+                                                                         transformer_variant.get_metric(),
+                                                                         transformer_variant.get_alternative(),
+                                                                         transformer_variant.relative_mde,
+                                                                         sample_random_state)
+
+                for sample, sample_desc in zip([control_data, test_data], ["Контроль", "Тест"]):
+                    file_name = f"tmp/{sample_desc}.csv"
+                    sample.to_csv(file_name, index=False)
+                    await context.bot.send_document(chat_id=chat_id,
+                                                    caption=f"Выборка '{sample_desc}'",
+                                                    document=file_name)
+
+                await context.bot.send_message(chat_id=chat_id,
+                                               text=f"Код выборки: `{sample_random_state}`.",
+                                               parse_mode="markdown")
+            except Exception as e:
+                comment = "Ошибка при генерации выборки. " \
+                          + f"Тип ошибки: {type(e)}, сообщение: {str(e)}, `chat_id = {str(chat_id)}`. " \
+                          + f"Перешлите это сообщение преподавателю."
+                await context.bot.send_message(chat_id=chat_id, text=comment)
+
+    return helper
+
+
+def get_telesales_project_report(teacher_chat_list=None):
+    if teacher_chat_list is None:
+        teacher_chat_list = []
+
+    async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        chat_id = update.effective_chat.id
+
+        if chat_id in teacher_chat_list:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"Генерация отчёта...")
+
+            try:
+                student_chat_id = int(context.args[0])
+                sample_random_state = int(context.args[1])
+                sample_size = int(context.args[2])
+
+                random_state = user_variant_resolver.get_number(student_chat_id, telesales_project)
+                problem_variant = user_variant_resolver.get_variant(student_chat_id, telesales_project)
+
+                transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
+                description = transformer_variant.get_description(random_state)
+                await context.bot.send_message(chat_id=chat_id, text=description)
+
+                hist_data = telesales.generate_sample(sample_size=telesales.sample_size,
+                                                      random_state=telesales.random_state)
+                target_column = hist_data[transformer_variant.get_metric()]
+                await context.bot.send_message(chat_id=chat_id,
+                                               text=f"Целевая метрика: {transformer_variant.get_metric()}.\n"
+                                                    + f"Альтернатива: '{transformer_variant.get_alternative()}'.\n"
+                                                    + f"Выборочное среднее: {target_column.mean():.2f}.\n"
+                                                    + f"Выборочная дисперсия: {target_column.var():.2f}.")
+
+                control_sample_size, test_sample_size = telesales.get_sample_size(transformer_variant.get_metric(),
+                                                                                  transformer_variant.get_alternative(),
+                                                                                  transformer_variant.alpha,
+                                                                                  transformer_variant.beta,
+                                                                                  transformer_variant.relative_mde)
+                dev_sample_size = np.abs(sample_size / control_sample_size - 1)
+                await context.bot.send_message(chat_id=chat_id,
+                                               text=f"Размер выборки на контроле: {control_sample_size:.0f}.\n"
+                                                    + f"Размер выборки на тесте: {test_sample_size:.0f}.\n"
+                                                    + f"Отклонение от истинного значения: {dev_sample_size:.1%}")
+
+                control_data, test_data = telesales.generate_test_sample(sample_size,
+                                                                         transformer_variant.get_metric(),
+                                                                         transformer_variant.get_alternative(),
+                                                                         transformer_variant.relative_mde,
+                                                                         sample_random_state)
+                control_sample = control_data[transformer_variant.get_metric()]
+                test_sample = test_data[transformer_variant.get_metric()]
+                p = transformer_variant.check_homogeneity(control_sample, test_sample)
+                hypothesis_desc = "H(0)" if telesales.get_hypothesis(sample_random_state) else "H(1)"
+
+                await context.bot.send_message(chat_id=chat_id,
+                                               text=f"p-value критерия: {p:.3f}. "
+                                                    + f"Справедлива {hypothesis_desc}")
+            except Exception as e:
+                comment = "Ошибка при генерации отчёта. " \
+                          + f"Тип ошибки: {type(e)}, сообщение: {str(e)}, `chat_id = {str(chat_id)}`."
+                await context.bot.send_message(chat_id=chat_id, text=comment)
+
+    return helper
+
+
 def get_problem_variant_solution_by_code(code, silence_mode_flg=False, silence_mode_white_list=None):
     problem = problem_storage.get_problem_by_code(code)
     if silence_mode_white_list is None:
@@ -243,7 +419,7 @@ def get_problem_variant_solution_by_code(code, silence_mode_flg=False, silence_m
 if __name__ == "__main__":
     token = os.getenv("TELEGRAM_TOKEN")
     action_run = ActionRun(os.getenv("GITHUB_TOKEN"))
-    action_run.start()
+    # action_run.start()
     application = ApplicationBuilder().token(token).build()
     
     application.add_handler(CommandHandler("start", start))
@@ -267,4 +443,18 @@ if __name__ == "__main__":
                                                               teacher_chat_list=[
                                                                   604918251
                                                               ])))
+    application.add_handler(CommandHandler("get_project1_desc",
+                                           get_telesales_project_description(silence_mode_flg=True,
+                                                                             teacher_chat_list=[
+                                                                                 604918251
+                                                                             ])))
+    application.add_handler(CommandHandler("get_project1_sample",
+                                           get_telesales_project_sample(silence_mode_flg=True,
+                                                                        teacher_chat_list=[
+                                                                            604918251
+                                                                        ])))
+    application.add_handler(CommandHandler("get_project1_report",
+                                           get_telesales_project_report(teacher_chat_list=[
+                                                                            604918251
+                                                                        ])))
     application.run_polling()
