@@ -92,7 +92,7 @@ class TransformerProblem2Variant2(VariantTransformer):
         \begin{multline}
         p \approx \mathbb{P}\left(z_{\alpha / 2} \leq 
         \sqrt{n} \frac{\overline{R^2} - """ + f"{2 * factor}" + r""" \sigma^2}{S_{R^2}} 
-        \leq z_{1 - \alpha / 2}\right)
+        \leq z_{1 - \alpha / 2}\right) = \\
         = \mathbb{P}\left(\overline{R^2} - \frac{z_{1 - \alpha / 2} S_{R^2}}{\sqrt{n}}
         \leq """ + f"{2 * factor}" + r""" \sigma^2
         \leq \overline{R^2} - \frac{z_{\alpha / 2} S_{R^2}}{\sqrt{n}}\right) = \\

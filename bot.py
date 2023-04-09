@@ -199,6 +199,9 @@ def get_problem_variant_solution_by_code(code, silence_mode_flg=False, silence_m
         if silence_mode_flg and (chat_id not in silence_mode_white_list):
             await context.bot.send_message(chat_id=chat_id,
                                            text=f"{problem.name}. Генерация решения недоступна.")
+        elif problem.code not in (problem1.code, problem2.code):
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"{problem.name}. Генерация решения недоступна.")
         else:
             await context.bot.send_message(chat_id=chat_id,
                                            text=f"{problem.name}. Генерация решения...")

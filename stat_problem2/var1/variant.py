@@ -86,7 +86,7 @@ class TransformerProblem2Variant1(VariantTransformer):
         \begin{multline}
         p \approx \mathbb{P}\left(z_{\alpha / 2} \leq 
         \sqrt{n} \frac{\overline{X} - \left(""" + f"{(t**2) / 2} a" + r""" - 1 / 2\right)}{S_X} 
-        \leq z_{1 - \alpha / 2}\right)
+        \leq z_{1 - \alpha / 2}\right) = \\
         = \mathbb{P}\left(\overline{X} - \frac{z_{1 - \alpha / 2} S_X}{\sqrt{n}}
         \leq """ + f"{(t**2) / 2} a" + r""" - 1 / 2
         \leq \overline{X} - \frac{z_{\alpha / 2} S_X}{\sqrt{n}}\right) = \\

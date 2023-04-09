@@ -77,7 +77,7 @@ class TransformerProblem2Variant3(VariantTransformer):
         \begin{multline}
         p \approx \mathbb{P}\left(z_{\alpha / 2} \leq 
         \sqrt{n} \frac{\overline{X} - (""" + f"{min_alpha}" + r""" + b) / 2}{S_X} 
-        \leq z_{1 - \alpha / 2}\right)
+        \leq z_{1 - \alpha / 2}\right) = \\
         = \mathbb{P}\left(\overline{X} - \frac{z_{1 - \alpha / 2} S_X}{\sqrt{n}}
         \leq \frac{""" + f"{min_alpha}" + r""" + b}{2}
         \leq \overline{X} - \frac{z_{\alpha / 2} S_X}{\sqrt{n}}\right) = \\
@@ -151,7 +151,8 @@ class TransformerProblem2Variant3(VariantTransformer):
         Пусть $g(b; x) = y$.
         Тогда
         $$
-        b = """ + f"{min_alpha}" + r""" - \frac{\max\{x_1, \ldots, x_n\} - """ + f"{min_alpha}" + r"""}{y}.
+        b = """ + f"{min_alpha}" + r""" - \frac{\max\{x_1, \ldots, x_n\} - """ + f"{min_alpha}" + r"""}{y}
+        = g^{-1}(y; x).
         $$
         Отсюда доверительный интервал
         $$
