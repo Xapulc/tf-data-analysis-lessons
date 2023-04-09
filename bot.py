@@ -419,7 +419,7 @@ def get_problem_variant_solution_by_code(code, silence_mode_flg=False, silence_m
 if __name__ == "__main__":
     token = os.getenv("TELEGRAM_TOKEN")
     action_run = ActionRun(os.getenv("GITHUB_TOKEN"))
-    # action_run.start()
+    action_run.start()
     application = ApplicationBuilder().token(token).build()
     
     application.add_handler(CommandHandler("start", start))
