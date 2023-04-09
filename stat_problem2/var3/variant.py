@@ -63,7 +63,7 @@ class TransformerProblem2Variant3(VariantTransformer):
     def get_solution_description(self, random_state):
         min_alpha = self._get_transformed_random_state(random_state)
 
-        return r"""
+        solution_description = r"""
         Пусть $p$ - уровень доверия, $\alpha := 1 - p$.
         Пусть $X_1, \ldots, X_n$ - измерения уровней значимости.
         
@@ -163,6 +163,27 @@ class TransformerProblem2Variant3(VariantTransformer):
         $$
         """
 
+        clt_solution_code = f"Асимптотический доверительный интервал\n" \
+                            + f"`def solution(p, x):\n" \
+                            + f"    alpha = 1 - p\n" \
+                            + f"    y = 2 * x - {min_alpha}\n" \
+                            + f"    loc = y.mean()\n" \
+                            + f"    scale = np.sqrt(y.var() / len(y))\n" \
+                            + f"    return max(loc - scale * norm.ppf(1 - alpha / 2), 0), \\\n" \
+                            + f"           loc - scale * norm.ppf(alpha / 2)`"
+
+        exact_solution_code = f"Точный доверительный интервал\n" \
+                              + f"`def solution(p, x):\n" \
+                              + f"    alpha = 1 - p\n" \
+                              + f"    t = x.max() - {min_alpha}\n" \
+                              + f"    n = len(x)\n" \
+                              + f"    return {min_alpha} + t / ((1 - alpha / 2)**(1 / n)), \\\n" \
+                              + f"           {min_alpha} + t / ((alpha / 2)**(1 / n))`"
+
+        return solution_description, clt_solution_code, exact_solution_code
+
+
+
     def get_exact_solution(self, random_state):
         min_alpha = self._get_transformed_random_state(random_state)
         float_min_alpha = float(min_alpha)
@@ -184,7 +205,7 @@ class TransformerProblem2Variant3(VariantTransformer):
             alpha = 1 - p
             y = 2 * x - float_min_alpha
             loc = y.mean()
-            scale = np.sqrt(y.var() / len(x))
+            scale = np.sqrt(y.var() / len(y))
             return max(loc - scale * norm.ppf(1 - alpha / 2), 0), \
                    loc - scale * norm.ppf(alpha / 2)
 

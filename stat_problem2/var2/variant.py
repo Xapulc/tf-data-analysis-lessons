@@ -63,7 +63,7 @@ class TransformerProblem2Variant2(VariantTransformer):
     def get_solution_description(self, random_state):
         factor = self._get_transformed_random_state(random_state)
 
-        return r"""
+        solution_description = r"""
         Пусть $p$ - уровень доверия, $\alpha := 1 - p$.
         Расстояние от центра мишени $r$
         связано с координатами $(x, y)$
@@ -156,6 +156,23 @@ class TransformerProblem2Variant2(VariantTransformer):
         \frac{R_1^2 + \ldots + R_n^2}{\varkappa_{\alpha / 2} \sqrt{""" + f"{2 * factor}" + r"""}}\right).
         $$
         """
+
+        clt_solution_code = f"Асимптотический доверительный интервал\n" \
+                            + f"`def solution(p, x):\n" \
+                            + f"    alpha = 1 - p\n" \
+                            + f"    loc = (x**2).mean()\n" \
+                            + f"    scale = np.sqrt(np.var(x**2)) / np.sqrt(len(x))\n" \
+                            + f"    return np.sqrt(max((loc - scale * norm.ppf(1 - alpha / 2)) / {2 * factor}, 0)), \\\n" \
+                            + f"           np.sqrt((loc - scale * norm.ppf(alpha / 2)) / {2 * factor})`"
+
+        exact_solution_code = f"Точный доверительный интервал\n" \
+                              + f"`def solution(p, x):\n" \
+                              + f"    alpha = 1 - p\n" \
+                              + f"    scale = (x**2).sum() / {factor}\n" \
+                              + f"    return np.sqrt(scale / chi2.ppf(1 - alpha / 2, 2 * len(x))), \\\n" \
+                              + f"           np.sqrt(scale / chi2.ppf(alpha / 2, 2 * len(x)))`"
+
+        return solution_description, clt_solution_code, exact_solution_code
 
     def get_exact_solution(self, random_state):
         factor = self._get_transformed_random_state(random_state)

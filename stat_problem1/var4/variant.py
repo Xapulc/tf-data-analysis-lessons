@@ -55,7 +55,7 @@ class TransformerProblem1Variant4(VariantTransformer):
     def get_solution_description(self, random_state):
         t = self._get_transformed_random_state(random_state)
 
-        return r"""
+        solution_description = r"""
         Пусть $X_1, \ldots, X_n$ - количества поставок в компании-партнёры.
         Тогда $X_i \sim \text{Poisson}(""" + f"{t}" + r""" \lambda)$.
         
@@ -79,6 +79,10 @@ class TransformerProblem1Variant4(VariantTransformer):
         \to a.
         $$
         """
+
+        solution_code = f"`def solution(x):\n" \
+                        + f"    return x.mean() / {t}`"
+        return solution_description, solution_code
 
     def get_solution(self, random_state):
         t = self._get_transformed_random_state(random_state)

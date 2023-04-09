@@ -49,7 +49,7 @@ class TransformerProblem1Variant3(VariantTransformer):
     def get_solution_description(self, random_state):
         shift = self._get_transformed_random_state(random_state)
 
-        return r"""
+        solution_description = r"""
         Пусть $X_1, \ldots, X_n$ - измерения среднего чека клиентов.
         С распределением из задачи работать неудобно,
         поэтому мы рассмотрим
@@ -64,6 +64,10 @@ class TransformerProblem1Variant3(VariantTransformer):
         \overline{Y} = \overline{\log""" + f"(X - {shift})" + r"""}.
         $$
         """
+
+        solution_code = f"`def solution(x):\n" \
+                        + f"    return np.log(x - {shift}).mean()`"
+        return solution_description, solution_code
 
     def get_solution(self, random_state):
         shift = self._get_transformed_random_state(random_state)

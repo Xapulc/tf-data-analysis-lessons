@@ -59,7 +59,7 @@ class TransformerProblem2Variant1(VariantTransformer):
     def get_solution_description(self, random_state):
         t = self._get_transformed_random_state(random_state)
 
-        return r"""
+        solution_description = r"""
         Пусть $p$ - уровень доверия, $\alpha := 1 - p$.
         При равноускоренном движении
         $$
@@ -188,6 +188,24 @@ class TransformerProblem2Variant1(VariantTransformer):
         Это решение в среднем лучше других 
         и является эталонным для данной задачи.
         """
+
+        clt_solution_code = f"Асимптотический доверительный интервал\n" \
+                            + f"`def solution(p, x):\n" \
+                            + f"    alpha = 1 - p\n" \
+                            + f"    loc = (x.mean() + 0.5) / {(t**2) / 2}\n" \
+                            + f"    scale = np.sqrt(np.var(x)) / ({(t**2) / 2} * np.sqrt(len(x)))\n" \
+                            + f"    return loc - scale * norm.ppf(1 - alpha / 2), \\\n" \
+                            + f"           loc - scale * norm.ppf(alpha / 2)`"
+
+        exact_solution_code = f"Точный доверительный интервал\n" \
+                              + f"`def solution(p, x):\n" \
+                              + f"    alpha = 1 - p\n" \
+                              + f"    loc = (x.mean() - 0.5) / {(t**2) / 2}\n" \
+                              + f"    scale = 1 / ({(t**2) / 2} * len(x))\n" \
+                              + f"    return gamma.ppf(alpha / 2, len(x), loc=loc, scale=scale), \\\n" \
+                              + f"           gamma.ppf(1 - alpha / 2, len(x), loc=loc, scale=scale)`"
+
+        return solution_description, clt_solution_code, exact_solution_code
 
     def get_exact_solution(self, random_state):
         t = self._get_transformed_random_state(random_state)

@@ -227,9 +227,10 @@ def get_problem_variant_solution_by_code(code, silence_mode_flg=False, silence_m
                                                    ])
 
                 if len(description) > 1:
-                    for i, file_path in enumerate(description[1]):
-                        await context.bot.send_document(chat_id=chat_id,
-                                                        document=file_path)
+                    for message in description[1:]:
+                        await context.bot.send_message(chat_id=chat_id,
+                                                       text=message,
+                                                       parse_mode="markdown")
             except Exception as e:
                 comment = "Ошибка при генерации решения. " \
                           + f"Тип ошибки: {type(e)}, сообщение: {str(e)}, `chat_id = {str(chat_id)}`. " \

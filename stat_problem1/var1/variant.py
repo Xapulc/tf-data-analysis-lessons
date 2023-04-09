@@ -52,7 +52,7 @@ class TransformerProblem1Variant1(VariantTransformer):
     def get_solution_description(self, random_state):
         exp_deviation = self._get_transformed_random_state(random_state)
 
-        return r"""
+        solution_description = r"""
         Пусть $X_1, \ldots, X_n$ - измерения скорости,
         $\varepsilon_1, \ldots, \varepsilon_n 
         \sim """ + f"{-exp_deviation} + exp(1)" + r"""$ - ошибки измерений.
@@ -82,6 +82,10 @@ class TransformerProblem1Variant1(VariantTransformer):
         \to a.
         $$
         """
+
+        solution_code = f"`def solution(x):\n" \
+                        + f"    return (x.mean() + {exp_deviation - 1}) / 10`"
+        return solution_description, solution_code
 
     def get_solution(self, random_state):
         exp_deviation = self._get_transformed_random_state(random_state)

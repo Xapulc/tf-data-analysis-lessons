@@ -51,7 +51,7 @@ class TransformerProblem1Variant2(VariantTransformer):
     def get_solution_description(self, random_state):
         t = self._get_transformed_random_state(random_state)
 
-        return r"""
+        solution_description = r"""
         Пусть $X_1, \ldots, X_n$ - измерения длины пройденного пути,
         $\varepsilon_1, \ldots, \varepsilon_n 
         \sim \text{Laplace}$ - ошибки измерений.
@@ -81,6 +81,10 @@ class TransformerProblem1Variant2(VariantTransformer):
         \to a.
         $$
         """
+
+        solution_code = f"`def solution(x):\n" \
+                        + f"    return x.mean() / {(t**2) / 2}`"
+        return solution_description, solution_code
 
     def get_solution(self, random_state):
         t = self._get_transformed_random_state(random_state)
