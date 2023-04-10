@@ -21,13 +21,16 @@ class TransformerTelesalesProjectVariant1(VariantTransformer):
 
     def get_description(self, random_state):
         problem_text = f"""
+*Условие*
 Мы хотим попробовать уменьшить цену продукта,
 ожидая увеличения доходности
 с одного задания на обзвон.
 
+*Статистические вводные*
 Уровень значимости, как обычно, {self.alpha:.0%}.
-Мы хотели бы различать {self.relative_mde:.0%} целевой метрики
-изменение с вероятностью {1-self.beta:.0%}.
+Мы хотели бы различать {self.relative_mde:.0%} 
+изменение целевой метрики
+с вероятностью {1-self.beta:.0%}.
 """
 
         return problem_text

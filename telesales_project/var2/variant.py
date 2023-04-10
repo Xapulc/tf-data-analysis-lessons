@@ -21,6 +21,7 @@ class TransformerTelesalesProjectVariant2(VariantTransformer):
 
     def get_description(self, random_state):
         problem_text = f"""
+*Условие*
 В связи с постановлением ЦБ
 наш текущий скрипт операторов считается
 слишком жёстким,
@@ -31,9 +32,11 @@ class TransformerTelesalesProjectVariant2(VariantTransformer):
 поэтому мы хотим выбрать
 скрипт с наибольшими продажами.
 
+*Статистические вводные*
 Уровень значимости, как обычно, {self.alpha:.0%}.
-Мы хотели бы различать {self.relative_mde:.0%} целевой метрики
-изменение с вероятностью {1-self.beta:.0%}.
+Мы хотели бы различать {self.relative_mde:.0%} 
+изменение целевой метрики
+с вероятностью {1-self.beta:.0%}.
 """
 
         return problem_text

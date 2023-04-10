@@ -105,7 +105,7 @@ class TelesalesProject(object):
                 mean_pv_value = self.mean_pv_value + npv_mean * real_relative_mde / (self.p_call * self.p_sale)
 
             test_data = self.generate_sample(sample_size=sample_size,
-                                             random_state=random_state+1,
+                                             random_state=random_state + 32,
                                              mean_pv_value=mean_pv_value)
         elif metric_name == "Флаг продажи":
             if true_homogeneity:
@@ -114,7 +114,7 @@ class TelesalesProject(object):
                 p_sale = self.p_sale + self.p_sale * real_relative_mde
 
             test_data = self.generate_sample(sample_size=sample_size,
-                                             random_state=random_state+1,
+                                             random_state=random_state + 32,
                                              p_sale=p_sale)
         elif metric_name == "Расходы":
             mean_sale_cost_per_task = self.mean_sale_cost * self.p_call * self.p_sale
@@ -126,7 +126,7 @@ class TelesalesProject(object):
                                    * (self.mean_cost + mean_sale_cost_per_task) / mean_sale_cost_per_task
 
             test_data = self.generate_sample(sample_size=sample_size,
-                                             random_state=random_state+1,
+                                             random_state=random_state + 32,
                                              mean_sale_cost=mean_sale_cost)
 
         return control_data, test_data

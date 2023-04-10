@@ -1,10 +1,9 @@
 import os
 import logging
 import pytz
-import pandas as pd
 import numpy as np
 
-from scipy.stats import randint
+from scipy.stats import randint, ks_2samp, anderson_ksamp, cramervonmises_2samp
 from telegram import Update, InputMediaPhoto
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 from stat_problem1 import problem1, \
@@ -30,6 +29,9 @@ from hypothesis_testing_problem3 import hyp_problem3, \
 from telesales_project import telesales, \
                               telesales_project, \
                               transformer_telesales_project_list
+from credit_card_project import credit_card, \
+                                credit_card_project, \
+                                transformer_credit_card_project_list
 from tools import ProblemStorage, \
                   DescriptionGeneratorStrategies, \
                   UserVariantResolver, \
@@ -65,7 +67,8 @@ transformer_variant_strategies = VariantTransformerStrategies(transformer_varian
                                                               + transformer_variant_hyp_problem1_list
                                                               + transformer_variant_hyp_problem2_list
                                                               + transformer_variant_hyp_problem3_list
-                                                              + transformer_telesales_project_list)
+                                                              + transformer_telesales_project_list
+                                                              + transformer_credit_card_project_list)
 
 user_variant_resolver = UserVariantResolver(os.getenv("SOLVER_RANDOM_STATE"))
 converter = Converter()
@@ -220,7 +223,7 @@ def get_telesales_project_description(silence_mode_flg=False, teacher_chat_list=
                 transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
                 description = transformer_variant.get_description(random_state)
 
-                await context.bot.send_message(chat_id=chat_id, text=description)
+                await context.bot.send_message(chat_id=chat_id, text=description, parse_mode="markdown")
 
                 hist_data = telesales.generate_sample(sample_size=telesales.sample_size,
                                                       random_state=telesales.random_state)
@@ -254,7 +257,7 @@ def get_telesales_project_sample(silence_mode_flg=False, teacher_chat_list=None)
             sample_size = " ".join(context.args).strip(" ")
             if len(sample_size) == 0:
                 await context.bot.send_message(chat_id=chat_id,
-                                               text=f"Заполните размер выборки в формате `/get_telesales_project_sample sample_size`",
+                                               text="Заполните размер выборки в формате `/get_project1_sample {размер выборки}`",
                                                parse_mode="markdown")
                 return
 
@@ -364,6 +367,203 @@ def get_telesales_project_report(teacher_chat_list=None):
     return helper
 
 
+def get_credit_card_project_description(silence_mode_flg=False, teacher_chat_list=None):
+    if teacher_chat_list is None:
+        teacher_chat_list = []
+
+    async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        chat_id = update.effective_chat.id
+
+        if silence_mode_flg and (chat_id not in teacher_chat_list):
+            await context.bot.send_message(chat_id=chat_id,
+                                           text="Генерация условия недоступна.")
+        else:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"Генерация условия...")
+            try:
+                if chat_id in teacher_chat_list:
+                    student_chat_id = int(" ".join(context.args).strip(" "))
+                else:
+                    student_chat_id = chat_id
+
+                random_state = user_variant_resolver.get_number(student_chat_id, credit_card_project)
+                problem_variant = user_variant_resolver.get_variant(student_chat_id, credit_card_project)
+
+                transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
+                description = transformer_variant.get_description(random_state)
+
+                await context.bot.send_message(chat_id=chat_id, text=description, parse_mode="markdown")
+
+                hist_data = credit_card.generate_sample(sample_size=credit_card.sample_size,
+                                                        random_state=credit_card.random_state)
+                file_name = "tmp/hist_credit_card.csv"
+                hist_data.to_csv(file_name, index=False)
+                await context.bot.send_document(chat_id=chat_id,
+                                                caption="Исторические данные",
+                                                document=file_name)
+            except Exception as e:
+                comment = "Ошибка при генерации условия. " \
+                          + f"Тип ошибки: {type(e)}, сообщение: {str(e)}, `chat_id = {str(chat_id)}`. " \
+                          + f"Перешлите это сообщение преподавателю."
+                await context.bot.send_message(chat_id=chat_id, text=comment)
+
+    return helper
+
+
+def get_credit_card_project_sample(silence_mode_flg=False, teacher_chat_list=None):
+    if teacher_chat_list is None:
+        teacher_chat_list = []
+
+    async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        chat_id = update.effective_chat.id
+
+        if silence_mode_flg and (chat_id not in teacher_chat_list):
+            await context.bot.send_message(chat_id=chat_id,
+                                           text="Генерация выборки недоступна.")
+        else:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"Генерация выборки...")
+            sample_size = " ".join(context.args).strip(" ")
+            if len(sample_size) == 0:
+                await context.bot.send_message(chat_id=chat_id,
+                                               text="Заполните размер выборки в формате `/get_project2_sample {размер выборки}`",
+                                               parse_mode="markdown")
+                return
+
+            try:
+                sample_size = int(sample_size)
+                assert sample_size > 0, "Неположительный разер выборки"
+                assert sample_size <= 1000000, "Cлишком большая выборка"
+            except Exception as e:
+                comment = "Ошибка при распозновании размера выборки. " \
+                          + f"Тип ошибки: {type(e)}, сообщение: {str(e)}."
+                await context.bot.send_message(chat_id=chat_id, text=comment)
+                return
+
+            try:
+                random_state = user_variant_resolver.get_number(chat_id, credit_card_project)
+                problem_variant = user_variant_resolver.get_variant(chat_id, credit_card_project)
+
+                transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
+
+                sample_random_state = randint.rvs(414, 79080)
+                control_data, test_data = credit_card.generate_test_sample(sample_size,
+                                                                           transformer_variant.get_metric(),
+                                                                           transformer_variant.get_alternative(),
+                                                                           transformer_variant.relative_mde,
+                                                                           sample_random_state)
+
+                for sample, sample_desc in zip([control_data, test_data], ["Контроль", "Тест"]):
+                    file_name = f"tmp/{sample_desc}.csv"
+                    sample.to_csv(file_name, index=False)
+                    await context.bot.send_document(chat_id=chat_id,
+                                                    caption=f"Выборка '{sample_desc}'",
+                                                    document=file_name)
+
+                await context.bot.send_message(chat_id=chat_id,
+                                               text=f"Код выборки: `{sample_random_state}`.",
+                                               parse_mode="markdown")
+            except Exception as e:
+                comment = "Ошибка при генерации выборки. " \
+                          + f"Тип ошибки: {type(e)}, сообщение: {str(e)}, `chat_id = {str(chat_id)}`. " \
+                          + f"Перешлите это сообщение преподавателю."
+                await context.bot.send_message(chat_id=chat_id, text=comment)
+
+    return helper
+
+
+def get_credit_card_project_report(teacher_chat_list=None):
+    if teacher_chat_list is None:
+        teacher_chat_list = []
+
+    async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        chat_id = update.effective_chat.id
+
+        if chat_id in teacher_chat_list:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"Генерация отчёта...")
+
+            try:
+                student_chat_id = int(context.args[0])
+                sample_random_state = int(context.args[1])
+                sample_size = int(context.args[2])
+
+                random_state = user_variant_resolver.get_number(student_chat_id, credit_card_project)
+                problem_variant = user_variant_resolver.get_variant(student_chat_id, credit_card_project)
+
+                transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
+                description = transformer_variant.get_description(random_state)
+                await context.bot.send_message(chat_id=chat_id, text=description)
+
+                hist_data = credit_card.generate_sample(sample_size=credit_card.sample_size,
+                                                        random_state=credit_card.random_state)
+                target_column = hist_data[transformer_variant.get_metric()]
+                await context.bot.send_message(chat_id=chat_id,
+                                               text=f"Целевая метрика: {transformer_variant.get_metric()}.\n"
+                                                    + f"Альтернатива: '{transformer_variant.get_alternative()}'.\n"
+                                                    + f"Выборочное среднее: {target_column.mean():.2f}.\n"
+                                                    + f"Выборочная дисперсия: {target_column.var():.2f}.")
+
+                control_sample_size, test_sample_size = credit_card.get_sample_size(transformer_variant.get_metric(),
+                                                                                    transformer_variant.get_alternative(),
+                                                                                    transformer_variant.alpha,
+                                                                                    transformer_variant.beta,
+                                                                                    transformer_variant.relative_mde)
+                dev_sample_size = np.abs(sample_size / control_sample_size - 1)
+                await context.bot.send_message(chat_id=chat_id,
+                                               text=f"Размер выборки на контроле: {control_sample_size:.0f}.\n"
+                                                    + f"Размер выборки на тесте: {test_sample_size:.0f}.\n"
+                                                    + f"Отклонение от истинного значения: {dev_sample_size:.1%}")
+
+                control_data, test_data = credit_card.generate_test_sample(sample_size,
+                                                                           transformer_variant.get_metric(),
+                                                                           transformer_variant.get_alternative(),
+                                                                           transformer_variant.relative_mde,
+                                                                           sample_random_state)
+                control_homo_sample = control_data[credit_card.homo_check_metric_name]
+                test_homo_sample = test_data[credit_card.homo_check_metric_name]
+                message = f"Параметр для проверки однородности: `{credit_card.homo_check_metric_name}`.\n"
+
+                if credit_card.get_homo_hypothesis(sample_random_state):
+                    message += "Выборки однородны."
+                else:
+                    message += "\nВыборки неоднородны."
+
+                homo_test_list = [{
+                    "name": "Колмогоров-Смирнов",
+                    "pvalue": lambda x, y: ks_2samp(x, y, alternative="two-sided").pvalue
+                }, {
+                    "name": "Андерсон-Дарлинг",
+                    "pvalue": lambda x, y: anderson_ksamp([x, y]).pvalue
+                }, {
+                    "name": "CVM",
+                    "pvalue": lambda x, y: cramervonmises_2samp(x, y).pvalue
+                }]
+
+                for test in homo_test_list:
+                    p = test["pvalue"](control_homo_sample, test_homo_sample)
+                    message += f"\nКритерий: `{test['name']}`, p-value: `{p:.3f}`."
+
+                await context.bot.send_message(chat_id=chat_id,
+                                               text=message,
+                                               parse_mode="markdown")
+
+                control_sample = control_data[transformer_variant.get_metric()]
+                test_sample = test_data[transformer_variant.get_metric()]
+                p = transformer_variant.check_homogeneity(control_sample, test_sample)
+                hypothesis_desc = "H(0)" if credit_card.get_hypothesis(sample_random_state) else "H(1)"
+
+                await context.bot.send_message(chat_id=chat_id,
+                                               text=f"p-value критерия: {p:.3f}. "
+                                                    + f"Справедлива {hypothesis_desc}")
+            except Exception as e:
+                comment = "Ошибка при генерации отчёта. " \
+                          + f"Тип ошибки: {type(e)}, сообщение: {str(e)}, `chat_id = {str(chat_id)}`."
+                await context.bot.send_message(chat_id=chat_id, text=comment)
+
+    return helper
+
+
 def get_problem_variant_solution_by_code(code, silence_mode_flg=False, silence_mode_white_list=None):
     problem = problem_storage.get_problem_by_code(code)
     if silence_mode_white_list is None:
@@ -425,36 +625,36 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("get_chat", get_chat({604918251: 123456})))
 
+    teacher_chat_list = [
+        604918251
+    ]
+
     for problem in problem_storage.problem_list:
         code = problem.code
         application.add_handler(CommandHandler(f"get_{code}",
                                                get_problem_variant_by_code(code,
                                                                            silence_mode_flg=False,
-                                                                           silence_mode_white_list=[
-                                                                               604918251
-                                                                           ])))
+                                                                           silence_mode_white_list=teacher_chat_list)))
         application.add_handler(CommandHandler(f"get_solution_{code}",
                                                get_problem_variant_solution_by_code(code,
                                                                                     silence_mode_flg=False,
-                                                                                    silence_mode_white_list=[
-                                                                                        604918251
-                                                                                    ])))
+                                                                                    silence_mode_white_list=teacher_chat_list)))
     application.add_handler(CommandHandler("get_run", get_run(action_run,
-                                                              teacher_chat_list=[
-                                                                  604918251
-                                                              ])))
+                                                              teacher_chat_list=teacher_chat_list)))
     application.add_handler(CommandHandler("get_project1_desc",
                                            get_telesales_project_description(silence_mode_flg=False,
-                                                                             teacher_chat_list=[
-                                                                                 604918251
-                                                                             ])))
+                                                                             teacher_chat_list=teacher_chat_list)))
     application.add_handler(CommandHandler("get_project1_sample",
                                            get_telesales_project_sample(silence_mode_flg=False,
-                                                                        teacher_chat_list=[
-                                                                            604918251
-                                                                        ])))
+                                                                        teacher_chat_list=teacher_chat_list)))
     application.add_handler(CommandHandler("get_project1_report",
-                                           get_telesales_project_report(teacher_chat_list=[
-                                                                            604918251
-                                                                        ])))
+                                           get_telesales_project_report(teacher_chat_list=teacher_chat_list)))
+    application.add_handler(CommandHandler("get_project2_desc",
+                                           get_credit_card_project_description(silence_mode_flg=False,
+                                                                               teacher_chat_list=teacher_chat_list)))
+    application.add_handler(CommandHandler("get_project2_sample",
+                                           get_credit_card_project_sample(silence_mode_flg=False,
+                                                                          teacher_chat_list=teacher_chat_list)))
+    application.add_handler(CommandHandler("get_project2_report",
+                                           get_credit_card_project_report(teacher_chat_list=teacher_chat_list)))
     application.run_polling()

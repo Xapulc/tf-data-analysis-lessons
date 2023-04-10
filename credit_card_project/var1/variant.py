@@ -3,35 +3,33 @@ from scipy.stats import ttest_ind
 from tools import ProblemVariant, VariantTransformer
 
 
-telesales_project_variant3 = ProblemVariant(code="telesales_project_var3")
+credit_card_project_variant1 = ProblemVariant(code="credit_card_project_var1")
 
 
-class TransformerTelesalesProjectVariant3(VariantTransformer):
+class TransformerCreditCardProjectVariant1(VariantTransformer):
     def __init__(self, code):
         self.code = code
         self.alpha = Decimal("0.05")
-        self.beta = Decimal("0.1")
-        self.relative_mde = Decimal("0.05")
+        self.beta = Decimal("0.05")
+        self.relative_mde = Decimal("0.03")
 
     def get_alternative(self):
-        return "greater"
+        return "less"
 
     def get_metric(self):
-        return "Расходы"
+        return "Флаг утилизации счёта"
 
     def get_description(self, random_state):
         problem_text = f"""
 *Условие*
-Мы хотим снизить затраты,
-и для этого внедряем систему автоматического
-дозвона до человека.
-Эта система должна сэкономить оператору время,
-из-за чего мы сможем платить ему меньше.
-В этом тесте мы хотели бы заметить
-уменьшение затрат в случае
-успешной работы новой системы.
+Мы хотим сократить заявочную форму 
+для оформления кредитной карты 
+и ожидаем роста утилизаций.
 
 *Статистические вводные*
+Проверка однородности выбранного параметра
+осуществяется с уровнем значимости 2%.
+
 Уровень значимости, как обычно, {self.alpha:.0%}.
 Мы хотели бы различать {self.relative_mde:.0%} 
 изменение целевой метрики
