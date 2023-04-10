@@ -444,12 +444,12 @@ if __name__ == "__main__":
                                                                   604918251
                                                               ])))
     application.add_handler(CommandHandler("get_project1_desc",
-                                           get_telesales_project_description(silence_mode_flg=True,
+                                           get_telesales_project_description(silence_mode_flg=False,
                                                                              teacher_chat_list=[
                                                                                  604918251
                                                                              ])))
     application.add_handler(CommandHandler("get_project1_sample",
-                                           get_telesales_project_sample(silence_mode_flg=True,
+                                           get_telesales_project_sample(silence_mode_flg=False,
                                                                         teacher_chat_list=[
                                                                             604918251
                                                                         ])))
