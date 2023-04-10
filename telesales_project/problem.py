@@ -1,19 +1,20 @@
-import os
 import pandas as pd
 import numpy as np
-import plotly.graph_objects as go
 
 from scipy.stats import bernoulli, expon, pareto, norm
-from tools import Problem, Result, SolutionTester, DescriptionGenerator, \
-                  round_down_first_decimal, round_up_first_decimal
+from tools import Problem
 from .var1 import telesales_project_variant1
+from .var2 import telesales_project_variant2
+from .var3 import telesales_project_variant3
 
 
 telesales_project = Problem(task_id="14138",
                             code="telesales_project",
                             name="Проект по обзвонам",
                             problem_variant_list=[
-                                telesales_project_variant1
+                                telesales_project_variant1,
+                                telesales_project_variant2,
+                                telesales_project_variant3
                             ])
 
 
@@ -106,15 +107,26 @@ class TelesalesProject(object):
             test_data = self.generate_sample(sample_size=sample_size,
                                              random_state=random_state+1,
                                              mean_pv_value=mean_pv_value)
+        elif metric_name == "Флаг продажи":
+            if true_homogeneity:
+                p_sale = self.p_sale
+            else:
+                p_sale = self.p_sale + self.p_sale * real_relative_mde
+
+            test_data = self.generate_sample(sample_size=sample_size,
+                                             random_state=random_state+1,
+                                             p_sale=p_sale)
+        elif metric_name == "Расходы":
+            mean_sale_cost_per_task = self.mean_sale_cost * self.p_call * self.p_sale
+            if true_homogeneity:
+                mean_sale_cost = self.mean_sale_cost
+            else:
+                mean_sale_cost = self.mean_sale_cost \
+                                 + self.mean_sale_cost * real_relative_mde \
+                                   * (self.mean_cost + mean_sale_cost_per_task) / mean_sale_cost_per_task
+
+            test_data = self.generate_sample(sample_size=sample_size,
+                                             random_state=random_state+1,
+                                             mean_sale_cost=mean_sale_cost)
 
         return control_data, test_data
-
-
-
-
-
-
-
-
-
-

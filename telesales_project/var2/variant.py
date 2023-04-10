@@ -3,27 +3,33 @@ from scipy.stats import ttest_ind
 from tools import ProblemVariant, VariantTransformer
 
 
-telesales_project_variant1 = ProblemVariant(code="telesales_project_var1")
+telesales_project_variant2 = ProblemVariant(code="telesales_project_var2")
 
 
-class TransformerTelesalesProjectVariant1(VariantTransformer):
+class TransformerTelesalesProjectVariant2(VariantTransformer):
     def __init__(self, code):
         self.code = code
         self.alpha = Decimal("0.05")
         self.beta = Decimal("0.2")
-        self.relative_mde = Decimal("0.05")
+        self.relative_mde = Decimal("0.08")
 
     def get_alternative(self):
-        return "less"
+        return "two-sided"
 
     def get_metric(self):
-        return "NPV"
+        return "Флаг продажи"
 
     def get_description(self, random_state):
         problem_text = f"""
-Мы хотим попробовать уменьшить цену продукта,
-ожидая увеличения доходности
-с одного задания на обзвон.
+В связи с постановлением ЦБ
+наш текущий скрипт операторов считается
+слишком жёстким,
+и нам нужно придумать более мягкий.
+
+У нас есть два варианта более мягкого скрипта.
+У нас нет времени ждать вызревания более долгих метрик,
+поэтому мы хотим выбрать
+скрипт с наибольшими продажами.
 
 Уровень значимости, как обычно, {self.alpha:.0%}.
 Мы хотели бы различать {self.relative_mde:.0%} целевой метрики
