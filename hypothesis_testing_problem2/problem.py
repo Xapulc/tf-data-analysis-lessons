@@ -209,7 +209,7 @@ class ResultHypProblem1(Result):
                                .rename(columns={el["column"]: el["description"] for el in column_description})
 
         color_function = lambda score: "rgba(114, 220, 140, 0.5)" if score == 1 else "rgba(240, 113, 111, 0.5)"
-        cell_height = 30
+        cell_height = 50
         header_cell_height = 70
 
         fig = go.Figure(go.Table(header={
