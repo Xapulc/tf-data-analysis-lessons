@@ -11,7 +11,7 @@ class TransformerCreditCardProjectVariant3(VariantTransformer):
         self.code = code
         self.alpha = Decimal("0.05")
         self.beta = Decimal("0.15")
-        self.relative_mde = Decimal("0.2")
+        self.relative_mde = Decimal("0.03")
 
     def get_alternative(self):
         return "less"

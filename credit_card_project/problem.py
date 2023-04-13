@@ -24,8 +24,8 @@ class CreditCardProject(object):
         self.random_state = 21
         self.mean_sale_cost = 500
         self.mean_cost = 50
-        self.pareto_cc_param = 3
-        self.pareto_service_param = 4
+        self.pareto_cc_param = 2.1
+        self.pareto_service_param = 3
         self.mean_pv_cc_value = 10000
         self.mean_pv_service_value = 2000
         self.p_cc_util_scale = 0.85
