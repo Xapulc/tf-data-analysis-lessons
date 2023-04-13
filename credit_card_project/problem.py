@@ -139,5 +139,15 @@ class CreditCardProject(object):
                                              random_state=random_state + 15,
                                              p_cc_util_scale=p_cc_util_scale,
                                              beta_parameter=beta_parameter)
+        elif metric_name == "PV услуги":
+            if true_homogeneity:
+                mean_pv_service_value = self.mean_pv_service_value
+            else:
+                mean_pv_service_value = self.mean_pv_service_value + self.mean_pv_service_value * real_relative_mde
+
+            test_data = self.generate_sample(sample_size=sample_size,
+                                             random_state=random_state + 41,
+                                             mean_pv_service_value=mean_pv_service_value,
+                                             beta_parameter=beta_parameter)
 
         return control_data, test_data

@@ -324,7 +324,7 @@ def get_telesales_project_report(teacher_chat_list=None):
 
                 transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
                 description = transformer_variant.get_description(random_state)
-                await context.bot.send_message(chat_id=chat_id, text=description)
+                await context.bot.send_message(chat_id=chat_id, text=description, parse_mode="markdown")
 
                 hist_data = telesales.generate_sample(sample_size=telesales.sample_size,
                                                       random_state=telesales.random_state)
@@ -493,7 +493,7 @@ def get_credit_card_project_report(teacher_chat_list=None):
 
                 transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
                 description = transformer_variant.get_description(random_state)
-                await context.bot.send_message(chat_id=chat_id, text=description)
+                await context.bot.send_message(chat_id=chat_id, text=description, parse_mode="markdown")
 
                 hist_data = credit_card.generate_sample(sample_size=credit_card.sample_size,
                                                         random_state=credit_card.random_state)
