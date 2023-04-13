@@ -4,13 +4,15 @@ import numpy as np
 from scipy.stats import bernoulli, expon, pareto, norm, rv_discrete, beta
 from tools import Problem
 from .var1 import credit_card_project_variant1
+from .var2 import credit_card_project_variant2
 
 
 credit_card_project = Problem(task_id="14211",
                               code="credit_card_project",
                               name="Проект по кредитным картам",
                               problem_variant_list=[
-                                  credit_card_project_variant1
+                                  credit_card_project_variant1,
+                                  credit_card_project_variant2
                               ])
 
 
