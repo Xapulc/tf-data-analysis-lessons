@@ -5,6 +5,7 @@ from scipy.stats import bernoulli, expon, pareto, norm, rv_discrete, beta
 from tools import Problem
 from .var1 import credit_card_project_variant1
 from .var2 import credit_card_project_variant2
+from .var3 import credit_card_project_variant3
 
 
 credit_card_project = Problem(task_id="14211",
@@ -12,7 +13,8 @@ credit_card_project = Problem(task_id="14211",
                               name="Проект по кредитным картам",
                               problem_variant_list=[
                                   credit_card_project_variant1,
-                                  credit_card_project_variant2
+                                  credit_card_project_variant2,
+                                  credit_card_project_variant3
                               ])
 
 
@@ -148,6 +150,25 @@ class CreditCardProject(object):
             test_data = self.generate_sample(sample_size=sample_size,
                                              random_state=random_state + 41,
                                              mean_pv_service_value=mean_pv_service_value,
+                                             beta_parameter=beta_parameter)
+        elif metric_name == "NPV":
+            rel_cc_delta = 0.1
+            mean_npv = (1 - self.p_cc_util_scale) * self.mean_cost \
+                       + self.p_cc_util_scale * (self.mean_pv_service_value + self.mean_pv_cc_value - self.mean_sale_cost)
+
+            if true_homogeneity:
+                mean_pv_service_value = self.mean_pv_service_value
+                mean_pv_cc_value = self.mean_pv_cc_value
+            else:
+                delta = (mean_npv * real_relative_mde + self.p_cc_util_scale * rel_cc_delta * self.mean_pv_cc_value) \
+                        / self.p_cc_util_scale
+                mean_pv_service_value = self.mean_pv_service_value + delta
+                mean_pv_cc_value = self.mean_pv_cc_value - rel_cc_delta * self.mean_pv_cc_value
+
+            test_data = self.generate_sample(sample_size=sample_size,
+                                             random_state=random_state + 41,
+                                             mean_pv_service_value=mean_pv_service_value,
+                                             mean_pv_cc_value=mean_pv_cc_value,
                                              beta_parameter=beta_parameter)
 
         return control_data, test_data
