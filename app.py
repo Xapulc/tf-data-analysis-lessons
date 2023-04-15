@@ -34,7 +34,8 @@ from tools import ProblemStorage, \
                   EduService, \
                   TelegramService, \
                   UserVariantResolver, \
-                  VariantTransformerStrategies
+                  VariantTransformerStrategies, \
+                  find_chat_id
 
 
 problem_storage = ProblemStorage([
@@ -99,14 +100,7 @@ if __name__ == "__main__":
                                + f"В решении следующая проблема: \n`{comment}`."
             telegram_service.send(teacher_chat_id, teacher_messange, parse_mode="")
 
-        chat_id = None
-        with open("student_work/solution.py", "r") as solution_file:
-            for line in solution_file.readlines():
-                if "chat_id" in line:
-                    int_list = re.findall(r"\d+", line)
-                    if len(int_list) > 0:
-                        chat_id = int(int_list[0])
-
+        chat_id = find_chat_id("student_work/solution.py")
         if chat_id is not None:
             telegram_service.send(chat_id, comment, parse_mode="")
 

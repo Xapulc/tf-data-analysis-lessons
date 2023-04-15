@@ -1,4 +1,5 @@
 import numpy as np
+import re
 
 from decimal import Decimal, ROUND_CEILING, ROUND_FLOOR
 
@@ -33,3 +34,15 @@ def round_down_first_decimal(x, decimals=0):
         return round_down(x, x_decimal + decimals)
     else:
         return 0
+
+
+def find_chat_id(file_name):
+    chat_id = None
+    with open(file_name, "r") as solution_file:
+        for line in solution_file.readlines():
+            if "chat_id" in line:
+                int_list = re.findall(r"\d+", line)
+                if len(int_list) > 0:
+                    chat_id = int(int_list[0])
+
+    return chat_id

@@ -1,5 +1,7 @@
 import os
 import logging
+
+import pandas as pd
 import pytz
 import numpy as np
 
@@ -32,6 +34,8 @@ from telesales_project import telesales, \
 from credit_card_project import credit_card, \
                                 credit_card_project, \
                                 transformer_credit_card_project_list
+from unbalanced_sample import unbalanced_sample, \
+                              transformer_unbalanced_sample_list
 from tools import ProblemStorage, \
                   DescriptionGeneratorStrategies, \
                   UserVariantResolver, \
@@ -68,7 +72,8 @@ transformer_variant_strategies = VariantTransformerStrategies(transformer_varian
                                                               + transformer_variant_hyp_problem2_list
                                                               + transformer_variant_hyp_problem3_list
                                                               + transformer_telesales_project_list
-                                                              + transformer_credit_card_project_list)
+                                                              + transformer_credit_card_project_list
+                                                              + transformer_unbalanced_sample_list)
 
 user_variant_resolver = UserVariantResolver(os.getenv("SOLVER_RANDOM_STATE"))
 converter = Converter()
@@ -616,10 +621,103 @@ def get_problem_variant_solution_by_code(code, silence_mode_flg=False, silence_m
     return helper
 
 
+def get_unbalanced_sample_description(silence_mode_flg=False, teacher_chat_list=None):
+    if teacher_chat_list is None:
+        teacher_chat_list = []
+
+    async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        chat_id = update.effective_chat.id
+
+        if silence_mode_flg and (chat_id not in teacher_chat_list):
+            await context.bot.send_message(chat_id=chat_id,
+                                           text="Генерация условия недоступна.")
+        else:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"Генерация условия...")
+            try:
+                if chat_id in teacher_chat_list:
+                    student_chat_id = int(" ".join(context.args).strip(" "))
+                else:
+                    student_chat_id = chat_id
+
+                random_state = user_variant_resolver.get_number(student_chat_id, unbalanced_sample)
+                problem_variant = user_variant_resolver.get_variant(student_chat_id, unbalanced_sample)
+
+                transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
+                description = transformer_variant.get_description(random_state)
+
+                await context.bot.send_message(chat_id=chat_id, text=description, parse_mode="markdown")
+
+                hist_sample = transformer_variant.get_sample(random_state=random_state)
+                hist_data = pd.DataFrame(data={
+                    f"x{i+1}": [x]
+                    for i, x in enumerate(hist_sample)
+                })
+                file_name = "tmp/hist_unbalanced_sample.csv"
+                hist_data.to_csv(file_name, index=False)
+                await context.bot.send_document(chat_id=chat_id,
+                                                caption="Исторические данные",
+                                                document=file_name)
+            except Exception as e:
+                comment = "Ошибка при генерации условия. " \
+                          + f"Тип ошибки: {type(e)}, сообщение: {str(e)}, `chat_id = {str(chat_id)}`. " \
+                          + f"Перешлите это сообщение преподавателю."
+                await context.bot.send_message(chat_id=chat_id, text=comment)
+
+    return helper
+
+
+def get_unbalanced_sample_report(teacher_chat_list=None):
+    if teacher_chat_list is None:
+        teacher_chat_list = []
+
+    async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        chat_id = update.effective_chat.id
+
+        if chat_id not in teacher_chat_list:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text="Генерация условия недоступна.")
+        else:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"Генерация условия...")
+            # try:
+            student_chat_id = int(" ".join(context.args).strip(" "))
+
+            random_state = user_variant_resolver.get_number(student_chat_id, unbalanced_sample)
+            problem_variant = user_variant_resolver.get_variant(student_chat_id, unbalanced_sample)
+
+            transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
+            description = transformer_variant.get_description(random_state)
+
+            await context.bot.send_message(chat_id=chat_id, text=description, parse_mode="markdown")
+
+            hist_sample = transformer_variant.get_sample(random_state=random_state)
+            hist_data = pd.DataFrame(data={
+                f"x{i+1}": [x]
+                for i, x in enumerate(hist_sample)
+            })
+            file_name = "tmp/hist_unbalanced_sample.csv"
+            hist_data.to_csv(file_name, index=False)
+            await context.bot.send_document(chat_id=chat_id,
+                                            caption="Исторические данные",
+                                            document=file_name)
+
+            solution_description = transformer_variant.get_solution_description(random_state)
+
+            await context.bot.send_message(chat_id=chat_id, text=solution_description, parse_mode="markdown")
+            # except Exception as e:
+            #     comment = "Ошибка при генерации условия. " \
+            #               + f"Тип ошибки: {type(e)}, сообщение: {str(e)}, `chat_id = {str(chat_id)}`. " \
+            #               + f"Перешлите это сообщение преподавателю."
+            #     await context.bot.send_message(chat_id=chat_id, text=comment)
+
+    return helper
+
+
 if __name__ == "__main__":
     token = os.getenv("TELEGRAM_TOKEN")
     action_run = ActionRun(os.getenv("GITHUB_TOKEN"))
-    action_run.start()
+    # action_run.start()
     application = ApplicationBuilder().token(token).build()
     
     application.add_handler(CommandHandler("start", start))
@@ -641,20 +739,35 @@ if __name__ == "__main__":
                                                                                     silence_mode_white_list=teacher_chat_list)))
     application.add_handler(CommandHandler("get_run", get_run(action_run,
                                                               teacher_chat_list=teacher_chat_list)))
+
+    application.add_handler(CommandHandler("get_unbalanced_desc",
+                                           get_unbalanced_sample_description(silence_mode_flg=False,
+                                                                             teacher_chat_list=teacher_chat_list)))
+    application.add_handler(CommandHandler("get_unbalanced_report",
+                                           get_unbalanced_sample_report(teacher_chat_list=teacher_chat_list)))
+
+    project_teacher_chat_list = [
+        604918251,  # Витя
+        434207209,  # Ангелина
+        123188318,  # Андрей,
+        315763504,  # Коля
+        957195795,  # Максим
+    ]
+
     application.add_handler(CommandHandler("get_project1_desc",
                                            get_telesales_project_description(silence_mode_flg=False,
-                                                                             teacher_chat_list=teacher_chat_list)))
+                                                                             teacher_chat_list=project_teacher_chat_list)))
     application.add_handler(CommandHandler("get_project1_sample",
                                            get_telesales_project_sample(silence_mode_flg=False,
-                                                                        teacher_chat_list=teacher_chat_list)))
+                                                                        teacher_chat_list=project_teacher_chat_list)))
     application.add_handler(CommandHandler("get_project1_report",
-                                           get_telesales_project_report(teacher_chat_list=teacher_chat_list)))
+                                           get_telesales_project_report(teacher_chat_list=project_teacher_chat_list)))
     application.add_handler(CommandHandler("get_project2_desc",
                                            get_credit_card_project_description(silence_mode_flg=False,
-                                                                               teacher_chat_list=teacher_chat_list)))
+                                                                               teacher_chat_list=project_teacher_chat_list)))
     application.add_handler(CommandHandler("get_project2_sample",
                                            get_credit_card_project_sample(silence_mode_flg=False,
-                                                                          teacher_chat_list=teacher_chat_list)))
+                                                                          teacher_chat_list=project_teacher_chat_list)))
     application.add_handler(CommandHandler("get_project2_report",
-                                           get_credit_card_project_report(teacher_chat_list=teacher_chat_list)))
+                                           get_credit_card_project_report(teacher_chat_list=project_teacher_chat_list)))
     application.run_polling()
