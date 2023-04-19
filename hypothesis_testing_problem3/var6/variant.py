@@ -76,6 +76,21 @@ class TransformerHypProblem3Variant6(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        alpha = self._get_transformed_random_state(random_state)
+
+        solution_description = r"""
+        Здесь нужно было выбрать одновыборочный критерий.
+        На лекции был только один одновыборочный критерий,
+        его и нужно было использовать: 
+        Z-тест на слайде 35 лекции.
+        """
+
+        solution_code = f"`def solution(x):\n" \
+                        + f"    res = ztest(x1=x, value={self.max_cost}, alternative='smaller')\n" \
+                        + f"    return res[1] < {alpha}`"
+        return solution_description, solution_code
+
     def get_solution(self, random_state):
         alpha = self._get_transformed_random_state(random_state)
 

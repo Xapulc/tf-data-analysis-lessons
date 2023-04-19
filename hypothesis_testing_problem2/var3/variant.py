@@ -95,6 +95,16 @@ class TransformerHypProblem2Variant3(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        alpha = self._get_transformed_random_state(random_state)
+
+        solution_description = None
+        solution_code = f"Общее решение в [Colab](https://colab.research.google.com/drive/1iYevvB2WaE0imsExS5HIdcDILXpAoXir?usp=sharing).\n" \
+                        + f"`def solution(x, y):\n" \
+                        + f"    res = MMD(compute_kernel='rbf', gamma=1.0).test(x, y)\n" \
+                        + f"    return res[1] < {alpha}`"
+        return solution_description, solution_code
+
     def get_solution(self, random_state):
         alpha = self._get_transformed_random_state(random_state)
 

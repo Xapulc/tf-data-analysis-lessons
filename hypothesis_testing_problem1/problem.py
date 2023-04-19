@@ -147,6 +147,9 @@ class DescriptionGeneratorHypProblem1(DescriptionGenerator):
         \\section{{Оценка}} {self._get_estimation_text(transformer_variant, generated_criteria_list, random_state)}
         """
 
+    def get_solution_description(self, transformer_variant, generated_criteria_list, random_state):
+        return transformer_variant.get_solution_description(random_state)
+
 
 class ResultHypProblem1(Result):
     def __init__(self, code, name, max_score):

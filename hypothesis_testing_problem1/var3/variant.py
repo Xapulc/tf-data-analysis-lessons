@@ -81,6 +81,26 @@ class TransformerHypProblem1Variant3(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        alpha = self._get_transformed_random_state(random_state)
+
+        solution_description = r"""
+        Это ухудшающий тест.
+        Здесь $H_0: p_c \leq p_t$, $H_1: p_c > p_t$,
+        где $p_c$ - конверсия на контроле,
+        $p_t$ - конверсия на тесте.
+        
+        Для проверки гипотезы равенства конверсий
+        используется Z-тест.
+        """
+
+        solution_code = f"`def solution(x_success, x_cnt, y_success, y_cnt):\n" \
+                        + f"    res = proportions_ztest([x_success, y_success],\n" \
+                        + f"                            [x_cnt, y_cnt],\n" \
+                        + f"                            alternative='larger')\n" \
+                        + f"    return res[1] < {alpha}`"
+        return solution_description, solution_code
+
     def get_solution(self, random_state):
         alpha = self._get_transformed_random_state(random_state)
 

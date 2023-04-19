@@ -580,7 +580,8 @@ def get_problem_variant_solution_by_code(code, silence_mode_flg=False, silence_m
         if silence_mode_flg and (chat_id not in silence_mode_white_list):
             await context.bot.send_message(chat_id=chat_id,
                                            text=f"{problem.name}. Генерация решения недоступна.")
-        elif problem.code not in (problem1.code, problem2.code):
+        elif problem.code not in (problem1.code, problem2.code,
+                                  hyp_problem1.code, hyp_problem2.code, hyp_problem3.code):
             await context.bot.send_message(chat_id=chat_id,
                                            text=f"{problem.name}. Генерация решения недоступна.")
         else:
@@ -598,14 +599,16 @@ def get_problem_variant_solution_by_code(code, silence_mode_flg=False, silence_m
                 description = description_generator.get_solution_description(transformer_variant, generated_criteria_list, random_state)
                 if isinstance(description, str):
                     description = [description]
-                image_path_list = converter.convert_tex_body_str_to_image_list(description[0])
 
-                await context.bot.send_media_group(chat_id=chat_id,
-                                                   media=[
-                                                       InputMediaPhoto(open(image_path, "rb"),
-                                                                       caption="Решение задачи" if i == 0 else "")
-                                                       for i, image_path in enumerate(image_path_list)
-                                                   ])
+                if description[0] is not None:
+                    image_path_list = converter.convert_tex_body_str_to_image_list(description[0])
+
+                    await context.bot.send_media_group(chat_id=chat_id,
+                                                       media=[
+                                                           InputMediaPhoto(open(image_path, "rb"),
+                                                                           caption="Решение задачи" if i == 0 else "")
+                                                           for i, image_path in enumerate(image_path_list)
+                                                       ])
 
                 if len(description) > 1:
                     for message in description[1:]:

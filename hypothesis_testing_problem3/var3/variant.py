@@ -81,6 +81,30 @@ class TransformerHypProblem3Variant3(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        alpha = self._get_transformed_random_state(random_state)
+
+        solution_description = r"""
+        Здесь нужно было выбрать двухвыборочный критерий
+        исходя из матожидания и дисперсии.
+        Пользуясь кодом из лекции 
+        (моделирование сходимости выборочных среднего и дисперсии),
+        можно заметить, что матожидание конечно,
+        а дисперсия бесконечна,
+        поэтому из таблицы на слайде 35 лекции следует,
+        что подходит перестановочный тест.
+        """
+
+        solution_code = f"`def solution(x, y):\n" \
+                        + f"    res = permutation_test((x, y),\n" \
+                        + f"                           lambda x, y, axis: np.mean(x, axis=axis) - np.mean(y, axis=axis),\n" \
+                        + f"                           vectorized=True,\n" \
+                        + f"                           n_resamples=1000,\n" \
+                        + f"                           alternative='greater',\n" \
+                        + f"                           random_state=42)\n" \
+                        + f"    return res.pvalue < {alpha}`"
+        return solution_description, solution_code
+
     def get_solution(self, random_state):
         alpha = self._get_transformed_random_state(random_state)
 

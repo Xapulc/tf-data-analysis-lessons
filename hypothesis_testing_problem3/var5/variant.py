@@ -78,6 +78,24 @@ class TransformerHypProblem3Variant5(VariantTransformer):
             "output": self.output_data_text
         }
 
+    def get_solution_description(self, random_state):
+        alpha = self._get_transformed_random_state(random_state)
+
+        solution_description = r"""
+        Здесь нужно было выбрать двухвыборочный критерий
+        исходя из матожидания и дисперсии.
+        Пользуясь кодом из лекции 
+        (моделирование сходимости выборочных среднего и дисперсии),
+        можно заметить, что матожидание и дисперсия конечны,
+        поэтому из таблицы на слайде 35 лекции следует,
+        что подходит T-тест.
+        """
+
+        solution_code = f"`def solution(x, y):\n" \
+                        + f"    res = ttest_ind(x, y, equal_var=False, alternative='two-sided')\n" \
+                        + f"    return res.pvalue < {alpha}`"
+        return solution_description, solution_code
+
     def get_solution(self, random_state):
         alpha = self._get_transformed_random_state(random_state)
 
