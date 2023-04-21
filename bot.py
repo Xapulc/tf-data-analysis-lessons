@@ -727,7 +727,8 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("get_chat", get_chat({604918251: 123456})))
 
     teacher_chat_list = [
-        604918251
+        604918251, # Витя
+        735648143, # Дима
     ]
 
     for problem in problem_storage.problem_list:
