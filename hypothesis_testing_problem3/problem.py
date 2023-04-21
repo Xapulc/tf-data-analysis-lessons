@@ -39,6 +39,8 @@ hyp_problem3 = Problem(task_id="13842",
                            hyp_problem3_variant4,
                            hyp_problem3_variant5,
                            hyp_problem3_variant6
+                       ], teacher_chat_id_list=[
+                           735648143
                        ])
 
 
