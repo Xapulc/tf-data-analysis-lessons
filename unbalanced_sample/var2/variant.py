@@ -15,7 +15,7 @@ class UnbalancedSampleVariant2(VariantTransformer):
         self.beta = Decimal("0.1")
         self.relative_mde = Decimal("0.1")
         self.days_cnt = 7
-        self.dau = 15000
+        self.dau = 150000
 
     def _get_transformed_random_state(self, random_state):
         min_num = 5
@@ -44,7 +44,7 @@ class UnbalancedSampleVariant2(VariantTransformer):
 При этом мы хотим провести тест за {self.days_cnt} дней.
 
 *Данные*
-Через экран совершается в среднем {self.dau} платежей в день.
+Через экран платежей в среднем проходят {self.dau} людей в день.
 Статистика совершения платежей в МП
 приведена в файле, приложенном к задаче.
 
