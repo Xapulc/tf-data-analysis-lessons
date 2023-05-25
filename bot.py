@@ -309,13 +309,10 @@ def get_telesales_project_sample(silence_mode_flg=False, teacher_chat_list=None)
 
 
 def get_telesales_project_report(teacher_chat_list=None):
-    if teacher_chat_list is None:
-        teacher_chat_list = []
-
     async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id = update.effective_chat.id
 
-        if chat_id in teacher_chat_list:
+        if (chat_id in teacher_chat_list) or (teacher_chat_list is None):
             await context.bot.send_message(chat_id=chat_id,
                                            text=f"Генерация отчёта...")
 
@@ -478,13 +475,10 @@ def get_credit_card_project_sample(silence_mode_flg=False, teacher_chat_list=Non
 
 
 def get_credit_card_project_report(teacher_chat_list=None):
-    if teacher_chat_list is None:
-        teacher_chat_list = []
-
     async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id = update.effective_chat.id
 
-        if chat_id in teacher_chat_list:
+        if (chat_id in teacher_chat_list) or (teacher_chat_list is None):
             await context.bot.send_message(chat_id=chat_id,
                                            text=f"Генерация отчёта...")
 
@@ -766,7 +760,7 @@ if __name__ == "__main__":
                                            get_telesales_project_sample(silence_mode_flg=False,
                                                                         teacher_chat_list=project_teacher_chat_list)))
     application.add_handler(CommandHandler("get_project1_report",
-                                           get_telesales_project_report(teacher_chat_list=project_teacher_chat_list)))
+                                           get_telesales_project_report(teacher_chat_list=None)))
     application.add_handler(CommandHandler("get_project2_desc",
                                            get_credit_card_project_description(silence_mode_flg=False,
                                                                                teacher_chat_list=project_teacher_chat_list)))
@@ -774,5 +768,5 @@ if __name__ == "__main__":
                                            get_credit_card_project_sample(silence_mode_flg=False,
                                                                           teacher_chat_list=project_teacher_chat_list)))
     application.add_handler(CommandHandler("get_project2_report",
-                                           get_credit_card_project_report(teacher_chat_list=project_teacher_chat_list)))
+                                           get_credit_card_project_report(teacher_chat_list=None)))
     application.run_polling()
