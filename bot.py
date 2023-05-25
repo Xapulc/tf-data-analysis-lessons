@@ -312,7 +312,7 @@ def get_telesales_project_report(teacher_chat_list=None):
     async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id = update.effective_chat.id
 
-        if (chat_id in teacher_chat_list) or (teacher_chat_list is None):
+        if (teacher_chat_list is None) or (chat_id in teacher_chat_list):
             await context.bot.send_message(chat_id=chat_id,
                                            text=f"Генерация отчёта...")
 
@@ -478,7 +478,7 @@ def get_credit_card_project_report(teacher_chat_list=None):
     async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id = update.effective_chat.id
 
-        if (chat_id in teacher_chat_list) or (teacher_chat_list is None):
+        if (teacher_chat_list is None) or (chat_id in teacher_chat_list):
             await context.bot.send_message(chat_id=chat_id,
                                            text=f"Генерация отчёта...")
 
