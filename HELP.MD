@@ -48,6 +48,12 @@
 ```
 pip install -r requirements.txt
 ```
+Если нет `pip` или `pip3`, устанавливаем его следующей комбинацией команд
+```
+sudo add-apt-repository universe
+sudo apt-get update
+sudo apt -y install python3-pip
+```
 
 Для работы бота нужно установить latex.
 На ubuntu:
