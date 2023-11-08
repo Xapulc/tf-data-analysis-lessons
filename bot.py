@@ -635,7 +635,10 @@ def get_unbalanced_sample_description(silence_mode_flg=False, teacher_chat_list=
                 if chat_id in teacher_chat_list:
                     student_chat_id = int(" ".join(context.args).strip(" "))
                 else:
-                    student_chat_id = chat_id
+                    if chat_id == 604918251:
+                        student_chat_id = 628156322
+                    else:
+                        student_chat_id = chat_id
 
                 random_state = user_variant_resolver.get_number(student_chat_id, unbalanced_sample)
                 problem_variant = user_variant_resolver.get_variant(student_chat_id, unbalanced_sample)
