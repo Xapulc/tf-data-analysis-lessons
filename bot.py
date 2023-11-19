@@ -674,15 +674,15 @@ def get_unbalanced_sample_report(teacher_chat_list=None):
     async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id = update.effective_chat.id
 
-        # if chat_id not in teacher_chat_list:
-        #     await context.bot.send_message(chat_id=chat_id,
-        #                                    text="Генерация условия недоступна.")
-        # else:
-        await context.bot.send_message(chat_id=chat_id,
-                                       text=f"Генерация условия...")
+        if chat_id not in teacher_chat_list:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text="Генерация условия недоступна.")
+        else:
+            await context.bot.send_message(chat_id=chat_id,
+                                           text=f"Генерация условия...")
         try:
-            # student_chat_id = int(" ".join(context.args).strip(" "))
-            student_chat_id = chat_id
+            student_chat_id = int(" ".join(context.args).strip(" "))
+            # student_chat_id = chat_id
 
             random_state = user_variant_resolver.get_number(student_chat_id, unbalanced_sample)
             problem_variant = user_variant_resolver.get_variant(student_chat_id, unbalanced_sample)
@@ -725,7 +725,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("get_chat", get_chat({604918251: 123456})))
 
     teacher_chat_list = [
-        # 604918251, # Витя
+        604918251, # Витя
         735648143, # Дима
     ]
 
