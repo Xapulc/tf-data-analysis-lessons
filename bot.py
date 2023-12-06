@@ -693,12 +693,12 @@ def get_unbalanced_sample_report(teacher_chat_list=None):
             await context.bot.send_message(chat_id=chat_id, text=description, parse_mode="markdown")
 
             hist_sample = transformer_variant.get_sample(random_state=random_state)
-            hist_data = pd.DataFrame(data={
-                f"x{i+1}": [x]
-                for i, x in enumerate(hist_sample)
-            })
+            columns_list = np.char.add(np.tile("x", hist_sample.shape[0]),
+                                       np.arange(1, hist_sample.shape[0] + 1).astype(str))
+
             file_name = "tmp/hist_unbalanced_sample.csv"
-            hist_data.to_csv(file_name, index=False)
+            with open(file_name, "w") as f:
+                f.write(",".join(columns_list) + "\n" + ",".join(hist_sample.astype(str)))
             await context.bot.send_document(chat_id=chat_id,
                                             caption="Исторические данные",
                                             document=file_name)
