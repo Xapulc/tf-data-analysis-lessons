@@ -750,10 +750,10 @@ if __name__ == "__main__":
 
     project_teacher_chat_list = [
         604918251,  # Витя
-        434207209,  # Ангелина
-        123188318,  # Андрей,
-        315763504,  # Коля
-        957195795,  # Максим
+        # 434207209,  # Ангелина
+        # 123188318,  # Андрей,
+        # 315763504,  # Коля
+        # 957195795,  # Максим
     ]
 
     application.add_handler(CommandHandler("get_project1_desc",
@@ -763,7 +763,7 @@ if __name__ == "__main__":
                                            get_telesales_project_sample(silence_mode_flg=False,
                                                                         teacher_chat_list=project_teacher_chat_list)))
     application.add_handler(CommandHandler("get_project1_report",
-                                           get_telesales_project_report(teacher_chat_list=None)))
+                                           get_telesales_project_report(teacher_chat_list=project_teacher_chat_list)))
     application.add_handler(CommandHandler("get_project2_desc",
                                            get_credit_card_project_description(silence_mode_flg=False,
                                                                                teacher_chat_list=project_teacher_chat_list)))
@@ -771,5 +771,5 @@ if __name__ == "__main__":
                                            get_credit_card_project_sample(silence_mode_flg=False,
                                                                           teacher_chat_list=project_teacher_chat_list)))
     application.add_handler(CommandHandler("get_project2_report",
-                                           get_credit_card_project_report(teacher_chat_list=None)))
+                                           get_credit_card_project_report(teacher_chat_list=project_teacher_chat_list)))
     application.run_polling()
