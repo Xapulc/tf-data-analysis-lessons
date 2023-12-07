@@ -667,50 +667,50 @@ def get_unbalanced_sample_description(silence_mode_flg=False, teacher_chat_list=
     return helper
 
 
-def get_unbalanced_sample_report(teacher_chat_list=None):
+def get_unbalanced_sample_report(silence_mode_flg=False, teacher_chat_list=None):
     if teacher_chat_list is None:
         teacher_chat_list = []
 
     async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id = update.effective_chat.id
 
-        if chat_id not in teacher_chat_list:
+        if silence_mode_flg and (chat_id not in teacher_chat_list):
             await context.bot.send_message(chat_id=chat_id,
                                            text="Генерация условия недоступна.")
         else:
             await context.bot.send_message(chat_id=chat_id,
                                            text=f"Генерация условия...")
-        try:
-            student_chat_id = int(" ".join(context.args).strip(" "))
-            # student_chat_id = chat_id
+            try:
+                # student_chat_id = int(" ".join(context.args).strip(" "))
+                student_chat_id = chat_id
 
-            random_state = user_variant_resolver.get_number(student_chat_id, unbalanced_sample)
-            problem_variant = user_variant_resolver.get_variant(student_chat_id, unbalanced_sample)
+                random_state = user_variant_resolver.get_number(student_chat_id, unbalanced_sample)
+                problem_variant = user_variant_resolver.get_variant(student_chat_id, unbalanced_sample)
 
-            transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
-            description = transformer_variant.get_description(random_state)
+                transformer_variant = transformer_variant_strategies.get_variant_transformer_strategy_by_code(problem_variant.code)
+                description = transformer_variant.get_description(random_state)
 
-            await context.bot.send_message(chat_id=chat_id, text=description, parse_mode="markdown")
+                await context.bot.send_message(chat_id=chat_id, text=description, parse_mode="markdown")
 
-            hist_sample = transformer_variant.get_sample(random_state=random_state)
-            columns_list = np.char.add(np.tile("x", hist_sample.shape[0]),
-                                       np.arange(1, hist_sample.shape[0] + 1).astype(str))
+                hist_sample = transformer_variant.get_sample(random_state=random_state)
+                columns_list = np.char.add(np.tile("x", hist_sample.shape[0]),
+                                           np.arange(1, hist_sample.shape[0] + 1).astype(str))
 
-            file_name = "tmp/hist_unbalanced_sample.csv"
-            with open(file_name, "w") as f:
-                f.write(",".join(columns_list) + "\n" + ",".join(hist_sample.astype(str)))
-            await context.bot.send_document(chat_id=chat_id,
-                                            caption="Исторические данные",
-                                            document=file_name)
+                file_name = "tmp/hist_unbalanced_sample.csv"
+                with open(file_name, "w") as f:
+                    f.write(",".join(columns_list) + "\n" + ",".join(hist_sample.astype(str)))
+                await context.bot.send_document(chat_id=chat_id,
+                                                caption="Исторические данные",
+                                                document=file_name)
 
-            solution_description = transformer_variant.get_solution_description(random_state)
+                solution_description = transformer_variant.get_solution_description(random_state)
 
-            await context.bot.send_message(chat_id=chat_id, text=solution_description, parse_mode="markdown")
-        except Exception as e:
-            comment = "Ошибка при генерации условия. " \
-                      + f"Тип ошибки: {type(e)}, сообщение: {str(e)}, `chat_id = {str(chat_id)}`. " \
-                      + f"Перешлите это сообщение преподавателю."
-            await context.bot.send_message(chat_id=chat_id, text=comment)
+                await context.bot.send_message(chat_id=chat_id, text=solution_description, parse_mode="markdown")
+            except Exception as e:
+                comment = "Ошибка при генерации условия. " \
+                          + f"Тип ошибки: {type(e)}, сообщение: {str(e)}, `chat_id = {str(chat_id)}`. " \
+                          + f"Перешлите это сообщение преподавателю."
+                await context.bot.send_message(chat_id=chat_id, text=comment)
 
     return helper
 
