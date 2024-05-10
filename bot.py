@@ -727,6 +727,7 @@ if __name__ == "__main__":
     teacher_chat_list = [
         604918251, # Витя
         735648143, # Дима
+        382349685, # Данила
     ]
 
     for problem in problem_storage.problem_list:
